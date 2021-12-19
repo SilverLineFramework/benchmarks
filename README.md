@@ -14,6 +14,8 @@ arena
 
 3. Build WASM apps with ```./build.sh```.
 
+4. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
+
 ## Usage
 
 1. Run the ```run-py``` or ```run-wasm``` script.

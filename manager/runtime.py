@@ -23,7 +23,7 @@ class RuntimeManager:
 
     def __init__(
             self, mqtt,
-            path="../arena-runtime-linux/runtime/out/runtime", **kwargs):
+            path="../arena-runtime-linux/runtime/runtime", **kwargs):
 
         self.mqtt = mqtt
         self.uuid = str(uuid.uuid4())
