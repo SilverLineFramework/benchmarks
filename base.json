@@ -1,0 +1,18 @@
+{
+    "object_id": "fad9eca2-6051-4f05-9727-a8768ae187e4", 
+    "action": "create", 
+    "type": "arts_req", 
+    "data": {
+        "type": "module", 
+        "uuid": "5c212f7c-a1b8-4428-9b6d-c4660c0343d7", 
+        "name": "helloworld", 
+        "parent": {"uuid": "NA"}, 
+        "filename": "out/helloworld.wasm", 
+        "fileid": "na", 
+        "filetype": "WASM", 
+        "apis": [], 
+        "args": ["helloworld.wasm"], 
+        "channels": [], 
+        "peripherals": []
+    }
+}

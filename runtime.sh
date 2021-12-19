@@ -1,1 +1,0 @@
-../arena-runtime-linux/runtime/out/runtime --appdir=. --dir=./python-apps --verbose=1 --uuid=de8627cd-993e-418e-82db-f4b2f40a87d2

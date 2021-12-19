@@ -76,7 +76,8 @@ if __name__ == '__main__':
     parser.add_argument("--host", help="MQTT host", default="arenaxr.org")
     parser.add_argument("--port", help="MQTT port", type=int, default=8883)
     parser.add_argument("--num", help="Number of copies", type=int, default=1)
-    parser.add_argument("--script", help="Script name", default="python-apps/pinata.py")
+    parser.add_argument(
+        "--script", help="Script name", default="python-apps/pinata.py")
     args = parser.parse_args()
 
     mqtt = MQTTClient(args.host, args.port)
@@ -84,10 +85,10 @@ if __name__ == '__main__':
 
     print("[Tester] Message to send:")
     topic = "realm/proc/control/" + runtime_id
-    with open('base_command.json', 'r') as f:
+    with open('base.json', 'r') as f:
         json_str = json.load(f)
     json_str['data']['parent']['uuid'] = runtime_id
-    json_str['data']['args'][1] = args.script
+    # json_str['data']['args'][1] = args.script
     print(json_str)
 
     for _ in range(args.num):
