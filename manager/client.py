@@ -57,6 +57,6 @@ class MQTTClient:
 
     def on_message(self, client, userdata, msg):
         """MQTT message arrived callback."""
-        print("[Client] Received message on {}".format(msg.topic))
+        # print("[Client] Received message on {}".format(msg.topic))
         data = json.loads(msg.payload)
         self.profile.log(data)

@@ -22,8 +22,8 @@ class RuntimeManager:
     """
 
     def __init__(
-            self, mqtt, path="../arena-runtime-linux-runtime/out/runtime",
-            **kwargs):
+            self, mqtt,
+            path="../arena-runtime-linux/runtime/out/runtime", **kwargs):
 
         self.mqtt = mqtt
         self.uuid = str(uuid.uuid4())
@@ -31,16 +31,17 @@ class RuntimeManager:
         kwargs["uuid"] = self.uuid
 
         run_cmd = " ".join(
-            [path] + ["--{}={}".format(k, v) for k, v in kwargs])
+            [path] + ["--{}={}".format(k, v) for k, v in kwargs.items()])
         with open("runtime.sh", "w") as f:
             f.truncate(0)
             f.write(run_cmd)
+        print("Run command: ", run_cmd)
 
     def create_module(self, data):
         """Create module with custom payload."""
         print("[Runtime] Creating module:")
         print(json.dumps(data))
-        self.mqtt.publish(self.control_topic, json.dumps(data))
+        self.mqtt.client.publish(self.control_topic, json.dumps(data))
 
     def create_module_wasm(self, name="module", filename="helloworld.wasm"):
         """Create WASM module."""
@@ -53,7 +54,7 @@ class RuntimeManager:
                 "uuid": str(uuid.uuid4()),
                 "name": name,
                 "parent": {"uuid": self.uuid},
-                "filename": "out/{}".format(filename),
+                "filename": "wasm-out/{}".format(filename),
                 "fileid": "na",
                 "filetype": "WASM",
                 "apis": [],
@@ -80,7 +81,7 @@ class RuntimeManager:
                 "filename": "rustpython.wasm",
                 "fileid": "na",
                 "filetype": "PY",
-                "apis": ["python:python3"], 
+                "apis": ["python:python3"],
                 "args": ["rustpython.wasm", "python-apps/{}".format(filename)],
                 "env": [
                     "MQTTH={}".format(mqtth), "REALM=realm",

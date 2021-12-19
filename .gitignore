@@ -1,6 +1,6 @@
 # Project-specific files
 runtime.sh
-out/
+wasm-out/
 mqtt_pwd.txt
 data.json
 

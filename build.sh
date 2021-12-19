@@ -1,6 +1,6 @@
 WASM_APPS="${PWD}/wasm-apps"
 WAMR_DIR=${PWD}/../arena-runtime-linux/wasm-micro-runtime
-OUT_DIR=${PWD}/out
+OUT_DIR=${PWD}/wasm-out
 
 mkdir "${OUT_DIR}"
 
