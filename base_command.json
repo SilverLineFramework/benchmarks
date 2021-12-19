@@ -1,0 +1,29 @@
+{
+    "object_id": "fad9eca2-6051-4f05-9727-a8768ae187e4", 
+    "action": "create", 
+    "type": "arts_req", 
+    "data": {
+        "type": "module", 
+        "uuid": "5c212f7c-a1b8-4428-9b6d-c4660c0343d7", 
+        "name": "rustpython", 
+        "parent": {"uuid": "NA"}, 
+        "filename": "rustpython.wasm", 
+        "fileid": "na", 
+        "filetype": "PY", 
+        "apis": ["python:python3"], 
+        "args": ["rustpython.wasm", "python-apps/pinata.py"], 
+        "env": [
+            "MQTTH=arena.andrew.cmu.edu",
+            "REALM=realm",
+            "SCENE=test",
+            "NAMESPACE=tianshu"
+        ],
+        "channels": [], 
+        "peripherals": [],
+        "resources": {
+            "runtime": 10000000,
+            "period": 40000000,
+            "affinity": 2
+        }
+    }
+}
