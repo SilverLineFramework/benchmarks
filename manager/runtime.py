@@ -66,9 +66,10 @@ class RuntimeManager:
         self.create_module(msg)
 
     def create_module_py(
-            self, name="module", filename="pinata.py",
+            self, name="module", aot=False, filename="pinata.py",
             mqtth="arena.andrew.cmu.edu", scene="test", namespace="test"):
         """Create python module."""
+        python = "rustpython.{}".format("aot" if aot else "wasm")
         msg = {
             "object_id": str(uuid.uuid4()),
             "action": "create",
@@ -78,11 +79,11 @@ class RuntimeManager:
                 "uuid": str(uuid.uuid4()),
                 "name": name,
                 "parent": {"uuid": self.uuid},
-                "filename": "rustpython.wasm",
+                "filename": python,
                 "fileid": "na",
                 "filetype": "PY",
                 "apis": ["python:python3"],
-                "args": ["rustpython.wasm", "python-apps/{}".format(filename)],
+                "args": [python, "python-apps/{}".format(filename)],
                 "env": [
                     "MQTTH={}".format(mqtth), "REALM=realm",
                     "SCENE={}".format(scene), "NAMESPACE={}".format(namespace)

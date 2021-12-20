@@ -3,6 +3,7 @@ runtime.sh
 wasm-out/
 mqtt_pwd.txt
 data.json
+*.aot
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
