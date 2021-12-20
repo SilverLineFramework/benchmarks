@@ -21,9 +21,7 @@ class RuntimeManager:
         ```verbose=2``` or ```dir=.```
     """
 
-    def __init__(
-            self, mqtt,
-            path="../arena-runtime-linux/runtime/runtime", **kwargs):
+    def __init__(self, mqtt, path="../runtime/runtime", **kwargs):
 
         self.mqtt = mqtt
         self.uuid = str(uuid.uuid4())

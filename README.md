@@ -2,13 +2,7 @@
 
 ## Setup
 
-1. Clone this repository at the same level as ```arena-runtime-linux```:
-
-```
-arena
-    arena-runtime-linux
-    runtime-benchmarks
-```
+1. This module should be a submodule in the runtime directory, and initialized as part of the runtime setup.
 
 2. Make sure you have Python 3 and Paho (```pip install paho-mqtt```) installed.
 
