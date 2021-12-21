@@ -41,40 +41,44 @@ class RuntimeManager:
         print(json.dumps(data))
         self.mqtt.client.publish(self.control_topic, json.dumps(data))
 
-    def create_module_wasm(self, name="module", filename="helloworld.wasm"):
+    def create_module_wasm(
+            self, name="module", filename="helloworld.wasm", args=[]):
         """Create WASM module."""
+        module_uuid = str(uuid.uuid4())
         msg = {
             "object_id": str(uuid.uuid4()),
             "action": "create",
             "type": "arts_req",
             "data": {
                 "type": "module",
-                "uuid": str(uuid.uuid4()),
+                "uuid": module_uuid,
                 "name": name,
                 "parent": {"uuid": self.uuid},
                 "filename": "wasm-out/{}".format(filename),
                 "fileid": "na",
                 "filetype": "WASM",
                 "apis": [],
-                "args": [filename],
+                "args": [filename] + args,
                 "channels": [],
                 "peripherals": []
             }
         }
         self.create_module(msg)
+        return module_uuid
 
     def create_module_py(
-            self, name="module", aot=False, filename="pinata.py",
+            self, name="module", aot=False, filename="pinata.py", argv=[],
             mqtth="arena.andrew.cmu.edu", scene="test", namespace="test"):
         """Create python module."""
         python = "rustpython.{}".format("aot" if aot else "wasm")
+        module_uuid = str(uuid.uuid4())
         msg = {
             "object_id": str(uuid.uuid4()),
             "action": "create",
             "type": "arts_req",
             "data": {
                 "type": "module",
-                "uuid": str(uuid.uuid4()),
+                "uuid": module_uuid,
                 "name": name,
                 "parent": {"uuid": self.uuid},
                 "filename": python,
@@ -84,7 +88,8 @@ class RuntimeManager:
                 "args": [python, "python-apps/{}".format(filename)],
                 "env": [
                     "MQTTH={}".format(mqtth), "REALM=realm",
-                    "SCENE={}".format(scene), "NAMESPACE={}".format(namespace)
+                    "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),
+                    "ARGV={}".format(" ".join(argv))
                 ],
                 "channels": [],
                 "peripherals": [],
@@ -96,3 +101,4 @@ class RuntimeManager:
             }
         }
         self.create_module(msg)
+        return module_uuid

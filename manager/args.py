@@ -22,5 +22,7 @@ def parser_common():
     parser.add_argument(
         "--kwargs", help="Runtime passthrough args",
         nargs="*", action=ArgKeyValue, default={})
+    parser.add_argument(
+        "--argv", help="Module argv passthrough", default="")
 
     return parser

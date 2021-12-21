@@ -53,7 +53,8 @@ class MQTTClient:
 
     def on_publish(self, client, userdata, mid):
         """MQTT publish callback."""
-        print("[Client] sent CREATE_MODULE, message id={}".format(mid))
+        # print("[Client] sent CREATE_MODULE, message id={}".format(mid))
+        pass
 
     def on_message(self, client, userdata, msg):
         """MQTT message arrived callback."""

@@ -1,6 +1,8 @@
 """Run and test runtime."""
 
-import argparse
+import time
+import numpy as np
+
 import manager
 
 
@@ -23,10 +25,18 @@ if __name__ == '__main__':
     mqtt = manager.MQTTClient()
     runtime = manager.RuntimeManager(mqtt, **kw)
 
+    uuids = []
     for _ in range(args.num):
         input()
-        runtime.create_module_py(
-            filename=args.script, aot=args.aot, name=args.script,
-            scene=args.scene, namespace=args.namespace)
+        uuids.append(
+            runtime.create_module_py(
+                filename=args.script, aot=args.aot, name=args.script,
+                scene=args.scene, namespace=args.namespace,
+                argv=args.argv.split(" ")))
 
-    mqtt.client.loop_forever()
+    topic = "ch/in/test"
+    print("[Data] topic: ", topic)
+    while True:
+        mqtt.client.loop()
+        mqtt.client.publish(topic, np.random.bytes(1024))
+        time.sleep(0.2)
