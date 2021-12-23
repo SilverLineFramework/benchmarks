@@ -102,3 +102,17 @@ class RuntimeManager:
         }
         self.create_module(msg)
         return module_uuid
+
+    def delete_module(self, target):
+        """Delete module."""
+        msg = {
+            "object_id": str(uuid.uuid4()),
+            "action": "delete",
+            "type": "arts_req",
+            "data": {
+                "type": "module",
+                "uuid": target,
+            }
+        }
+        print("[Runtime] Deleting module: {}".format(target))
+        self.mqtt.client.publish(self.control_topic, json.dumps(msg))
