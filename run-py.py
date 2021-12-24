@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     input()
 
-    if parser.mode == "delete":
+    if args.mode == "delete":
         for i in range(10):
             uuids = []
             for _ in range(args.num):
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             for d in uuids:
                 time.sleep(0.5)
                 runtime.delete_module(d)
-    elif parser.mode == "profile":
+    elif args.mode == "profile":
         uuids = []
         for _ in range(args.num):
             uuids.append(
