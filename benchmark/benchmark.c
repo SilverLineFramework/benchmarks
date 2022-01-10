@@ -7,27 +7,26 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
+
 #include "api.h"
+#include "block.h"
+
+#include "blocks_basic.h"
+#include "polybench/polybench.h"
 
 #define BUF_SIZE 65536
 
-/** @brief Identity block. */
-int block_identity(char *buf, int len) {
-    printf("[Block] Identity -> %02X...\n", buf[0] & 0xff);
-    return len;
-}
-
-/** @brief Simple bitwise not block for testing */
-int block_not(char *buf, int len) {
-    for (int i = 0; i < len; i++) { buf[i] = ~buf[i]; }
-    printf("[Block] Bitwise Not -> %02X...\n", buf[0] & 0xff);
-    return len;
-}
-
 /** @brief Dispatch table */
-int (*processing_blocks[])(char *buf, int len) = {
+void (*processing_blocks[])(data_t *data) = {
     &block_identity,
     &block_not,
+    &block_concat,
+    &block_bubble_sort,
+    &block_quicksort,
+    &block_correlation,
+    &block_2mm,
+    &block_3mm,
+    &block_cholesky
 };
 
 /**
@@ -38,8 +37,8 @@ typedef struct {
     int data_in;
     /** Channel for data output */
     int data_out;
-    /** Buffer for interacting with data */
-    char *buf;
+    /** Data buffer */
+    data_t data;
     /** Order of processing blocks to apply */
     int *blocks;
     /** Number of blocks */
@@ -50,16 +49,20 @@ typedef struct {
  * @brief Message handler / block dispatcher
  */
 void handler(benchmark_t *bench) {
-    int size = ch_read_msg(bench->data_in, bench->buf, BUF_SIZE);
-    printf("[Benchmark] Received: %02X... (%d)\n", bench->buf[0] & 0xff, size);
+    bench->data.buf = malloc(BUF_SIZE);
+    bench->data.len = ch_read_msg(bench->data_in, bench->data.buf, BUF_SIZE);
+    printf(
+        "[Benchmark] Received: %02X... (%d)\n",
+        bench->data.buf[0] & 0xff, bench->data.len);
     for (int i = 0; i < bench->num_blocks; i++) {
         if (bench->blocks[i] * sizeof(void *) < sizeof(processing_blocks)) {
-            size = processing_blocks[bench->blocks[i]](bench->buf, size);
+            processing_blocks[bench->blocks[i]](&bench->data);
         } else {
             printf("[Block] Invalid block index: %d\n", bench->blocks[i]);
         }
     }
-    ch_write_msg(bench->data_out, bench->buf, size);
+    ch_write_msg(bench->data_out, bench->data.buf, bench->data.len);
+    free(bench->data.buf);
 }
 
 /** Join topic path. */
@@ -90,7 +93,6 @@ void init_blocks(benchmark_t *bench, int argc, char *argv[]) {
         bench->blocks[i - 1] = atoi(argv[i]);
     }
     bench->num_blocks = argc - 1;
-    bench->buf = malloc(BUF_SIZE);
 }
 
 /**

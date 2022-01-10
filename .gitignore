@@ -5,6 +5,10 @@ mqtt_pwd.txt
 data.json
 *.aot
 
+# Compiled WASM
+*.o
+benchmark/*.wasm
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -19,10 +19,10 @@ def _create_module(args):
         return runtime.create_module_py(
             filename=args.script, aot=args.aot, name=args.script,
             scene=args.scene, namespace=args.namespace,
-            argv=args.argv.split(" "))
+            argv=args.argv.split(","))
     else:
         return runtime.create_module_wasm(
-            filename=args.path, name=args.path, args=args.argv.split(" "))
+            filename=args.path, name=args.path, args=args.argv.split(","))
 
 
 def create_modules(args, sleep=0):
@@ -50,13 +50,16 @@ if __name__ == '__main__':
                 runtime.delete_module(d)
         runtime.mqtt.loop_forever()
     elif args.mode == "profile_active":
-        _ = create_modules(args, sleep=0)
-        topic = "ch/in/test"
-        print("[Data] topic: ", topic)
+        uuids = create_modules(args, sleep=0)
+        topics = ["ch/in/{}".format(u) for u in uuids]
+        print("[Data] topics: ", topics)
         while True:
-            runtime.mqtt.publish(topic, np.random.bytes(1024))
-            runtime.mqtt.loop()
-            time.sleep(0.2)
+            for t in topics:
+                data = bytes(
+                    np.random.uniform(size=args.size // 4).astype(np.float32))
+                runtime.mqtt.publish(t, data)
+                runtime.mqtt.loop()
+            time.sleep(1)
     elif args.mode == "profile":
         _ = create_modules(args, sleep=0)
         runtime.mqtt.loop_forever()

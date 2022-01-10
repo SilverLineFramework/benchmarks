@@ -40,6 +40,9 @@ def _create_parser(py=True):
     parser.add_argument(
         "--mode", help="Testing mode (profile, profile_active, or delete)",
         default="profile")
+    parser.add_argument(
+        "--size", help="Array size (bytes) for active profiling",
+        default=4096)
 
     parser.add_argument(
         "--script", help="Script name", default="pinata.py")
