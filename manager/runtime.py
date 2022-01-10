@@ -3,6 +3,9 @@
 import uuid
 import json
 
+import ssl
+import paho.mqtt.client as mqtt
+
 
 class RuntimeManager:
     """Runtime manager.
@@ -14,20 +17,42 @@ class RuntimeManager:
 
     Keyword Args
     ------------
+    mqtt_host : str
+        MQTT host server address.
+    mqtt_port : int
+        MQTT host server port.
     path : str
         Path to runtime executable
+    use_arts : bool
+        If False, skips ARTS and sends the CREATE_MODULE command directly
+        to the runtime.
     kwargs : dict
         Additional command line args to send to the runtime, i.e.
         ```verbose=2``` or ```dir=.```
     """
 
-    def __init__(self, mqtt, path="../runtime/runtime", **kwargs):
+    def __init__(
+            self, mqtt_host="arenaxr.org", mqtt_port=8883,
+            path="../runtime/runtime", use_arts=False, **kwargs):
 
-        self.mqtt = mqtt
+        with open("mqtt_pwd.txt", 'r') as f:
+            passwd = f.read()
+        user = "cli"
+
+        self.mqtt = mqtt.Client("test_client")
+        if mqtt_host != 'localhost':
+            self.mqtt.tls_set(cert_reqs=ssl.CERT_NONE)
+        self.mqtt.username_pw_set(user, passwd)
+        self.mqtt.connect(mqtt_host, mqtt_port, 60)
+        print("[Client] MQTT Client connected.")
+
+        if use_arts:
+            self.control_topic = "realm/proc/control"
+        else:
+            self.control_topic = "realm/proc/control/{}".format(self.uuid)
+
         self.uuid = str(uuid.uuid4())
-        self.control_topic = "realm/proc/control/{}".format(self.uuid)
         kwargs["uuid"] = self.uuid
-
         run_cmd = " ".join(
             [path] + ["--{}={}".format(k, v) for k, v in kwargs.items()])
         with open("runtime.sh", "w") as f:
@@ -37,33 +62,30 @@ class RuntimeManager:
 
     def create_module(self, data):
         """Create module with custom payload."""
-        print("[Runtime] Creating module:")
-        print(json.dumps(data))
-        self.mqtt.client.publish(self.control_topic, json.dumps(data))
-
-    def create_module_wasm(
-            self, name="module", filename="helloworld.wasm", args=[]):
-        """Create WASM module."""
-        module_uuid = str(uuid.uuid4())
-        msg = {
+        payload = json.dumps({
             "object_id": str(uuid.uuid4()),
             "action": "create",
             "type": "arts_req",
             "data": {
                 "type": "module",
-                "uuid": module_uuid,
-                "name": name,
                 "parent": {"uuid": self.uuid},
-                "filename": "wasm-out/{}".format(filename),
-                "fileid": "na",
-                "filetype": "WASM",
-                "apis": [],
-                "args": [filename] + args,
-                "channels": [],
-                "peripherals": []
+                **data
             }
-        }
-        self.create_module(msg)
+        })
+        print("[Runtime] Creating module on topic {}:\n{}".format(
+            self.control_topic, payload))
+        self.mqtt.publish(self.control_topic, payload)
+
+    def create_module_wasm(
+            self, name="module", filename="helloworld.wasm", args=[]):
+        """Create WASM module."""
+        module_uuid = str(uuid.uuid4())
+        self.create_module({
+            "uuid": module_uuid,
+            "name": name,
+            "filename": "wasm-out/{}".format(filename),
+            "args": [filename] + args,
+        })
         return module_uuid
 
     def create_module_py(
@@ -72,35 +94,17 @@ class RuntimeManager:
         """Create python module."""
         python = "rustpython.{}".format("aot" if aot else "wasm")
         module_uuid = str(uuid.uuid4())
-        msg = {
-            "object_id": str(uuid.uuid4()),
-            "action": "create",
-            "type": "arts_req",
-            "data": {
-                "type": "module",
-                "uuid": module_uuid,
-                "name": name,
-                "parent": {"uuid": self.uuid},
-                "filename": python,
-                "fileid": "na",
-                "filetype": "PY",
-                "apis": ["python:python3"],
-                "args": [python, "python-apps/{}".format(filename)],
-                "env": [
-                    "MQTTH={}".format(mqtth), "REALM=realm",
-                    "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),
-                    "ARGV={}".format(" ".join(argv))
-                ],
-                "channels": [],
-                "peripherals": [],
-                "resources": {
-                    "runtime": 10000000,
-                    "period": 40000000,
-                    "affinity": 2
-                }
-            }
-        }
-        self.create_module(msg)
+        self.create_module({
+            "uuid": module_uuid,
+            "name": name,
+            "filename": python,
+            "args": [python, "python-apps/{}".format(filename)],
+            "env": [
+                "MQTTH={}".format(mqtth), "REALM=realm",
+                "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),
+                "ARGV={}".format(" ".join(argv))
+            ]
+        })
         return module_uuid
 
     def delete_module(self, target):
@@ -109,10 +113,7 @@ class RuntimeManager:
             "object_id": str(uuid.uuid4()),
             "action": "delete",
             "type": "arts_req",
-            "data": {
-                "type": "module",
-                "uuid": target,
-            }
+            "data": {"type": "module", "uuid": target}
         }
         print("[Runtime] Deleting module: {}".format(target))
-        self.mqtt.client.publish(self.control_topic, json.dumps(msg))
+        self.mqtt.publish(self.control_topic, json.dumps(msg))
