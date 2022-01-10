@@ -39,6 +39,7 @@ class RuntimeManager:
             passwd = f.read()
         user = "cli"
 
+        self.uuid = str(uuid.uuid4())
         self.mqtt = mqtt.Client("test_client")
         if mqtt_host != 'localhost':
             self.mqtt.tls_set(cert_reqs=ssl.CERT_NONE)
@@ -51,7 +52,6 @@ class RuntimeManager:
         else:
             self.control_topic = "realm/proc/control/{}".format(self.uuid)
 
-        self.uuid = str(uuid.uuid4())
         kwargs["uuid"] = self.uuid
         run_cmd = " ".join(
             [path] + ["--{}={}".format(k, v) for k, v in kwargs.items()])
@@ -84,7 +84,9 @@ class RuntimeManager:
             "uuid": module_uuid,
             "name": name,
             "filename": "wasm-out/{}".format(filename),
+            "filetype": "WA",
             "args": [filename] + args,
+            "env": [],
         })
         return module_uuid
 
@@ -98,6 +100,7 @@ class RuntimeManager:
             "uuid": module_uuid,
             "name": name,
             "filename": python,
+            "filetype": "PY",
             "args": [python, "python-apps/{}".format(filename)],
             "env": [
                 "MQTTH={}".format(mqtth), "REALM=realm",

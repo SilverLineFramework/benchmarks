@@ -27,10 +27,15 @@ def _create_parser(py=True):
         nargs="*", action=ArgKeyValue, default={})
     parser.add_argument(
         "--argv", help="Module argv passthrough", default="")
-    parser.add_argument(
-        "--arts", help="Use ARTS", default=False, type=bool)
     parser.add_argument("--host", help="MQTT Host", default="arenaxr.org")
     parser.add_argument("--port", help="MQTT Port", default=8883, type=int)
+
+    parser.add_argument(
+        "--arts", help="Use ARTS", dest='arts', action='store_true')
+    parser.add_argument(
+        "--no-arts", help="Skip ARTS and manually schedule", dest='arts',
+        action='store_false')
+    parser.set_defaults(arts=False)
 
     parser.add_argument(
         "--mode", help="Testing mode (profile, profile_active, or delete)",
@@ -43,8 +48,10 @@ def _create_parser(py=True):
     parser.add_argument(
         "--namespace", help="Namespace environment variable",
         default="test")
+
     parser.add_argument(
-        "--aot", help="Use AOT python", default=False, type=bool)
+        "--aot", help="Use AOT python", dest='aot', action='store_true')
+    parser.set_defaults(aot=False)
 
     parser.add_argument(
         "--path", help="File name", default="helloworld.wasm")
