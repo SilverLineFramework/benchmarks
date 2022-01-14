@@ -42,7 +42,9 @@ def _create_parser(py=True):
         default="profile")
     parser.add_argument(
         "--size", help="Array size (bytes) for active profiling",
-        default=4096)
+        default=4096, type=int)
+    parser.add_argument(
+        "--delay", help="Processing delay (seconds)", type=float, default=1.0)
 
     parser.add_argument(
         "--script", help="Script name", default="pinata.py")
@@ -65,7 +67,10 @@ def parse(py=True):
     """Parse arguments."""
     args = _create_parser(py=py).parse_args()
 
-    kw = {"dir": ".", "appdir": "."}
+    kw = {
+        "dir": ".", "appdir": ".",
+        "host": "{}:{}".format(args.host, args.port)
+    }
     kw.update(args.kwargs)
 
     return args, kw

@@ -52,7 +52,6 @@ void block_bubble_sort(data_t *data) {
     printf("[Block] Bubble sort (iters=%d\n)\n", iters);
 }
 
-
 /** @brief Sort comparison */
 static int cmp (const void *a, const void *b) {
     return *(int *) a - *(int *)b;

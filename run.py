@@ -1,11 +1,4 @@
-"""Run and test runtime.
-
-To use local:
-```shell
-python run-py.py --kwargs host=localhost:1883 --bypass-arts True \
-    --host localhost --port 1883 --script=arenatest.py
-```
-"""
+"""Run and test runtime."""
 
 import time
 import numpy as np
@@ -44,9 +37,9 @@ if __name__ == '__main__':
 
     if args.mode == "delete":
         for i in range(10):
-            uuids = create_modules(args, sleep=0.5)
+            uuids = create_modules(args, sleep=args.delay)
             for d in uuids:
-                time.sleep(0.5)
+                time.sleep(args.delay)
                 runtime.delete_module(d)
         runtime.mqtt.loop_forever()
     elif args.mode == "profile_active":
@@ -59,7 +52,8 @@ if __name__ == '__main__':
                     np.random.uniform(size=args.size // 4).astype(np.float32))
                 runtime.mqtt.publish(t, data)
                 runtime.mqtt.loop()
-            time.sleep(1)
+            time.sleep(args.delay)
     elif args.mode == "profile":
-        _ = create_modules(args, sleep=0)
-        runtime.mqtt.loop_forever()
+        create_modules(args, sleep=0)
+    else:
+        print("Unknown mode: {}".format(args.mode))
