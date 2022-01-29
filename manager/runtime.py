@@ -33,7 +33,7 @@ class RuntimeManager:
 
     def __init__(
             self, mqtt_host="arenaxr.org", mqtt_port=8883,
-            path="../runtime/runtime", use_arts=False, **kwargs):
+            path="../runtime", use_arts=False, **kwargs):
 
         with open("mqtt_pwd.txt", 'r') as f:
             passwd = f.read()
