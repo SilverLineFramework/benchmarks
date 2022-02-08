@@ -32,7 +32,8 @@ if __name__ == '__main__':
 
     args, kw = manager.parse()
     runtime = manager.RuntimeManager(
-        mqtt_host=args.host, mqtt_port=args.port, use_arts=args.arts, **kw)
+        mqtt_host=args.host, mqtt_port=args.port, use_arts=args.arts,
+        path=args.runtime_path, **kw)
     input()
 
     if args.mode == "delete":

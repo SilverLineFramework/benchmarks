@@ -15,21 +15,30 @@ class ArgKeyValue(argparse.Action):
             getattr(namespace, self.dest)[key] = value
 
 
-def _create_parser(py=True):
+def _create_parser():
     """Create parser."""
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--type", help="PY or WA", default="PY")
-
-    parser.add_argument("--num", help="Number of copies", type=int, default=1)
+    # Runtime
+    parser.add_argument(
+        "--runtime_path", help="Runtime executable path", default="../runtime")
     parser.add_argument(
         "--kwargs", help="Runtime passthrough args",
         nargs="*", action=ArgKeyValue, default={})
-    parser.add_argument(
-        "--argv", help="Module argv passthrough", default="")
     parser.add_argument("--host", help="MQTT Host", default="arenaxr.org")
     parser.add_argument("--port", help="MQTT Port", default=8883, type=int)
+    parser.add_argument("--dir", help="WASI root", default=".")
+    parser.add_argument("--appdir", help="Application root", default=".")
 
+    # File type
+    parser.add_argument("--type", help="PY or WA", default="PY")
+
+    # Module args
+    parser.add_argument("--num", help="Number of copies", type=int, default=1)
+    parser.add_argument(
+        "--argv", help="Module argv passthrough", default="")
+
+    # ARTS
     parser.add_argument(
         "--arts", help="Use ARTS", dest='arts', action='store_true')
     parser.add_argument(
@@ -37,6 +46,7 @@ def _create_parser(py=True):
         action='store_false')
     parser.set_defaults(arts=False)
 
+    # Test Mode
     parser.add_argument(
         "--mode", help="Testing mode (profile, profile_active, or delete)",
         default="profile")
@@ -46,6 +56,7 @@ def _create_parser(py=True):
     parser.add_argument(
         "--delay", help="Processing delay (seconds)", type=float, default=1.0)
 
+    # Python args
     parser.add_argument(
         "--script", help="Script name", default="pinata.py")
     parser.add_argument(
@@ -53,22 +64,22 @@ def _create_parser(py=True):
     parser.add_argument(
         "--namespace", help="Namespace environment variable",
         default="test")
-
     parser.add_argument(
         "--aot", help="Use AOT python", dest='aot', action='store_true')
     parser.set_defaults(aot=False)
 
+    # WASM args
     parser.add_argument(
         "--path", help="File name", default="helloworld.wasm")
     return parser
 
 
-def parse(py=True):
+def parse():
     """Parse arguments."""
-    args = _create_parser(py=py).parse_args()
+    args = _create_parser().parse_args()
 
     kw = {
-        "dir": ".", "appdir": ".",
+        "dir": args.dir, "appdir": args.appdir,
         "host": "{}:{}".format(args.host, args.port)
     }
     kw.update(args.kwargs)

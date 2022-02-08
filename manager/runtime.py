@@ -77,7 +77,8 @@ class RuntimeManager:
         self.mqtt.publish(self.control_topic, payload)
 
     def create_module_wasm(
-            self, name="module", filename="helloworld.wasm", args=[]):
+            self, name="module",
+            filename="wasm-apps/helloworld.wasm", args=[]):
         """Create WASM module."""
         module_uuid = str(uuid.uuid4())
         self.create_module({
