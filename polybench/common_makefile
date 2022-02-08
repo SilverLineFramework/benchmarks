@@ -1,0 +1,25 @@
+# Standard Makefile for Polybench Tests
+
+WAMR_DIR=$(PWD)/../../../wasm-micro-runtime
+WASI_SDK_PATH=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot
+WAMR_SYMBOLS=${WASI_SDK_PATH}/share/defined-symbols.txt
+
+WASMCC=/opt/wasi-sdk/bin/clang
+
+WASMCFLAGS= -O0 -z
+WASMCFLAGS+= -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
+WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
+WASMCFLAGS+= -Wl,--export=main
+WASMCFLAGS+= -Wl,--export=_start
+WASMCLFAGS+= -Wl,--allow-undefined
+
+.PHONY: all
+all: \
+	out.wasm
+
+.PHONY: clean
+clean:
+	@rm out.wasm
+
+out.wasm: *.c
+	${WASMCC} ${WASMCFLAGS} $^ -o $@

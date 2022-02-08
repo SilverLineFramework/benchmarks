@@ -83,7 +83,7 @@ class RuntimeManager:
         self.create_module({
             "uuid": module_uuid,
             "name": name,
-            "filename": "wasm-out/{}".format(filename),
+            "filename": filename,
             "filetype": "WA",
             "args": [filename] + args,
             "env": [],

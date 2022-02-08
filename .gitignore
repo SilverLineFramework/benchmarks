@@ -4,6 +4,8 @@ wasm-out/
 mqtt_pwd.txt
 data.json
 *.aot
+polybench/*/Makefile
+polybench/*/out.wasm
 
 # Compiled WASM
 *.o
