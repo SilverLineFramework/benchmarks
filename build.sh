@@ -1,5 +1,5 @@
 WASM_APPS="${PWD}/wasm-apps"
-WAMR_DIR="${PWD}/../wasm-micro-runtime"
+WAMR_DIR="${PWD}/wasm-micro-runtime"
 OUT_DIR="${PWD}/wasm-out"
 WAMR_SYMBOLS="wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt"
 

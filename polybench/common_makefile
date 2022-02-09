@@ -1,8 +1,7 @@
 # Standard Makefile for Polybench Tests
 
-WAMR_DIR=$(PWD)/../../../wasm-micro-runtime
-WASI_SDK_PATH=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot
-WAMR_SYMBOLS=${WASI_SDK_PATH}/share/defined-symbols.txt
+WAMR_DIR=$(PWD)/../../wasm-micro-runtime
+WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
 
 WASMCC=/opt/wasi-sdk/bin/clang
 
