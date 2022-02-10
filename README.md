@@ -6,9 +6,23 @@
 
 2. Make sure you have Python 3 and Paho (```pip install paho-mqtt```) installed.
 
-3. Build WASM apps with ```./build.sh```
+3. Compile the WAMR compiler:
+```sh
+git submodule update --init --recursive
+cd wasm-micro-runtime/wamr-compiler
+./build_llvm.sh
+mkdir build && cd build
+cmake ..
+make
+```
 
-4. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
+3. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
+
+4. Build benchmarks:
+
+- ```make```: build wasm programs.
+- ```make aot```: build wasm apps into AOT.
+- ```make rustpython.aot```: compile rustpython. Not included in ```make aot```.
 
 ## Usage
 
@@ -74,9 +88,3 @@ Examples:
 4,5,1,4
 7,8,2,2,7,8,2,2,7
 ```
-
-## Build
-
-- ```make```: build wasm programs.
-- ```make aot```: build wasm apps into AOT.
-- ```make rustpython.aot```: compile rustpython. Not included in ```make aot```.

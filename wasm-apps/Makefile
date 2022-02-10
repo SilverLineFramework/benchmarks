@@ -1,6 +1,6 @@
 OUT_DIR=../wasm-out/apps
 
-WAMR_DIR=$(PWD)/../wasm-micro-runtime
+WAMR_DIR=../wasm-micro-runtime
 WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
 
 WASMCC=/opt/wasi-sdk/bin/clang

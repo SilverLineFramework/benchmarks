@@ -24,7 +24,7 @@ polybench:
 
 aot: $(AOT_OUT)
 
-rustpython.aot: rustpython.aot
+rustpython.aot: rustpython.wasm
 	$(WAMR_COMPILER) -o $(OUT_DIR)/rustpython.aot rustpython.wasm
 
 %.aot: %.wasm
