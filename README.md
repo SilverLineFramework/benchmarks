@@ -74,3 +74,9 @@ Examples:
 4,5,1,4
 7,8,2,2,7,8,2,2,7
 ```
+
+## Build
+
+- ```make```: build wasm programs.
+- ```make aot```: build wasm apps into AOT.
+- ```make rustpython.aot```: compile rustpython. Not included in ```make aot```.
