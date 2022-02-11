@@ -57,14 +57,16 @@ with open("mqtt_pwd.txt") as f:
 client = mqtt.Client("benchmark_client")
 client.username_pw_set("cli", mqtt_pwd)
 client.tls_set(cert_reqs=ssl.CERT_NONE)
+client.connect("localhost", 1883, 60)
 
 for pb in polybench:
     print("Running: {}".format(pb))
 
     for k, v in runtimes.items():
         print("Running: {} [{}]".format(k, v))
-        
         filename = "wasm-out/polybench/{}.wasm".format(pb)
-        client.publish("realm/proc/control", create_message(filename, pb, v))
+        msg = create_message(filename, pb, v)
+        print(msg)
+        client.publish("realm/proc/control", msg)
 
     input()
