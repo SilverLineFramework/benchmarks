@@ -51,13 +51,22 @@ print("Runtimes:")
 print(runtimes)
 
 
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected!")
+    else:
+        print("Failed to connect, rc={}".format(rc))
+
+
 with open("mqtt_pwd.txt") as f:
     mqtt_pwd = f.read()
 
 client = mqtt.Client("benchmark_client")
 client.username_pw_set("cli", mqtt_pwd)
-client.tls_set(cert_reqs=ssl.CERT_NONE)
+client.on_connect = on_connect
 client.connect("localhost", 1883, 60)
+
+client.loop_start()
 
 for pb in polybench:
     print("Running: {}".format(pb))
@@ -70,3 +79,5 @@ for pb in polybench:
         client.publish("realm/proc/control", msg)
 
     input()
+
+client.loop_stop()
