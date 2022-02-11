@@ -1,11 +1,11 @@
 # Project-specific files
 runtime.sh
+run.sh
 wasm-out/
 mqtt_pwd.txt
 data.json
 *.aot
-polybench/*/Makefile
-polybench/*/out.wasm
+*.zip
 
 # Compiled WASM
 *.o
