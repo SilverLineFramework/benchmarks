@@ -3,8 +3,9 @@
 import requests
 import json
 import uuid
-import ssl
 import paho.mqtt.client as mqtt
+from tqdm import tqdm
+import time
 
 
 def get_runtimes(server="localhost:8000"):
@@ -68,16 +69,25 @@ client.connect("localhost", 1883, 60)
 
 client.loop_start()
 
-for pb in polybench:
-    print("Running: {}".format(pb))
+time.sleep(1)
 
-    for k, v in runtimes.items():
-        print("Running: {} [{}]".format(k, v))
-        filename = "wasm-out/polybench/{}.wasm".format(pb)
-        msg = create_message(filename, pb, v)
-        print(msg)
-        client.publish("realm/proc/control", msg)
+print("Starting benchmarks...")
 
-    input()
+for i in range(100):
+    print("Round {}:".format(i))
+
+    for pb in tqdm(polybench):
+        print("Running: {}".format(pb))
+
+        for k, v in runtimes.items():
+            print("Running: {} [{}]".format(k, v))
+            filename = "wasm-out/polybench/{}.wasm".format(pb)
+            msg = create_message(filename, pb, v)
+            print(msg)
+            client.publish("realm/proc/control", msg)
+
+        time.sleep(1)
 
 client.loop_stop()
+
+print("Benchmarks done.")
