@@ -77,13 +77,13 @@ for i in range(100):
     print("Round {}:".format(i))
 
     for pb in tqdm(polybench):
-        print("Running: {}".format(pb))
+        # print("Running: {}".format(pb))
 
         for k, v in runtimes.items():
-            print("Running: {} [{}]".format(k, v))
+            # print("Running: {} [{}]".format(k, v))
             filename = "wasm-out/polybench/{}.wasm".format(pb)
             msg = create_message(filename, pb, v)
-            print(msg)
+            # print(msg)
             client.publish("realm/proc/control", msg)
 
         time.sleep(1)
