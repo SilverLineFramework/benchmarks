@@ -19,8 +19,9 @@ WASMCFLAGS+= -Wl,--export=_start
 WASMCFLAGS+= -Wl,--allow-undefined
 
 # Folders must start with pb_; pulls all .c files in that directory.
-BENCHMARKS := $(shell find -maxdepth 1 -name "pb_*" -printf "%f\n")
-WASM := $(addsuffix .wasm, $(BENCHMARKS))
+BENCHMARKS := $(shell ls benchmarks/*.c)
+WASM := $(BENCHMARKS:.c=.wasm)
+COMMON= polybench.c runtime.c
 
 .PHONY: all clean dir
 
@@ -32,5 +33,5 @@ clean:
 dir:
 	mkdir -p $(OUT_DIR)
 
-$(WASM):
-	${WASMCC} ${WASMCFLAGS} $(shell ls ./$(basename $@)/*.c) -o $(OUT_DIR)/$@
+$(WASM): %.wasm : %.c
+	${WASMCC} ${WASMCFLAGS} ${COMMON} $^ -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
