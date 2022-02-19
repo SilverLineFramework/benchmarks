@@ -45,7 +45,7 @@ if __name__ == '__main__':
         runtime.mqtt.loop_forever()
     elif args.mode == "profile_active":
         uuids = create_modules(args, sleep=0)
-        topics = ["ch/in/{}".format(u) for u in uuids]
+        topics = ["benchmark/in/{}".format(u) for u in uuids]
         print("[Data] topics: ", topics)
         while True:
             for t in topics:

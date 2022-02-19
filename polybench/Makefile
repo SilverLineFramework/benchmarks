@@ -21,7 +21,7 @@ WASMCFLAGS+= -Wl,--allow-undefined
 # Folders must start with pb_; pulls all .c files in that directory.
 BENCHMARKS := $(shell ls benchmarks/*.c)
 WASM := $(BENCHMARKS:.c=.wasm)
-COMMON= polybench.c runtime.c
+COMMON= polybench.c runtime.c dp.c
 
 .PHONY: all clean dir
 
