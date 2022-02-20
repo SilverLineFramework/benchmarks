@@ -3,7 +3,7 @@
 #
 
 # Output
-OUT_DIR=../wasm-out/polybench
+OUT_DIR=../wasm/polybench
 
 # WAMR Setup
 WAMR_DIR=../wasm-micro-runtime

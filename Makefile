@@ -1,31 +1,40 @@
 WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
-OUT_DIR=./wasm-out
+OUT_DIR=./wasm
+AOT_DIR=./aot
 
-AOT_SRCS:=$(shell find wasm-out -name "*.wasm")
+AOT_SRCS:=$(shell find wasm -name "*.wasm")
+AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
-.PHONY: all clean dir
+# Clean
+clean: clean.aot clean.wasm
 
-all: dir wasm-apps polybench
+clean.aot:
+	rm -rf $(AOT_DIR)
 
-clean:
-	rm -r $(OUT_DIR)
+clean.wasm:
+	rm -rf $(OUT_DIR)
 
-dir:
+# WASM: goes in ./wasm folder; also copy rustpython.wasm
+wasm: dir.wasm wasm-apps polybench
+
+dir.wasm:
 	mkdir -p $(OUT_DIR)
+	cp rustpython.wasm $(OUT_DIR)
 
-.PHONY: wasm-apps
+.PHONY: wasm-apps polybench
 wasm-apps:
 	make -C wasm-apps
 
-.PHONY: polybench
 polybench:
 	make -C polybench
 
-aot: $(AOT_OUT)
+# AOT: goes in ./aot folder.
+aot: dir.aot $(AOT_OUT)
 
-rustpython.aot: rustpython.wasm
-	$(WAMR_COMPILER) -o $(OUT_DIR)/rustpython.aot rustpython.wasm
+dir.aot:
+	mkdir -p $(AOT_DIR)
 
-%.aot: %.wasm
-	$(WAMR_COMPILER) -o $@ $^
+$(AOT_OUT): %.aot: wasm/%.wasm
+	mkdir -p $(dir aot/$@)
+	$(WAMR_COMPILER) -o aot/$@ $^

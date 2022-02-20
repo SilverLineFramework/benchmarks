@@ -50,20 +50,23 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     while (1) {
         int res = ch_poll(poll_chs, 1, 5000);
         if (res > 0) {
+            // Read to exhaustion
             char read_buf[1024];
             int bytes_read = 1;
             while (bytes_read > 0) {
                 bytes_read = ch_read_msg(data_in, read_buf, 1024);
             }
-            
+            // Super janky exit condition
+            if (!strncmp(read_buf, "exit", 4)) { break; }
+
             func(argc, argv);
 
+            // Write random data
             int size = dp_draw(&dp);
             char *buf = generate_output_data(size);
             ch_write_msg(data_out, buf, size);
             free(buf);
         }
     }
-
     return 0;
 }

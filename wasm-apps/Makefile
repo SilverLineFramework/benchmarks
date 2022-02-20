@@ -1,4 +1,4 @@
-OUT_DIR=../wasm-out/apps
+OUT_DIR=../wasm/apps
 
 WAMR_DIR=../wasm-micro-runtime
 WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt

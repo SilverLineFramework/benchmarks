@@ -1,11 +1,12 @@
 """Runtime benchmark manager."""
 
-from .runtime import RuntimeManager
 from .args import parse
+from .arts import ARTSInterface
+from .dp import DirichletProcess
 
 
 __all__ = [
-    "MQTTClient",
-    "RuntimeManager",
+    "ARTSInterface",
+    "DirichletProcess",
     "parse"
 ]

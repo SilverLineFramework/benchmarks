@@ -1,60 +1,47 @@
 """Run and test runtime."""
 
-import time
 import numpy as np
-
+import time
 import manager
 
 
-def _create_module(args):
-    """Create single module, calling different methods for PY and WA."""
+def create_module(args, arts):
+    """Create module, calling different methods for PY and WA."""
+    try:
+        runtime = arts.get_runtimes()[args.runtime]
+    except KeyError as e:
+        print("Runtime not found: {}".format(args.runtime))
+        raise e
+
+    argv = args.argv.split(',')
     if args.type == 'PY':
-        return runtime.create_module_py(
-            filename=args.script, aot=args.aot, name=args.script,
-            scene=args.scene, namespace=args.namespace,
-            argv=args.argv.split(","))
+        return arts.create_module_py(
+            runtime, name="test", aot=args.aot, path=args.path,
+            argv=argv, scene=args.scene, namespace=args.namespace)
     else:
-        return runtime.create_module_wasm(
-            filename=args.path, name=args.path, args=args.argv.split(","))
-
-
-def create_modules(args, sleep=0):
-    """Create modules from args and return UUIDs."""
-    uuids = []
-    for _ in range(args.num):
-        if sleep > 0:
-            time.sleep(sleep)
-        uuids.append(_create_module(args))
-    return uuids
+        return arts.create_module_wasm(
+            runtime, name="test", path=args.path, argv=argv)
 
 
 if __name__ == '__main__':
 
-    args, kw = manager.parse()
-    runtime = manager.RuntimeManager(
-        mqtt_host=args.host, mqtt_port=args.port, use_arts=args.arts,
-        path=args.runtime_path, **kw)
-    input()
+    args = manager.parse()
+    arts = manager.ARTSInterface(host=args.host, port=args.port)
 
-    if args.mode == "delete":
-        for i in range(10):
-            uuids = create_modules(args, sleep=args.delay)
-            for d in uuids:
-                time.sleep(args.delay)
-                runtime.delete_module(d)
-        runtime.mqtt.loop_forever()
-    elif args.mode == "profile_active":
-        uuids = create_modules(args, sleep=0)
-        topics = ["benchmark/in/{}".format(u) for u in uuids]
-        print("[Data] topics: ", topics)
-        while True:
-            for t in topics:
-                data = bytes(
-                    np.random.uniform(size=args.size // 4).astype(np.float32))
-                runtime.mqtt.publish(t, data)
-                runtime.mqtt.loop()
-            time.sleep(args.delay)
-    elif args.mode == "profile":
-        create_modules(args, sleep=0)
-    else:
-        print("Unknown mode: {}".format(args.mode))
+    mod = create_module(args, arts)
+
+    if args.active:
+        time.sleep(1)
+
+        arts.subscribe("benchmark/out/{}".format(mod))
+        dp = manager.DirichletProcess(
+            lambda: np.random.geometric(1 / args.mean_size))
+
+        def trigger(mqttc, obj, msg):
+            print("Received")
+            arts.publish("benchmark/in/{}".format(mod))
+
+        arts.on_message = trigger
+        trigger(None, None, None)
+
+        arts.loop_forever()

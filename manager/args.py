@@ -3,62 +3,22 @@
 import argparse
 
 
-class ArgKeyValue(argparse.Action):
-    """Argparse class for key-value pairs."""
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        """Call override."""
-        setattr(namespace, self.dest, dict())
-
-        for value in values:
-            key, value = value.split('=')
-            getattr(namespace, self.dest)[key] = value
-
-
-def _create_parser():
-    """Create parser."""
+def parse():
+    """Arguments for benchmark spawning."""
     parser = argparse.ArgumentParser()
 
-    # Runtime
-    parser.add_argument(
-        "--runtime_path", help="Runtime executable path", default="../runtime")
-    parser.add_argument(
-        "--kwargs", help="Runtime passthrough args",
-        nargs="*", action=ArgKeyValue, default={})
-    parser.add_argument("--host", help="MQTT Host", default="arenaxr.org")
-    parser.add_argument("--port", help="MQTT Port", default=8883, type=int)
-    parser.add_argument("--dir", help="WASI root", default=".")
-    parser.add_argument("--appdir", help="Application root", default=".")
+    # MQTT
+    parser.add_argument("--host", help="MQTT host", default="localhost")
+    parser.add_argument("--port", help="MQTT port", default=1883, type=int)
 
-    # File type
+    # Target
     parser.add_argument("--type", help="PY or WA", default="PY")
+    parser.add_argument(
+        "--path", help="File name", default="wasm/apps/helloworld.wasm")
+    parser.add_argument("--argv", help="Module argv passthrough", default="")
+    parser.add_argument("--runtime", help="Target name", default="test")
 
-    # Module args
-    parser.add_argument("--num", help="Number of copies", type=int, default=1)
-    parser.add_argument(
-        "--argv", help="Module argv passthrough", default="")
-
-    # ARTS
-    parser.add_argument(
-        "--arts", help="Use ARTS", dest='arts', action='store_true')
-    parser.add_argument(
-        "--no-arts", help="Skip ARTS and manually schedule", dest='arts',
-        action='store_false')
-    parser.set_defaults(arts=False)
-
-    # Test Mode
-    parser.add_argument(
-        "--mode", help="Testing mode (profile, profile_active, or delete)",
-        default="profile")
-    parser.add_argument(
-        "--size", help="Array size (bytes) for active profiling",
-        default=4096, type=int)
-    parser.add_argument(
-        "--delay", help="Processing delay (seconds)", type=float, default=1.0)
-
-    # Python args
-    parser.add_argument(
-        "--script", help="Script name", default="pinata.py")
+    # Python only args
     parser.add_argument(
         "--scene", help="Scene environment variable", default="test")
     parser.add_argument(
@@ -68,20 +28,13 @@ def _create_parser():
         "--aot", help="Use AOT python", dest='aot', action='store_true')
     parser.set_defaults(aot=False)
 
-    # WASM args
+    # Profiling
     parser.add_argument(
-        "--path", help="File name", default="helloworld.wasm")
-    return parser
+        "--active", help="Use active profiling", dest='active',
+        action='store_true')
+    parser.set_defaults(active=False)
+    parser.add_argument(
+        "--mean_size", default=1000, type=float,
+        help="Prior mean message size (used as input to dirichlet process)")
 
-
-def parse():
-    """Parse arguments."""
-    args = _create_parser().parse_args()
-
-    kw = {
-        "dir": args.dir, "appdir": args.appdir,
-        "host": "{}:{}".format(args.host, args.port)
-    }
-    kw.update(args.kwargs)
-
-    return args, kw
+    return parser.parse_args()
