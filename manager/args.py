@@ -14,7 +14,7 @@ def parse():
     # Target
     parser.add_argument("--type", help="PY or WA", default="PY")
     parser.add_argument(
-        "--path", help="File name", default="wasm/apps/helloworld.wasm")
+        "--path", help="File name", default="wasm/test/helloworld.wasm")
     parser.add_argument("--argv", help="Module argv passthrough", default="")
     parser.add_argument("--runtime", help="Target name", default="test")
 
@@ -36,5 +36,13 @@ def parse():
     parser.add_argument(
         "--mean_size", default=1000, type=float,
         help="Prior mean message size (used as input to dirichlet process)")
+    parser.add_argument(
+        "--alpha", default=1, type=float,
+        help="Dirichlet Process 'new table' parameter alpha.")
+    parser.add_argument(
+        "--n", default=100, type=int,
+        help="Number of iterations to test")
+    parser.add_argument(
+        "--delay", default=0.1, type=float, help="Delay between iterations")
 
     return parser.parse_args()

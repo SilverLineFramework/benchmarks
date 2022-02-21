@@ -1,47 +1,74 @@
 """Run and test runtime."""
 
 import numpy as np
+from tqdm import tqdm
 import time
 import manager
+import threading
 
 
-def create_module(args, arts):
-    """Create module, calling different methods for PY and WA."""
-    try:
-        runtime = arts.get_runtimes()[args.runtime]
-    except KeyError as e:
-        print("Runtime not found: {}".format(args.runtime))
-        raise e
-
-    argv = args.argv.split(',')
+def _create_module(args, arts, rt, argv):
     if args.type == 'PY':
         return arts.create_module_py(
-            runtime, name="test", aot=args.aot, path=args.path,
+            rt, name="test", aot=args.aot, path=args.path,
             argv=argv, scene=args.scene, namespace=args.namespace)
     else:
         return arts.create_module_wasm(
-            runtime, name="test", path=args.path, argv=argv)
+            rt, name="test", path=args.path, argv=argv)
+
+
+def _get_runtime(rt_list, rt):
+    try:
+        return rt_list[rt]
+    except KeyError:
+        raise ValueError("Runtime not found: {}".format(rt))
+
+
+def create_modules(args, arts):
+    """Create module, calling different methods for PY and WA.
+
+    If args.runtime is a comma-separated list, creates multiple modules.
+    """
+    rt_list = arts.get_runtimes()
+    argv = args.argv.split(',')
+
+    return {
+        rt: _create_module(args, arts, _get_runtime(rt_list, rt), argv)
+        for rt in args.runtime.split(",")
+    }
 
 
 if __name__ == '__main__':
 
     args = manager.parse()
-    arts = manager.ARTSInterface(host=args.host, port=args.port)
+    arts = manager.ARTSInterface(
+        host=args.host, port=args.port, semaphore=threading.Semaphore())
+    arts.loop_start()
+    arts.semaphore.acquire()
 
-    mod = create_module(args, arts)
+    modules = create_modules(args, arts)
 
     if args.active:
-        time.sleep(1)
 
-        arts.subscribe("benchmark/out/{}".format(mod))
-        dp = manager.DirichletProcess(
-            lambda: np.random.geometric(1 / args.mean_size))
+        print("[Profiling] Beginning active profiling for {} runtimes.".format(
+            len(modules)))
 
-        def trigger(mqttc, obj, msg):
-            print("Received")
-            arts.publish("benchmark/in/{}".format(mod))
+        pbar_global = tqdm(total=len(modules), position=0, desc="Completed")
 
-        arts.on_message = trigger
-        trigger(None, None, None)
+        profilers = [
+            manager.ActiveProfiler(
+                manager.DirichletProcess(
+                    lambda: np.random.geometric(1 / args.mean_size),
+                    alpha=args.alpha),
+                arts, mod, n=args.n, delay=args.delay, pbar=i + 1,
+                desc=name, semaphore=threading.Semaphore(),
+                pbar_global=pbar_global)
+            for i, (name, mod) in enumerate(modules.items())
+        ]
 
-        arts.loop_forever()
+        # Join on all "threads"; can't use thread.join() since MQTT is not
+        # guaranteed to actually have real threads for each callback
+        for p in profilers:
+            p.semaphore.acquire()
+
+    arts.loop_stop()

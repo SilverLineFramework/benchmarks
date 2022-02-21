@@ -29,13 +29,27 @@ void init_channels(int *in, int *out) {
     free(ch_out);
 }
 
-/** Generate random output buffer. */
-char *generate_output_data(int size) {
+/** Exhaust input data */
+int handle_input(int data_in) {
+    // Read to exhaustion
+    char read_buf[1024];
+    int bytes_read = 1;
+    while (bytes_read > 0) {
+        bytes_read = ch_read_msg(data_in, read_buf, 1024);
+    }
+    // Super janky exit condition
+    return strncmp(read_buf, "exit", 4);
+}
+
+/** Write random output data */
+void handle_output(int data_out, dp_t *dp) {
+    int size = dp_draw(dp);
     char *buf = malloc(size);
     for (int i = 0; i < size / 4; i++) {
         ((int *) buf)[i] = rand();
     }
-    return buf;
+    ch_write_msg(data_out, buf, size);
+    free(buf);
 }
 
 /** Loop function; should be called into by main */
@@ -46,26 +60,16 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     int data_in, data_out;
     init_channels(&data_in, &data_out);
 
+    // Start with data out to act as a ready signal
+    handle_output(data_out, &dp);
+
     int poll_chs[] = {data_in};
     while (1) {
         int res = ch_poll(poll_chs, 1, 5000);
         if (res > 0) {
-            // Read to exhaustion
-            char read_buf[1024];
-            int bytes_read = 1;
-            while (bytes_read > 0) {
-                bytes_read = ch_read_msg(data_in, read_buf, 1024);
-            }
-            // Super janky exit condition
-            if (!strncmp(read_buf, "exit", 4)) { break; }
-
+            if (!handle_input(data_in)) { break;}
             func(argc, argv);
-
-            // Write random data
-            int size = dp_draw(&dp);
-            char *buf = generate_output_data(size);
-            ch_write_msg(data_out, buf, size);
-            free(buf);
+            handle_output(data_out, &dp);
         }
     }
     return 0;

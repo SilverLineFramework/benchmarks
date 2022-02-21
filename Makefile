@@ -6,15 +6,6 @@ AOT_SRCS:=$(shell find wasm -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
-# Clean
-clean: clean.aot clean.wasm
-
-clean.aot:
-	rm -rf $(AOT_DIR)
-
-clean.wasm:
-	rm -rf $(OUT_DIR)
-
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir.wasm tests polybench
 
@@ -37,3 +28,12 @@ dir.aot:
 $(AOT_OUT): %.aot: wasm/%.wasm
 	mkdir -p $(dir aot/$@)
 	$(WAMR_COMPILER) -o aot/$@ $^
+
+# Clean
+clean: clean.aot clean.wasm
+
+clean.aot:
+	rm -rf $(AOT_DIR)
+
+clean.wasm:
+	rm -rf $(OUT_DIR)

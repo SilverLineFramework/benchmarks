@@ -1,0 +1,76 @@
+"""Active Profiler."""
+
+from tqdm import tqdm
+import time
+
+from .dp import DirichletProcess
+
+
+class ActiveProfiler:
+    """Active profiler.
+
+    Parameters
+    ----------
+    data : callable
+        Generator for random input data.
+    client : paho.mqtt.client
+        Mqtt client interface.
+    module : str
+        Module UUID to interact with.
+
+    Keyword Args
+    ------------
+    n : int
+        Number of periods to run.
+    delay : float
+        Delay in seconds between periods.
+    pbar : int
+        If >=0, prints a progress bar at this position.
+    desc : str
+        Runtime name (displayed in progress bar).
+    semaphore : threading.Semaphore
+        If not None, notifies after completion.
+    pbar_global : tqdm.tqdm
+        Global progress bar to update after completion.
+    """
+
+    def __init__(
+            self, data, client, module, n=100, delay=0.1, pbar=-1, desc='rt',
+            semaphore=None, pbar_global=None):
+
+        self.data = data
+        self.client = client
+
+        self.idx = 0
+        self.n = n
+        self.delay = delay
+        self.topic = "benchmark/in/{}".format(module)
+        self.semaphore = semaphore
+        self.pbar_global = pbar_global
+
+        self.client.register_callback(
+            "benchmark/out/{}".format(module), self.callback)
+
+        if pbar >= 0:
+            self.pbar = tqdm(total=n, position=pbar, desc=desc)
+        else:
+            self.pbar = None
+
+        if self.semaphore:
+            self.semaphore.acquire()
+
+    def callback(self, _):
+        """Callback for triggering the next period."""
+        if self.pbar:
+            self.pbar.update(1)
+        self.idx += 1
+
+        if self.idx >= self.n:
+            self.client.publish(self.topic, b"exit")
+            if self.pbar_global is not None:
+                self.pbar_global.update(1)
+            if self.semaphore:
+                self.semaphore.release()
+        else:
+            time.sleep(self.delay)
+            self.client.publish(self.topic, self.data.random_buffer())

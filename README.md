@@ -2,89 +2,75 @@
 
 ## Setup
 
-1. This module should be a submodule in the runtime directory, and initialized as part of the runtime setup.
+1. Install dependencies:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-2. Make sure you have Python 3 and Paho (```pip install paho-mqtt```) installed.
-
-3. Compile the WAMR compiler:
-```sh
-git submodule update --init --recursive
-cd wasm-micro-runtime/wamr-compiler
-./build_llvm.sh
-mkdir build && cd build
-cmake ..
-make
-```
+2. Compile the WAMR compiler:
+    ```sh
+    git submodule update --init --recursive
+    cd wasm-micro-runtime/wamr-compiler
+    ./build_llvm.sh
+    mkdir build && cd build
+    cmake ..
+    make
+    ```
 
 3. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
 
+    **NOTE**: if the MQTT server is unsecured, you should ```touch mqtt_pwd.txt```.
+
 4. Build benchmarks:
 
-- ```make```: build wasm programs.
-- ```make aot```: build wasm apps into AOT.
-- ```make rustpython.aot```: compile rustpython. Not included in ```make aot```.
+    - ```make```, ```make wasm```: build wasm programs; saved in ```./wasm```.
+    - ```make aot```: build wasm apps into AOT; saved in ```./aot```.
+    - ```make clean```: remove ```./wasm``` and ```./aot```.
 
 ## Usage
 
-1. The ```run.py``` manager script will generate a ```runtime.sh``` script which contains the relevant arguments needed to start the runtime (with known UUID, with the correct MQTT host/port, etc). ```run.py``` will then wait for input.
+1. Start the runtime using a known name. For example, if ```arena-runtime-linux``` is set up in the same directory as ```runtime-benchmarks``` with local ARTS and MQTT, you can use the following command:
 
-2. Run the ```runtime.sh``` script (```chmod +x runtime.sh``` on the first time it is generated, or if it is deleted and regenerated). This starts the runtime with the specified options.
+    ```sh
+    ../arena-runtime-linux/runtime --host=localhost:1883 --name=test --dir=. --appdir=.
+    ``` 
 
-3. Press enter on the manager script terminal to send the ```CREATE_MODULE``` message. If ```--num``` is specified ```>1```, press enter multiple times to spawn ```num``` modules.
-
-Depending on the ```--mode```, the following will happen:
-- ```profile```: after creating the module(s), the manager script will exit. Profile data will be collected by the runtime.
-- ```profile_active```: after creating the module(s), the manager script will send random ```float32``` arrays to ```ch/in/[module_uuid]``` every ```--delay``` seconds.
-- ```delete```: ```--num``` modules will be created, then deleted with delay ```--delay``` seconds; this is repeated 10 times.
+2. Run the ```run.py``` script, for example:
+    ```sh
+    python run.py --type WA --path wasm/test/helloworld.wasm --runtime=test
+    ```
 
 ## Available Options
 
 ```
-usage: run.py [-h] [--type TYPE] [--num NUM] [--kwargs [KWARGS ...]] [--argv ARGV] [--host HOST] [--port PORT]
-              [--arts] [--no-arts] [--mode MODE] [--size SIZE] [--delay DELAY] [--script SCRIPT] [--scene SCENE]
-              [--namespace NAMESPACE] [--aot] [--path PATH]
+usage: run.py [-h] [--host HOST] [--port PORT] [--type TYPE] [--path PATH] [--argv ARGV] [--runtime RUNTIME] [--scene SCENE] [--namespace NAMESPACE]
+              [--aot] [--active] [--mean_size MEAN_SIZE] [--alpha ALPHA] [--n N] [--delay DELAY]
 
 optional arguments:
   -h, --help            show this help message and exit
+  --host HOST           MQTT host
+  --port PORT           MQTT port
   --type TYPE           PY or WA
-  --num NUM             Number of copies
-  --kwargs [KWARGS ...]
-                        Runtime passthrough args
+  --path PATH           File name
   --argv ARGV           Module argv passthrough
-  --host HOST           MQTT Host
-  --port PORT           MQTT Port
-  --arts                Use ARTS
-  --no-arts             Skip ARTS and manually schedule
-  --mode MODE           Testing mode (profile, profile_active, or delete)
-  --size SIZE           Array size (bytes) for active profiling
-  --delay DELAY         Processing delay (seconds)
-  --script SCRIPT       Script name
+  --runtime RUNTIME     Target name
   --scene SCENE         Scene environment variable
   --namespace NAMESPACE
                         Namespace environment variable
   --aot                 Use AOT python
-  --path PATH           File name
+  --active              Use active profiling
+  --mean_size MEAN_SIZE
+                        Prior mean message size (used as input to dirichlet process)
+  --alpha ALPHA         Dirichlet Process 'new table' parameter alpha.
+  --n N                 Number of iterations to test
+  --delay DELAY         Delay between iterations
 ```
 
-## Benchmark
+Additional notes:
+- ```runtime``` should correspond to the name of the runtime, not the UUID. This can also be a comma-separated list of names; in that case, the module specified will be created on all runtimes listed.
+- Active profiling uses a dirichlet process with parameter ```alpha``` and prior ```geometric(1 / mean_size)``` for input message sizes.
 
-Options for the ```benchmark.wasm``` test suite:
+## Benchmarks
 
-| Index | Type | Name | Size | Complexity |
-| --- | --- | --- | --- | --- |
-| 0 | debug | identity | n | n |
-| 1 | debug | not | n | n |
-| 2 | scale | concat | 2n | n |
-| 3 | sort | bubble_sort | n | n^2 |
-| 4 | sort | quicksort | n | n log(n) |
-| 5 | float | correlation | (n/10)^2 | n |
-| 6 | float | 2mm | n/3 | n^(3/2) |
-| 7 | float | 3mm | n/4 | n^(3/2) |
-| 8 | float | cholesky | n | n^(3/2)
-
-Examples:
-```
-7,8,5,4
-4,5,1,4
-7,8,2,2,7,8,2,2,7
-```
+- ```tests```: Tests for basic functionality. Currently unmaintained.
+- ```polybench```: Polybench wrapped in distributed runtime interfaces; simulates output data using a dirichlet process ```alpha=1``` with ```geometric(0.001)``` prior.

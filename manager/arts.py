@@ -15,15 +15,20 @@ class ARTSInterface(mqtt.Client):
         MQTT host server address.
     port : int
         MQTT host server port.
+    semaphore : threading.Semaphore
+        Notification on connection.
     """
 
-    def __init__(self, host="localhost", port=1883):
+    def __init__(self, host="localhost", port=1883, semaphore=None):
 
         with open("mqtt_pwd.txt", 'r') as f:
             passwd = f.read()
         user = "cli"
 
+        self.callbacks = {}
         self.host = host
+        self.semaphore = semaphore
+        self.semaphore.acquire()
 
         super().__init__("Benchmarking")
         self.username_pw_set(user, passwd)
@@ -31,7 +36,9 @@ class ARTSInterface(mqtt.Client):
 
     def on_connect(self, mqttc, obj, flags, rc):
         """On connect callback."""
-        print("[Client] Connected: rc={}".format(rc))
+        print("[Setup] Connected: rc={}".format(rc))
+        if self.semaphore is not None:
+            self.semaphore.release()
 
     def _create_module(self, data, target):
         """Create Module helper function."""
@@ -45,8 +52,7 @@ class ARTSInterface(mqtt.Client):
                 **data
             }
         })
-        print("[Runtime] Creating module on topic {}:\n{}".format(
-            "realm/proc/control", payload))
+        print("[ARTS] Creating module:\n{}".format(payload))
         self.publish("realm/proc/control", payload)
 
     def create_module_wasm(
@@ -92,8 +98,21 @@ class ARTSInterface(mqtt.Client):
             "type": "arts_req",
             "data": {"type": "module", "uuid": target}
         }
-        print("[Runtime] Deleting module: {}".format(target))
+        print("[ARTS] Deleting module: {}".format(target))
         self.mqtt.publish(self.control_topic, json.dumps(msg))
+
+    def register_callback(self, topic, callback):
+        """Subscribe to topic and register callback for that topic."""
+        self.subscribe(topic)
+        self.callbacks[topic] = callback
+
+    def on_message(self, client, userdata, message):
+        """Subscribed message handler."""
+        topic = str(message.topic)
+        try:
+            self.callbacks[topic](message.payload)
+        except KeyError:
+            print("[Warning] topic without handler: {}".format(topic))
 
     def get_runtimes(self):
         """Get runtimes from REST API."""
