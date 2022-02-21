@@ -50,6 +50,8 @@ def profiling_round(args, arts, path):
     # guaranteed to actually have real threads for each callback
     for p in profilers:
         p.semaphore.acquire()
+    for p in profilers:
+        p.pbar.close()
 
 
 if __name__ == '__main__':
@@ -57,7 +59,8 @@ if __name__ == '__main__':
     args = manager.parse()
     arts = manager.ARTSInterface(host=args.host, port=args.port)
 
-    tqdm.write("[Profiling] Runtimes: {}".format(args.runtime))
+    tqdm.write("[Profiling] {} Runtimes: {}".format(
+        len(args.runtime), " ".join(args.runtime)))
 
     if args.active:
         for i, path in enumerate(args.path):

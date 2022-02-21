@@ -3,8 +3,6 @@
 from tqdm import tqdm
 import time
 
-from .dp import DirichletProcess
-
 
 class ActiveProfiler:
     """Active profiler.
@@ -64,8 +62,6 @@ class ActiveProfiler:
 
         if self.idx >= self.n:
             self.client.publish(self.topic, b"exit")
-            if self.pbar:
-                self.pbar.close()
             if self.semaphore:
                 self.semaphore.release()
         else:
