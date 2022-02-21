@@ -14,9 +14,12 @@ def parse():
     # Target
     parser.add_argument("--type", help="PY or WA", default="PY")
     parser.add_argument(
-        "--path", help="File name", default="wasm/test/helloworld.wasm")
-    parser.add_argument("--argv", help="Module argv passthrough", default="")
-    parser.add_argument("--runtime", help="Target name", default="test")
+        "--path", nargs="+", help="File path(s) to execute",
+        default=["wasm/test/helloworld.wasm"])
+    parser.add_argument(
+        "--argv", nargs="+", help="Module argv passthrough", default=[])
+    parser.add_argument(
+        "--runtime", nargs='+', help="Target runtimes", default=["test"])
 
     # Python only args
     parser.add_argument(

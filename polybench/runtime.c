@@ -52,10 +52,27 @@ void handle_output(int data_out, dp_t *dp) {
     free(buf);
 }
 
+/** Hash function: djb2 (http://www.cse.yorku.ca/~oz/hash.html) */
+unsigned long hash(char *str) {
+    unsigned long hash = 5381;
+    int c;
+
+    while ((c = *str++)) {
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    }
+    return hash;
+}
+
 /** Loop function; should be called into by main */
 int loop(int argc, char **argv, int (*func)(int, char **)) {
+
+    if (argc < 1) {
+        printf("argc should be at least 1!\n");
+        exit(-1);
+    }
+
     dp_t dp;
-    dp_init(&dp);
+    dp_init(&dp, hash(argv[0]));
 
     int data_in, data_out;
     init_channels(&data_in, &data_out);

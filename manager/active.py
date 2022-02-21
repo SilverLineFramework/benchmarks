@@ -30,13 +30,11 @@ class ActiveProfiler:
         Runtime name (displayed in progress bar).
     semaphore : threading.Semaphore
         If not None, notifies after completion.
-    pbar_global : tqdm.tqdm
-        Global progress bar to update after completion.
     """
 
     def __init__(
             self, data, client, module, n=100, delay=0.1, pbar=-1, desc='rt',
-            semaphore=None, pbar_global=None):
+            semaphore=None):
 
         self.data = data
         self.client = client
@@ -46,7 +44,6 @@ class ActiveProfiler:
         self.delay = delay
         self.topic = "benchmark/in/{}".format(module)
         self.semaphore = semaphore
-        self.pbar_global = pbar_global
 
         self.client.register_callback(
             "benchmark/out/{}".format(module), self.callback)
@@ -67,8 +64,8 @@ class ActiveProfiler:
 
         if self.idx >= self.n:
             self.client.publish(self.topic, b"exit")
-            if self.pbar_global is not None:
-                self.pbar_global.update(1)
+            if self.pbar:
+                self.pbar.close()
             if self.semaphore:
                 self.semaphore.release()
         else:

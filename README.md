@@ -43,7 +43,7 @@
 ## Available Options
 
 ```
-usage: run.py [-h] [--host HOST] [--port PORT] [--type TYPE] [--path PATH] [--argv ARGV] [--runtime RUNTIME] [--scene SCENE] [--namespace NAMESPACE]
+usage: run.py [-h] [--host HOST] [--port PORT] [--type TYPE] [--path PATH [PATH ...]] [--argv ARGV [ARGV ...]] [--runtime RUNTIME [RUNTIME ...]] [--scene SCENE] [--namespace NAMESPACE]
               [--aot] [--active] [--mean_size MEAN_SIZE] [--alpha ALPHA] [--n N] [--delay DELAY]
 
 optional arguments:
@@ -51,9 +51,12 @@ optional arguments:
   --host HOST           MQTT host
   --port PORT           MQTT port
   --type TYPE           PY or WA
-  --path PATH           File name
-  --argv ARGV           Module argv passthrough
-  --runtime RUNTIME     Target name
+  --path PATH [PATH ...]
+                        File path(s) to execute
+  --argv ARGV [ARGV ...]
+                        Module argv passthrough
+  --runtime RUNTIME [RUNTIME ...]
+                        Target runtimes
   --scene SCENE         Scene environment variable
   --namespace NAMESPACE
                         Namespace environment variable
@@ -68,6 +71,9 @@ optional arguments:
 
 Additional notes:
 - ```runtime``` should correspond to the name of the runtime, not the UUID. This can also be a comma-separated list of names; in that case, the module specified will be created on all runtimes listed.
+- The behavior when multiple modules (```path```) are specified depends on whether active profiling is enabled.
+    - If enabled, the script will wait for all rounds of active profiling to complete before moving onto the next.
+    - If disabled, the script will initialize all modules specified simulataneously.
 - Active profiling uses a dirichlet process with parameter ```alpha``` and prior ```geometric(1 / mean_size)``` for input message sizes.
 
 ## Benchmarks

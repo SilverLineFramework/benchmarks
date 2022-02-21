@@ -20,12 +20,13 @@ static int sample_geometric() {
 
 
 /** Initialize dirichlet process. */
-void dp_init(dp_t *dp) {
+void dp_init(dp_t *dp, unsigned long seed) {
     for (int i = 0; i < MAX_TABLES; i++) {
         dp->tables[i] = 0;
     }
     dp->total = ALPHA;
     dp->num_tables = 0;
+    srand(seed);
 }
 
 /** Draw from dirichlet process */

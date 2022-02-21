@@ -3,6 +3,7 @@
 import json
 import uuid
 import requests
+from threading import Semaphore
 import paho.mqtt.client as mqtt
 
 
@@ -15,11 +16,9 @@ class ARTSInterface(mqtt.Client):
         MQTT host server address.
     port : int
         MQTT host server port.
-    semaphore : threading.Semaphore
-        Notification on connection.
     """
 
-    def __init__(self, host="localhost", port=1883, semaphore=None):
+    def __init__(self, host="localhost", port=1883):
 
         with open("mqtt_pwd.txt", 'r') as f:
             passwd = f.read()
@@ -27,12 +26,16 @@ class ARTSInterface(mqtt.Client):
 
         self.callbacks = {}
         self.host = host
-        self.semaphore = semaphore
+        self.semaphore = Semaphore()
         self.semaphore.acquire()
 
         super().__init__("Benchmarking")
         self.username_pw_set(user, passwd)
         self.connect(host, port, 60)
+        self.loop_start()
+
+        # Waiting for on_connect to release
+        self.semaphore.acquire()
 
     def on_connect(self, mqttc, obj, flags, rc):
         """On connect callback."""
@@ -52,7 +55,6 @@ class ARTSInterface(mqtt.Client):
                 **data
             }
         })
-        print("[ARTS] Creating module:\n{}".format(payload))
         self.publish("realm/proc/control", payload)
 
     def create_module_wasm(
@@ -81,7 +83,7 @@ class ARTSInterface(mqtt.Client):
             "name": name,
             "filename": python,
             "filetype": "PY",
-            "args": [python, "python-apps/{}".format(path)],
+            "args": [python, "python-apps/{}".format(path)] + argv,
             "env": [
                 "MQTTH={}".format(self.host), "REALM=realm",
                 "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),

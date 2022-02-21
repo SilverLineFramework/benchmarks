@@ -36,7 +36,7 @@ typedef struct {
 } dp_t;
 
 
-void dp_init(dp_t *dp);
+void dp_init(dp_t *dp, unsigned long seed);
 int dp_draw(dp_t *dp);
 
 
