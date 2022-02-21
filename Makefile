@@ -16,16 +16,15 @@ clean.wasm:
 	rm -rf $(OUT_DIR)
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir.wasm wasm-apps polybench
+wasm: dir.wasm tests polybench
 
 dir.wasm:
 	mkdir -p $(OUT_DIR)
 	cp rustpython.wasm $(OUT_DIR)
 
-.PHONY: wasm-apps polybench
-wasm-apps:
-	make -C wasm-apps
-
+.PHONY: tests polybench
+tests:
+	make -C tests
 polybench:
 	make -C polybench
 
