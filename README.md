@@ -2,6 +2,11 @@
 
 ## Setup
 
+0. Set up infrastructure if required.
+
+    - Mosquitto server: ```sudo apt-get install mosquitto```. Start with ```mosquitto``` if not already running.
+    - Run [ARTS](https://github.com/conix-center/arts). All settings can be default, and config files can be empty.
+
 1. Install dependencies:
     ```sh
     pip install -r requirements.txt
