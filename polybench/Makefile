@@ -1,7 +1,3 @@
-#
-# Makefile for Polybench Tests
-#
-
 # Output
 OUT_DIR=../wasm/polybench
 
@@ -18,10 +14,13 @@ WASMCFLAGS+= -Wl,--export=main
 WASMCFLAGS+= -Wl,--export=_start
 WASMCFLAGS+= -Wl,--allow-undefined
 
+COMMON= polybench.c ../common/runtime.c ../common/dp.c
+
+COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+
 # Folders must start with pb_; pulls all .c files in that directory.
 BENCHMARKS := $(shell ls benchmarks/*.c)
 WASM := $(BENCHMARKS:.c=.wasm)
-COMMON= polybench.c runtime.c dp.c
 
 .PHONY: all clean dir
 
@@ -34,4 +33,4 @@ dir:
 	mkdir -p $(OUT_DIR)
 
 $(WASM): %.wasm : %.c
-	${WASMCC} ${WASMCFLAGS} ${COMMON} $^ -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
+	$(COMPILE) $^ -o $(OUT_DIR)/$(notdir $(basename $@)).wasm

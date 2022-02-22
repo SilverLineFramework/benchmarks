@@ -37,7 +37,10 @@ class ActiveProfiler:
         self.data = data
         self.client = client
 
-        self.idx = 0
+        # `idx` counts the number of arrived packets, but the first packet
+        # is really just an ACK packet sent after initialization!
+        # The hack here is to start at an iteration deficit.
+        self.idx = -1
         self.n = n
         self.delay = delay
         self.topic = "benchmark/in/{}".format(module)
@@ -56,7 +59,7 @@ class ActiveProfiler:
 
     def callback(self, _):
         """Callback for triggering the next period."""
-        if self.pbar:
+        if self.pbar and self.idx >= 0:
             self.pbar.update(1)
         self.idx += 1
 

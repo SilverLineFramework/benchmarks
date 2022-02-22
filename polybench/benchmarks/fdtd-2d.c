@@ -14,7 +14,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "../runtime.h"
+#include "../../common/runtime.h"
 
 /* Include polybench common header. */
 #include "../polybench.h"

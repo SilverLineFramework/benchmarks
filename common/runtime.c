@@ -9,14 +9,14 @@
 #include "dp.h"
 
 /** Join topic path. */
-char *path_join(char *a, char *b) {
+static char *path_join(char *a, char *b) {
     char *res = malloc(strlen(a) + strlen(b) + 2);
     sprintf(res, "%s/%s", a, b);
     return res;
 }
 
 /** Subscribe to channels. */
-void init_channels(int *in, int *out) {
+static void init_channels(int *in, int *out) {
     char uuid_buf[37];
     module_get_uuid(uuid_buf);
 
@@ -30,7 +30,7 @@ void init_channels(int *in, int *out) {
 }
 
 /** Exhaust input data */
-int handle_input(int data_in) {
+static int handle_input(int data_in) {
     // Read to exhaustion
     char read_buf[1024];
     int bytes_read = 1;
@@ -42,7 +42,7 @@ int handle_input(int data_in) {
 }
 
 /** Write random output data */
-void handle_output(int data_out, dp_t *dp) {
+static void handle_output(int data_out, dp_t *dp) {
     int size = dp_draw(dp);
     char *buf = malloc(size);
     for (int i = 0; i < size / 4; i++) {
@@ -53,7 +53,7 @@ void handle_output(int data_out, dp_t *dp) {
 }
 
 /** Hash function: djb2 (http://www.cse.yorku.ca/~oz/hash.html) */
-unsigned long hash(char *str) {
+static unsigned long hash(char *str) {
     unsigned long hash = 5381;
     int c;
 
