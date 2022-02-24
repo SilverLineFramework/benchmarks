@@ -144,7 +144,7 @@ class ARTSInterface(mqtt.Client):
             self, target, name="module", aot=False, path="python/pinata.py",
             argv=[], scene="test", namespace="test"):
         """Create python module."""
-        python = "wasm/rustpython.{}".format("aot" if aot else "wasm")
+        python = "{t}/rustpython.{t}".format(t="aot" if aot else "wasm")
         module_uuid = str(uuid.uuid4())
         self._create_module({
             "uuid": module_uuid,
