@@ -2,6 +2,7 @@
 
 import numpy as np
 from tqdm import tqdm
+import argparse
 import manager
 import threading
 
@@ -56,8 +57,9 @@ def profiling_round(args, arts, path):
 
 if __name__ == '__main__':
 
-    args = manager.parse()
-    arts = manager.ARTSInterface(host=args.host, port=args.port)
+    parser = manager.benchmark_args(argparse.ArgumentParser())
+    args = manager.arts_args(parser).parse_args()
+    arts = manager.ARTSInterface.from_args(args)
 
     tqdm.write("[Profiling] {} Runtimes: {}".format(
         len(args.runtime), " ".join(args.runtime)))

@@ -2,3 +2,5 @@ paho-mqtt
 numpy
 tqdm
 requests
+printtools
+pandas

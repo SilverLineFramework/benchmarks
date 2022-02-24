@@ -1,14 +1,14 @@
 """Runtime benchmark manager."""
 
-from .args import parse
-from .arts import ARTSInterface
+from .args import benchmark_args
+from .arts import ARTSInterface, arts_args
 from .dp import DirichletProcess
 from .active import ActiveProfiler
 
 
 __all__ = [
-    "ARTSInterface",
+    "ARTSInterface", "arts_args",
     "DirichletProcess",
     "ActiveProfiler",
-    "parse"
+    "benchmark_args"
 ]

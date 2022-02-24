@@ -1,16 +1,8 @@
 """Base argparse args."""
 
-import argparse
 
-
-def parse():
+def benchmark_args(parser):
     """Arguments for benchmark spawning."""
-    parser = argparse.ArgumentParser()
-
-    # MQTT
-    parser.add_argument("--host", help="MQTT host", default="localhost")
-    parser.add_argument("--port", help="MQTT port", default=1883, type=int)
-
     # Target
     parser.add_argument("--type", help="PY or WA", default="PY")
     parser.add_argument(
@@ -48,4 +40,4 @@ def parse():
     parser.add_argument(
         "--delay", default=0.1, type=float, help="Delay between iterations")
 
-    return parser.parse_args()
+    return parser

@@ -3,8 +3,27 @@
 import json
 import uuid
 import requests
+import ssl
+
 from threading import Semaphore
 import paho.mqtt.client as mqtt
+
+
+def arts_args(parser):
+    """Add arguments to argparse."""
+    g = parser.add_argument_group('MQTT Options')
+    g.add_argument("--host", help="Host address", default="localhost")
+    g.add_argument("--port", help="Host port", default=1883, type=int)
+    g.add_argument("--username", help="Username", default="cli")
+    g.add_argument("--pwd", help="Password file", default="mqtt_pwd.txt")
+    g.add_argument(
+        "--use_ssl", help="Use SSL (mqtt-secure)", action='store_true')
+
+    g = parser.add_argument_group('ARTS Options')
+    g.add_argument("--arts", help="ARTS host", default="localhost")
+    g.add_argument("--arts_port", help="ARTS port", default=8000)
+    g.set_defaults(ssl=False)
+    return parser
 
 
 class ARTSInterface(mqtt.Client):
@@ -16,32 +35,76 @@ class ARTSInterface(mqtt.Client):
         MQTT host server address.
     port : int
         MQTT host server port.
+    arts : str
+        ARTS HTTP server address.
+    arts_port : int
+        ARTS HTTP server port.
+    pwd : str
+        MQTT password file
+    username : str
+        MQTT username
+    ssl : bool
+        Whether to use SSL.
+    connect : bool
+        If False, don't connect to MQTT.
     """
 
-    def __init__(self, host="localhost", port=1883):
-
-        with open("mqtt_pwd.txt", 'r') as f:
-            passwd = f.read()
-        user = "cli"
+    def __init__(
+            self, host="localhost", port=1883, pwd="mqtt_pwd.txt",
+            username="cli", use_ssl=False, arts="localhost", arts_port=8000,
+            connect=True):
 
         self.callbacks = {}
         self.host = host
-        self.semaphore = Semaphore()
-        self.semaphore.acquire()
+        self.arts_api = "http://{}:{}/arts-api/v1".format(arts, arts_port)
 
-        super().__init__("Benchmarking")
-        self.username_pw_set(user, passwd)
-        self.connect(host, port, 60)
-        self.loop_start()
+        if connect:
+            self.semaphore = Semaphore()
+            self.semaphore.acquire()
 
-        # Waiting for on_connect to release
-        self.semaphore.acquire()
+            super().__init__("Benchmarking")
+
+            with open(pwd, 'r') as f:
+                passwd = f.read()
+            if passwd[-1] == '\n':
+                passwd = passwd[:-1]
+            self.username_pw_set(username, passwd)
+            if use_ssl:
+                self.tls_set(cert_reqs=ssl.CERT_NONE)
+            self.connect(host, port, 60)
+
+            # Waiting for on_connect to release
+            self.loop_start()
+            self.semaphore.acquire()
+
+    @classmethod
+    def from_args(cls, args, connect=True):
+        """Construct from argparse.ArgumentParser."""
+        return cls(
+            host=args.host, port=args.port, pwd=args.pwd,
+            username=args.username, use_ssl=args.use_ssl, arts=args.arts,
+            arts_port=args.arts_port, connect=True)
 
     def on_connect(self, mqttc, obj, flags, rc):
         """On connect callback."""
-        print("[Setup] Connected: rc={}".format(rc))
+        print("[Setup] Connected: rc={} ({})".format(
+            rc, mqtt.connack_string(rc)))
         if self.semaphore is not None:
             self.semaphore.release()
+
+    def delete_runtime(self, target, name="test"):
+        """Instruct runtime to exit."""
+        payload = json.dumps({
+            "object_id": str(uuid.uuid4()),
+            "action": "delete",
+            "type": "arts_req",
+            "data": {
+                "type": "runtime",
+                "uuid": target,
+                "name": name
+            }
+        })
+        mid = self.publish("realm/proc/control/{}".format(target), payload)
 
     def _create_module(self, data, target):
         """Create Module helper function."""
@@ -92,17 +155,6 @@ class ARTSInterface(mqtt.Client):
         }, target)
         return module_uuid
 
-    def delete_module(self, target):
-        """Delete module."""
-        msg = {
-            "object_id": str(uuid.uuid4()),
-            "action": "delete",
-            "type": "arts_req",
-            "data": {"type": "module", "uuid": target}
-        }
-        print("[ARTS] Deleting module: {}".format(target))
-        self.mqtt.publish(self.control_topic, json.dumps(msg))
-
     def register_callback(self, topic, callback):
         """Subscribe to topic and register callback for that topic."""
         self.subscribe(topic)
@@ -118,8 +170,11 @@ class ARTSInterface(mqtt.Client):
 
     def get_runtimes(self):
         """Get runtimes from REST API."""
-        r = requests.get(
-            "http://{}:8000/arts-api/v1/runtimes/".format(self.host))
-        res = json.loads(r.text)
+        r = requests.get("{}/runtimes/".format(self.arts_api))
+        try:
+            res = json.loads(r.text)
+        except Exception as e:
+            print(r.text)
+            raise e
 
         return {rt['name']: rt['uuid'] for rt in res}
