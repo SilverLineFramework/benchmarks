@@ -58,11 +58,11 @@ class ARTSInterface(mqtt.Client):
         self.host = host
         self.arts_api = "http://{}:{}/arts-api/v1".format(arts, arts_port)
 
+        super().__init__("Benchmarking")
+
         if connect:
             self.semaphore = Semaphore()
             self.semaphore.acquire()
-
-            super().__init__("Benchmarking")
 
             with open(pwd, 'r') as f:
                 passwd = f.read()
@@ -83,7 +83,7 @@ class ARTSInterface(mqtt.Client):
         return cls(
             host=args.host, port=args.port, pwd=args.pwd,
             username=args.username, use_ssl=args.use_ssl, arts=args.arts,
-            arts_port=args.arts_port, connect=True)
+            arts_port=args.arts_port, connect=connect)
 
     def on_connect(self, mqttc, obj, flags, rc):
         """On connect callback."""
@@ -91,6 +91,11 @@ class ARTSInterface(mqtt.Client):
             rc, mqtt.connack_string(rc)))
         if self.semaphore is not None:
             self.semaphore.release()
+
+    def on_disconnect(self, client, userdata, rc):
+        """Disconnection callback."""
+        print("[Error] Disconnected: rc={} ({})".format(
+            rc, mqtt.connack_string(rc)))
 
     def delete_runtime(self, target, name="test"):
         """Instruct runtime to exit."""
@@ -104,7 +109,7 @@ class ARTSInterface(mqtt.Client):
                 "name": name
             }
         })
-        mid = self.publish("realm/proc/control/{}".format(target), payload)
+        self.publish("realm/proc/control/{}".format(target), payload)
 
     def _create_module(self, data, target):
         """Create Module helper function."""

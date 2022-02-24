@@ -86,3 +86,9 @@ Additional notes:
 - ```tests```: Tests for basic functionality. Currently unmaintained.
 - ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/) wrapped in distributed runtime interfaces; simulates output data using a dirichlet process ```alpha=1``` with ```geometric(0.001)``` prior.
 - ```cortex```: Miscellaneous machine learning benchmarks manually ported from [UCSD Cortex Suite](https://cseweb.ucsd.edu/groups/bsg/)
+
+## Additional Scripts
+
+- ```status.py```: print status table for runtime nodes specified in a TSV file.
+- ```list_devices.py```: print a list of runtimes specified in a TSV file (for passing to other commands, i.e. inside makefiles).
+- ```stop_runtimes.py```: send DELETE_RUNTIME messages to request runtimes to exit.
