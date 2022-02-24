@@ -151,7 +151,7 @@ class ARTSInterface(mqtt.Client):
             "name": name,
             "filename": python,
             "filetype": "PY",
-            "args": [python, "python-apps/{}".format(path)] + argv,
+            "args": [python, path] + argv,
             "env": [
                 "MQTTH={}".format(self.host), "REALM=realm",
                 "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),
