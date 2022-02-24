@@ -16,6 +16,7 @@ if len(args.runtime) > 0:
     for rt in args.runtime:
         try:
             print("Stopping runtime {} [{}]".format(rt, runtimes[rt]))
+            arts.delete_runtime(runtimes[rt], name=rt)
         except KeyError:
             print("Runtime not found: {}".format(rt))
 else:
