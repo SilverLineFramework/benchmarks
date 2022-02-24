@@ -127,7 +127,7 @@ class ARTSInterface(mqtt.Client):
 
     def create_module_wasm(
             self, target, name="module",
-            path="wasm/apps/helloworld.wasm", argv=[]):
+            path="wasm/apps/helloworld.wasm", argv=[], env=[]):
         """Create WASM module."""
         module_uuid = str(uuid.uuid4())
         self._create_module({
@@ -136,13 +136,13 @@ class ARTSInterface(mqtt.Client):
             "filename": path,
             "filetype": "WA",
             "args": [path] + argv,
-            "env": [],
+            "env": env,
         }, target)
         return module_uuid
 
     def create_module_py(
             self, target, name="module", aot=False, path="python/pinata.py",
-            argv=[], scene="test", namespace="test"):
+            argv=[], env=[]):
         """Create python module."""
         python = "{t}/rustpython.{t}".format(t="aot" if aot else "wasm")
         module_uuid = str(uuid.uuid4())
@@ -152,11 +152,7 @@ class ARTSInterface(mqtt.Client):
             "filename": python,
             "filetype": "PY",
             "args": [python, path] + argv,
-            "env": [
-                "MQTTH={}".format(self.host), "REALM=realm",
-                "SCENE={}".format(scene), "NAMESPACE={}".format(namespace),
-                "ARGV={}".format(" ".join(argv))
-            ]
+            "env": env
         }, target)
         return module_uuid
 

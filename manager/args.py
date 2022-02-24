@@ -15,10 +15,7 @@ def benchmark_args(parser):
 
     # Python only args
     parser.add_argument(
-        "--scene", help="Scene environment variable", default="test")
-    parser.add_argument(
-        "--namespace", help="Namespace environment variable",
-        default="test")
+        "--env", nargs='+', help="Module environment variables", default=[])
     parser.add_argument(
         "--aot", help="Use AOT python", dest='aot', action='store_true')
     parser.set_defaults(aot=False)

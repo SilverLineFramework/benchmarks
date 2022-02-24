@@ -11,10 +11,10 @@ def _create_module(args, arts, rt, path):
     if args.type == 'PY':
         return arts.create_module_py(
             rt, name=path, aot=args.aot, path=path,
-            argv=args.argv, scene=args.scene, namespace=args.namespace)
+            argv=args.argv, env=args.env)
     else:
         return arts.create_module_wasm(
-            rt, name=path, path=path, argv=args.argv)
+            rt, name=path, path=path, argv=args.argv, env=args.env)
 
 
 def _get_runtime(rt_list, rt):
