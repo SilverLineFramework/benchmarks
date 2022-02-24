@@ -10,11 +10,11 @@ import threading
 def _create_module(args, arts, rt, path):
     if args.type == 'PY':
         return arts.create_module_py(
-            rt, name="test", aot=args.aot, path=path,
+            rt, name=path, aot=args.aot, path=path,
             argv=args.argv, scene=args.scene, namespace=args.namespace)
     else:
         return arts.create_module_wasm(
-            rt, name="test", path=path, argv=args.argv)
+            rt, name=path, path=path, argv=args.argv)
 
 
 def _get_runtime(rt_list, rt):
