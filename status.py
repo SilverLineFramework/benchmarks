@@ -19,10 +19,11 @@ def _get_status(row, suffix):
     else:
         return None
 
+
 STATUS_TEXT = {
     True: pt.render("up", pt.GREEN, pt.BOLD, pt.BRIGHT),
     False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
-    None: pt.render("n/a", pt.BLUE, pt.BOLD, pt.BRIGHT)
+    None: pt.render("--", pt.BOLD, pt.BRIGHT)
 }
 RUNTIME_TEXT = {
     True: pt.render("running", pt.GREEN, pt.BOLD, pt.BRIGHT),
