@@ -9,4 +9,5 @@ parser.add_argument(
 args = parser.parse_args()
 
 t = pd.read_csv(args.manifest, sep='\t')
-print('\n'.join(list(t['Device'])))
+linux_rt = t[t['Type'] == 'linux']
+print('\n'.join(list(linux_rt['Device'])))

@@ -9,16 +9,20 @@ from multiprocessing.pool import ThreadPool
 from manager import ARTSInterface, arts_args
 
 
-def _ping(target):
-    return subprocess.run(
-        ["ping", "-c", "1", "-W", "1", target],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-    ).returncode == 0
-
+def _get_status(row, suffix):
+    row = row[1]
+    if row['Type'] in {'linux', 'arts'}:
+        return subprocess.run(
+            ["ping", "-c", "1", "-W", "1", row['Device'] + suffix],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+        ).returncode == 0
+    else:
+        return None
 
 STATUS_TEXT = {
     True: pt.render("up", pt.GREEN, pt.BOLD, pt.BRIGHT),
-    False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT)
+    False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
+    None: pt.render("n/a", pt.BLUE, pt.BOLD, pt.BRIGHT)
 }
 RUNTIME_TEXT = {
     True: pt.render("running", pt.GREEN, pt.BOLD, pt.BRIGHT),
@@ -52,7 +56,8 @@ args = arts_args(parser).parse_args()
 targets = pd.read_csv(args.manifest, sep='\t')
 print("Pinging {} targets...".format(len(targets)))
 with ThreadPool(processes=len(targets)) as pool:
-    status = pool.map(_ping, [t + args.suffix for t in targets["Device"]])
+    status = pool.map(
+        lambda x: _get_status(x, args.suffix), list(targets.iterrows()))
 
 print("Fetching runtimes...")
 try:
