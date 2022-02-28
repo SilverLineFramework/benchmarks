@@ -69,4 +69,25 @@ int runtime_get_uuid(char *buf);
  */
 int module_get_uuid(char *buf);
 
+/**
+ * @brief Start profiling period manually.
+ */
+void period_start();
+
+/**
+ * @brief End profiling period manually.
+ */
+void period_end();
+
+/**
+ * @brief End profiling period and yield remaining time.
+ */
+void period_yield();
+
+/**
+ * @brief Set profiling mode.
+ * @param flags 1 for manual, 0 for automatic (ch_poll).
+ */
+void period_set_flags(int flags);
+
 #endif /* CHANNELS_H */
