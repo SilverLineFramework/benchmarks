@@ -20,19 +20,18 @@ def _get_status(row, suffix):
         return None
 
 
-STATUS_TEXT = {
-    True: pt.render("up", pt.GREEN, pt.BOLD, pt.BRIGHT),
-    False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
-    None: pt.render("--", pt.BOLD, pt.BRIGHT)
-}
-RUNTIME_TEXT = {
-    True: pt.render("running", pt.GREEN, pt.BOLD, pt.BRIGHT),
-    False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
-    None: pt.render("n/a", pt.BLUE, pt.BOLD, pt.BRIGHT)
-}
-
-
 def _show_table(status, runtimes, uuids, targets):
+    STATUS_TEXT = {
+        True: pt.render("up", pt.GREEN, pt.BOLD, pt.BRIGHT),
+        False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
+        None: pt.render("--", pt.BOLD, pt.BRIGHT)
+    }
+    RUNTIME_TEXT = {
+        True: pt.render("running", pt.GREEN, pt.BOLD, pt.BRIGHT),
+        False: pt.render("down", pt.RED, pt.BOLD, pt.BRIGHT),
+        None: pt.render("n/a", pt.BLUE, pt.BOLD, pt.BRIGHT)
+    }
+
     print("")
     heading = [
         pt.render(h, pt.BOLD)
@@ -47,30 +46,53 @@ def _show_table(status, runtimes, uuids, targets):
     print("")
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--manifest", help="Device specification .tsv file", default="devices.tsv")
-parser.add_argument(
-    "--suffix", help="Hostname suffix", default=".arena.andrew.cmu.edu")
-args = arts_args(parser).parse_args()
+def status_table(args):
+    """Get status for a device table."""
 
-targets = pd.read_csv(args.manifest, sep='\t')
-print("Pinging {} targets...".format(len(targets)))
-with ThreadPool(processes=len(targets)) as pool:
-    status = pool.map(
-        lambda x: _get_status(x, args.suffix), list(targets.iterrows()))
+    targets = pd.read_csv(args.manifest, sep='\t')
+    print("Pinging {} targets...".format(len(targets)))
+    with ThreadPool(processes=len(targets)) as pool:
+        status = pool.map(
+            lambda x: _get_status(x, args.suffix), list(targets.iterrows()))
 
-print("Fetching runtimes...")
-try:
-    arts = ARTSInterface.from_args(args, connect=False)
-    runtime_dict = arts.get_runtimes()
-    print("Received runtimes: {}".format(runtime_dict))
-    runtimes = [row["Device"] in runtime_dict for _, row in targets.iterrows()]
-    uuids = [
-        runtime_dict.get(row["Device"], "-") for _, row in targets.iterrows()]
-except Exception as e:
-    runtimes = [None for _ in targets.iterrows()]
-    uuids = ["-" for _ in targets.iterrows()]
-    print("No response from ARTS.")
+    print("Fetching runtimes...")
+    try:
+        arts = ARTSInterface.from_args(args, connect=False)
+        rt_dict = arts.get_runtimes()
+        print("Received runtimes: {}".format(rt_dict))
+        runtimes = [row["Device"] in rt_dict for _, row in targets.iterrows()]
+        uuids = [
+            rt_dict.get(row["Device"], "-") for _, row in targets.iterrows()]
+    except Exception as e:
+        runtimes = [None for _ in targets.iterrows()]
+        uuids = ["-" for _ in targets.iterrows()]
+        print("No response from ARTS.")
 
-_show_table(status, runtimes, uuids, targets)
+    _show_table(status, runtimes, uuids, targets)
+
+
+def list_only(args):
+    """Get runtimes from ARTS only."""
+    print("Fetching runtimes...")
+    try:
+        arts = ARTSInterface.from_args(args, connect=False)
+        runtime_dict = arts.get_runtimes()
+        print("Received runtimes: {}".format(runtime_dict))
+    except Exception as e:
+        print("No response from ARTS.")
+
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--manifest", help="Device specification .tsv file",
+        default="devices.tsv")
+    parser.add_argument(
+        "--suffix", help="Hostname suffix", default=".arena.andrew.cmu.edu")
+    args = arts_args(parser).parse_args()
+
+    try:
+        status_table(args)
+    except FileNotFoundError:
+        list_only(args)

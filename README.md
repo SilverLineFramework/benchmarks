@@ -42,7 +42,7 @@
 
 2. Run the ```run.py``` script, for example:
     ```sh
-    python run.py --type WA --path wasm/test/helloworld.wasm --runtime test
+    python run.py --type WA --path wasm/tests/helloworld.wasm --runtime test
     ```
 
 ## Available Options

@@ -65,9 +65,7 @@ class ARTSInterface(mqtt.Client):
             self.semaphore.acquire()
 
             with open(pwd, 'r') as f:
-                passwd = f.read()
-            if passwd[-1] == '\n':
-                passwd = passwd[:-1]
+                passwd = f.read().rstrip('\n')
             self.username_pw_set(username, passwd)
             if use_ssl:
                 self.tls_set(cert_reqs=ssl.CERT_NONE)
