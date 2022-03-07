@@ -21,7 +21,7 @@
 #include "../polybench.h"
 
 /* Include benchmark-specific header. */
-#define MINI_DATASET
+
 #include "atax.h"
 
 

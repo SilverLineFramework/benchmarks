@@ -20,7 +20,7 @@
 #include "../polybench.h"
 
 /* Include benchmark-specific header. */
-#define MINI_DATASET
+
 #include "nussinov.h"
 
 /* RNA bases represented as chars, range is [0,3] */

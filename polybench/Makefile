@@ -16,7 +16,7 @@ WASMCFLAGS+= -Wl,--allow-undefined
 
 COMMON= polybench.c ../common/runtime.c ../common/dp.c
 
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+COMPILE= $(WASMCC) $(WASMCFLAGS) -D LARGE_DATASET $(COMMON)
 
 # Folders must start with pb_; pulls all .c files in that directory.
 BENCHMARKS := $(shell ls benchmarks/*.c)

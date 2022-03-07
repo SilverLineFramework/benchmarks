@@ -17,7 +17,7 @@
 #include "../../common/runtime.h"
 
 /* Include polybench common header. */
-#define MINI_DATASET
+
 #include "../polybench.h"
 
 /* Include benchmark-specific header. */
