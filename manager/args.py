@@ -22,9 +22,10 @@ def benchmark_args(parser):
 
     # Profiling
     parser.add_argument(
-        "--active", help="Use active profiling", dest='active',
-        action='store_true')
-    parser.set_defaults(active=False)
+        "--mode", help="Profiling mode (passive, active, timed)",
+        default="passive")
+    parser.add_argument(
+        "--time", help="Total time limit (seconds)", type=float, default=60.)
     parser.add_argument(
         "--mean_size", default=1000, type=float,
         help="Prior mean message size (used as input to dirichlet process)")

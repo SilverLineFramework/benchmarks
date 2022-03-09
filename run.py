@@ -5,6 +5,7 @@ from tqdm import tqdm
 import argparse
 import manager
 import threading
+import time
 
 
 def _create_module(args, arts, rt, path):
@@ -33,16 +34,16 @@ def create_modules(args, arts, path):
     }
 
 
-def profiling_round(args, arts, path):
-    """Single round of active profiling."""
-    modules = create_modules(args, arts, path)
+def _make_dp(args):
+    return manager.DirichletProcess(
+        lambda: np.random.geometric(1 / args.mean_size), alpha=args.alpha)
 
+
+def active_round(args, arts, modules):
+    """Single round of active profiling."""
     profilers = [
         manager.ActiveProfiler(
-            manager.DirichletProcess(
-                lambda: np.random.geometric(1 / args.mean_size),
-                alpha=args.alpha),
-            arts, mod, n=args.n, delay=args.delay, pbar=i,
+            _make_dp(args), arts, mod, n=args.n, delay=args.delay, pbar=i,
             desc=name, semaphore=threading.Semaphore())
         for i, (name, mod) in enumerate(modules.items())
     ]
@@ -55,6 +56,22 @@ def profiling_round(args, arts, path):
         p.pbar.close()
 
 
+def timed_round(args, arts, modules):
+    """Single round of timed profiling."""
+    profilers = [
+        manager.TimedProfiler(
+            _make_dp(args), arts, mod, delay=args.delay,
+            semaphore=threading.Semaphore())
+        for (_, mod) in modules.items()
+    ]
+
+    for _ in tqdm(range(100)):
+        time.sleep(args.time / 100)
+
+    for p in profilers:
+        p.semaphore.acquire()
+
+
 if __name__ == '__main__':
 
     parser = manager.benchmark_args(argparse.ArgumentParser())
@@ -64,11 +81,14 @@ if __name__ == '__main__':
     tqdm.write("[Profiling] {} Runtimes: {}".format(
         len(args.runtime), " ".join(args.runtime)))
 
-    if args.active:
+    if args.mode in {'active', 'timed'}:
         for i, path in enumerate(args.path):
-            tqdm.write("[Profiling] Active Profiling Round {}/{}: {}".format(
+            tqdm.write("[Profiling] {} Profiling Round {}/{}: {}".format(
+                "Active" if args.mode == 'active' else "Timed",
                 i + 1, len(args.path), path))
-            profiling_round(args, arts, path)
+            modules = create_modules(args, arts, path)
+            func = (active_round if args.mode == 'active' else timed_round)
+            func(args, arts, modules)
     else:
         for path in args.path:
             create_modules(args, arts, path)
