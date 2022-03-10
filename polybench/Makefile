@@ -33,6 +33,7 @@ dir:
 	mkdir -p $(OUT_DIR)/small
 	mkdir -p $(OUT_DIR)/medium
 	mkdir -p $(OUT_DIR)/large
+	mkdir -p $(OUT_DIR)/extra
 
 $(WASM): %.wasm : %.c
 	$(COMPILE) -D SMALL_DATASET $^ \
@@ -41,3 +42,5 @@ $(WASM): %.wasm : %.c
 		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
 	$(COMPILE) -D MEDIUM_DATASET $^ \
 		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
+	$(COMPILE) -D EXTRALARGE_DATASET $^ \
+		-o $(OUT_DIR)/extra/$(notdir $(basename $@)).wasm
