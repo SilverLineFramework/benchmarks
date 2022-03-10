@@ -69,6 +69,8 @@ def timed_round(args, arts, modules):
         time.sleep(args.time / 100)
 
     for p in profilers:
+        p.done = True
+    for p in profilers:
         p.semaphore.acquire()
 
 

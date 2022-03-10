@@ -83,8 +83,15 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     int poll_chs[] = {data_in};
     while (1) {
         int res = ch_poll(poll_chs, 1, 5000);
-        if (res > 0) {
-            if (!handle_input(data_in)) { break;}
+        if (res != 0) {
+            if (res < 0) {
+                printf("Exiting due to error.\n");
+                break;
+            }
+            if (!handle_input(data_in)) {
+                printf("Received exit signal.\n");
+                break;
+            }
             func(argc, argv);
             handle_output(data_out, &dp);
         }
