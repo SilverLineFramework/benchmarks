@@ -11,7 +11,7 @@
 # define _ADI_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined (TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -41,6 +41,13 @@
 #   define TSTEPS 1000
 #   define N 2000
 #  endif
+
+#  ifdef TUNED_DATASET
+#   define TSTEPS 200
+#   define N 500
+#  endif
+
+
 
 
 #endif /* !(TSTEPS N) */

@@ -11,7 +11,7 @@
 # define _DOITGEN_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -45,6 +45,12 @@
 #   define NQ 220
 #   define NR 250
 #   define NP 270
+#  endif
+
+#  ifdef TUNED_DATASET
+#   define NQ 130
+#   define NR 140
+#   define NP 150
 #  endif
 
 

@@ -73,6 +73,8 @@ void kernel_durbin(int n,
  int i,k;
 
 #pragma scop
+  for (int t = 0; t < 20; t++) {
+
  y[0] = -r[0];
  beta = SCALAR_VAL(1.0);
  alpha = -r[0];
@@ -93,6 +95,7 @@ void kernel_durbin(int n,
    }
    y[k] = alpha;
  }
+  }
 #pragma endscop
 
 }

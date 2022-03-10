@@ -30,17 +30,8 @@ clean:
 	rm -r $(OUT_DIR)
 
 dir:
-	mkdir -p $(OUT_DIR)/small
-	mkdir -p $(OUT_DIR)/medium
-	mkdir -p $(OUT_DIR)/large
-	mkdir -p $(OUT_DIR)/extra
+	mkdir -p $(OUT_DIR)
 
 $(WASM): %.wasm : %.c
-	$(COMPILE) -D SMALL_DATASET $^ \
-		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D MEDIUM_DATASET $^ \
-		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D MEDIUM_DATASET $^ \
-		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D EXTRALARGE_DATASET $^ \
-		-o $(OUT_DIR)/extra/$(notdir $(basename $@)).wasm
+	$(COMPILE) -D TUNED_DATASET $^ \
+		-o $(OUT_DIR)/$(notdir $(basename $@)).wasm

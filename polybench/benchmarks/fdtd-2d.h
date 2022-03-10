@@ -11,7 +11,7 @@
 # define _FDTD_2D_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -45,6 +45,12 @@
 #   define TMAX 1000
 #   define NX 2000
 #   define NY 2600
+#  endif
+
+#  ifdef TUNED_DATASET
+#   define TMAX 300
+#   define NX 500
+#   define NY 700
 #  endif
 
 

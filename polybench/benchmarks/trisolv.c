@@ -74,12 +74,14 @@ void kernel_trisolv(int n,
   int i, j;
 
 #pragma scop
+    for (int t = 0; t < 20; t++) {
   for (i = 0; i < _PB_N; i++)
     {
       x[i] = b[i];
       for (j = 0; j <i; j++)
         x[i] -= L[i][j] * x[j];
       x[i] = x[i] / L[i][i];
+    }
     }
 #pragma endscop
 

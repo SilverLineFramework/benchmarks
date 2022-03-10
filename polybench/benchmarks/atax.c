@@ -75,6 +75,7 @@ void kernel_atax(int m, int n,
   int i, j;
 
 #pragma scop
+  for (int t = 0; t < 50; t++) {
   for (i = 0; i < _PB_N; i++)
     y[i] = 0;
   for (i = 0; i < _PB_M; i++)
@@ -85,6 +86,7 @@ void kernel_atax(int m, int n,
       for (j = 0; j < _PB_N; j++)
 	y[j] = y[j] + A[i][j] * tmp[i];
     }
+  }
 #pragma endscop
 
 }
