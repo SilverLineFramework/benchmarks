@@ -8,11 +8,10 @@ AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir tests polybench cortex
+wasm: dir tests polybench cortex array
 
 dir:
 	mkdir -p $(OUT_DIR)
-	cp rustpython.wasm $(OUT_DIR)
 
 .PHONY: tests polybench cortex
 tests:
@@ -21,6 +20,8 @@ polybench:
 	make -C polybench
 cortex:
 	make -C cortex
+array:
+	make -C array
 
 # Clean
 clean:
