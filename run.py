@@ -7,6 +7,8 @@ import manager
 import threading
 import time
 
+from manager import parse, make_parser
+
 
 def _create_module(args, arts, rt, path):
     if args.type == 'PY':
@@ -76,8 +78,7 @@ def timed_round(args, arts, modules):
 
 if __name__ == '__main__':
 
-    parser = manager.benchmark_args(argparse.ArgumentParser())
-    args = manager.arts_args(parser).parse_args()
+    args = make_parser(parse.arts, parse.mqtt, parse.benchmark).parse_args()
     arts = manager.ARTSInterface.from_args(args)
 
     tqdm.write("[Profiling] {} Runtimes: {}".format(

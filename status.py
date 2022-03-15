@@ -1,12 +1,11 @@
 """Get status for devices specified in a TSV file."""
 
 import printtools as pt
-import argparse
 import pandas as pd
 import subprocess
 from multiprocessing.pool import ThreadPool
 
-from manager import ARTSInterface, arts_args
+from manager import ARTSInterface, parse, make_parser
 
 
 def _get_status(row, suffix):
@@ -48,12 +47,11 @@ def _show_table(status, runtimes, uuids, targets):
 
 def status_table(args):
     """Get status for a device table."""
-
     targets = pd.read_csv(args.manifest, sep='\t')
     print("Pinging {} targets...".format(len(targets)))
     with ThreadPool(processes=len(targets)) as pool:
         status = pool.map(
-            lambda x: _get_status(x, args.suffix), list(targets.iterrows()))
+            lambda x: _get_status(x, args.domain), list(targets.iterrows()))
 
     print("Fetching runtimes...")
     try:
@@ -84,15 +82,9 @@ def list_only(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--manifest", help="Device specification .tsv file",
-        default="devices.tsv")
-    parser.add_argument(
-        "--suffix", help="Hostname suffix", default=".arena.andrew.cmu.edu")
-    args = arts_args(parser).parse_args()
-
+    args = make_parser(parse.mqtt, parse.arts, parse.cluster).parse_args()
     try:
         status_table(args)
     except FileNotFoundError:
+        print("Could not find manifest file: {}.".format(args.manifest))
         list_only(args)

@@ -9,23 +9,6 @@ from threading import Semaphore
 import paho.mqtt.client as mqtt
 
 
-def arts_args(parser):
-    """Add arguments to argparse."""
-    g = parser.add_argument_group('MQTT Options')
-    g.add_argument("--host", help="Host address", default="localhost")
-    g.add_argument("--port", help="Host port", default=1883, type=int)
-    g.add_argument("--username", help="Username", default="cli")
-    g.add_argument("--pwd", help="Password file", default="mqtt_pwd.txt")
-    g.add_argument(
-        "--use_ssl", help="Use SSL (mqtt-secure)", action='store_true')
-
-    g = parser.add_argument_group('ARTS Options')
-    g.add_argument("--arts", help="ARTS host", default="localhost")
-    g.add_argument("--arts_port", help="ARTS port", default=8000)
-    g.set_defaults(ssl=False)
-    return parser
-
-
 class ARTSInterface(mqtt.Client):
     """ARTS Interface.
 
