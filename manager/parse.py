@@ -1,7 +1,6 @@
 """Base argparse args."""
 
-from argparse import Action
-from jsonargparse import ArgumentParser, ActionConfigFile
+from argparse import ArgumentParser
 
 
 def benchmark(parser):
@@ -81,10 +80,9 @@ def cluster(parser):
     return parser
 
 
-def make_parser(*groups, desc=None, config="config.json"):
+def make_parser(*groups, desc=None):
     """Make argument parser."""
-    parser = ArgumentParser(description=desc, default_config_files=[config])
-    parser.add_argument("--config", action=ActionConfigFile)
+    parser = ArgumentParser(description=desc)
     for g in groups:
         g(parser)
     return parser
