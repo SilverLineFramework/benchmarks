@@ -1,5 +1,7 @@
 """Base argparse args."""
 
+import json
+import sys
 from argparse import ArgumentParser
 
 
@@ -7,7 +9,7 @@ def benchmark(parser):
     """Args for benchmark spawning."""
     # Target
     g = parser.add_argument_group("Benchmark Options")
-    g.add_argument("--type", help="PY or WA", default="PY")
+    g.add_argument("--type", help="PY or WA", default="WA")
     g.add_argument(
         "--path", nargs='+', help="File path(s) to execute",
         default=["wasm/test/helloworld.wasm"])
@@ -44,20 +46,16 @@ def benchmark(parser):
         "--delay", default=0.1, type=float,
         help="Delay between iterations for active/timed profiling mode")
 
-    return parser
-
 
 def mqtt(parser):
     """Args for MQTT connection."""
     g = parser.add_argument_group("MQTT Options")
-    g.add_argument("--host", help="Host address", default="localhost")
-    g.add_argument("--port", help="Host port", default=1883, type=int)
+    g.add_argument("--mqtt", help="MQTT Host address", default="localhost")
+    g.add_argument("--mqtt_port", help="MQTT port", default=1883, type=int)
     g.add_argument("--username", help="Username", default="cli")
     g.add_argument("--pwd", help="Password file", default="mqtt_pwd.txt")
-    g.add_argument(
-        "--use_ssl", help="Use SSL (mqtt-secure)", action="store_true")
+    g.add_argument("--ssl", help="Use SSL (mqtt-secure)", action="store_true")
     g.set_defaults(ssl=False)
-    return parser
 
 
 def arts(parser):
@@ -65,7 +63,6 @@ def arts(parser):
     g = parser.add_argument_group("ARTS Options")
     g.add_argument("--arts", help="ARTS host", default="localhost")
     g.add_argument("--arts_port", help="ARTS port", default=8000)
-    return parser
 
 
 def cluster(parser):
@@ -77,12 +74,30 @@ def cluster(parser):
     g.add_argument(
         "--domain", help="Cluster hostname domain suffix",
         default=".arena.andrew.cmu.edu")
-    return parser
 
 
-def make_parser(*groups, desc=None):
+def _get_cfg():
+    for arg, next in zip(sys.argv[:-1], sys.argv[1:]):
+        if arg == '--config':
+            with open(next) as f:
+                return json.load(f)
+    try:
+        with open("config.json") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+
+def parse_args(*groups, desc=None):
     """Make argument parser."""
     parser = ArgumentParser(description=desc)
     for g in groups:
         g(parser)
-    return parser
+    parser.add_argument(
+        "--config", help=(
+            "Config file to load; priority is (1) explicitly passed args, "
+            "(2) config file, (3) defaults"))
+    parser.set_defaults(**_get_cfg())
+    args = parser.parse_args()
+
+    return args

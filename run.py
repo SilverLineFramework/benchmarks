@@ -2,12 +2,11 @@
 
 import numpy as np
 from tqdm import tqdm
-import argparse
 import manager
 import threading
 import time
 
-from manager import parse, make_parser
+from manager import parse, parse_args
 
 
 def _create_module(args, arts, rt, path):
@@ -78,7 +77,7 @@ def timed_round(args, arts, modules):
 
 if __name__ == '__main__':
 
-    args = make_parser(parse.arts, parse.mqtt, parse.benchmark).parse_args()
+    args = parse_args(parse.arts, parse.mqtt, parse.benchmark)
     arts = manager.ARTSInterface.from_args(args)
 
     tqdm.write("[Profiling] {} Runtimes: {}".format(

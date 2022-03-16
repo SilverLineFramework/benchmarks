@@ -1,14 +1,16 @@
 """Stop all runtimes by sending a DELETE_RUNTIME request."""
 
-from manager import ARTSInterface, parse, make_parser
+from manager import ARTSInterface, parse, parse_args
 
 
-parser = make_parser(parse.mqtt, parse.arts)
-parser.add_argument(
-    "--runtime", nargs="+",
-    help="Runtimes to stop; if not passed, stops all runtimes.", default=[])
-args = parser.parse_args()
+def _arg(parser):
+    g = parser.add_argument_group("Stop Runtime")
+    g.add_argument(
+        "--runtime", nargs="+",
+        help="Runtimes to stop; if empty, stops all runtimes.", default=[])
 
+
+args = parse_args(parse.mqtt, parse.arts, _arg)
 arts = ARTSInterface.from_args(args)
 runtimes = arts.get_runtimes()
 if len(args.runtime) > 0:

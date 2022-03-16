@@ -62,8 +62,8 @@ class ARTSInterface(mqtt.Client):
     def from_args(cls, args, connect=True):
         """Construct from argparse.ArgumentParser."""
         return cls(
-            host=args.host, port=args.port, pwd=args.pwd,
-            username=args.username, use_ssl=args.use_ssl, arts=args.arts,
+            host=args.mqtt, port=args.mqtt_port, pwd=args.pwd,
+            username=args.username, use_ssl=args.ssl, arts=args.arts,
             arts_port=args.arts_port, connect=connect)
 
     def on_connect(self, mqttc, obj, flags, rc):

@@ -5,7 +5,7 @@ import pandas as pd
 import subprocess
 from multiprocessing.pool import ThreadPool
 
-from manager import ARTSInterface, parse, make_parser
+from manager import ARTSInterface, parse, parse_args
 
 
 def _get_status(row, suffix):
@@ -82,7 +82,7 @@ def list_only(args):
 
 if __name__ == '__main__':
 
-    args = make_parser(parse.mqtt, parse.arts, parse.cluster).parse_args()
+    args = parse_args(parse.mqtt, parse.arts, parse.cluster)
     try:
         status_table(args)
     except FileNotFoundError:

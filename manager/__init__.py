@@ -1,7 +1,7 @@
 """Runtime benchmark manager."""
 
 from . import parse
-from .parse import make_parser
+from .parse import parse_args
 from .arts import ARTSInterface
 from .dp import DirichletProcess
 from .active import ActiveProfiler, TimedProfiler
