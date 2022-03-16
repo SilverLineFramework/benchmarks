@@ -81,11 +81,7 @@ def _get_cfg():
         if arg == '--config':
             with open(next) as f:
                 return json.load(f)
-    try:
-        with open("config.json") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
+    return {}
 
 
 def parse_args(*groups, desc=None):
