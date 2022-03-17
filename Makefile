@@ -13,7 +13,7 @@ wasm: dir tests polybench cortex array
 dir:
 	mkdir -p $(OUT_DIR)
 
-.PHONY: tests polybench cortex
+.PHONY: tests polybench cortex array
 tests:
 	make -C tests
 polybench:
@@ -23,9 +23,14 @@ cortex:
 array:
 	make -C array
 
+# Copy rustpython to wasm folder (for distribution or AOT compilation)
+rustpython:
+	cp rustpython.wasm wasm
+
 # Clean
 clean:
 	rm -rf $(OUT_DIR)
+	rm -rf $(AOT_DIR)
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)

@@ -5,7 +5,17 @@
 0. Set up infrastructure if required.
 
     - Mosquitto server: ```sudo apt-get install mosquitto```. Start with ```mosquitto``` if not already running.
-    - Run [ARTS](https://github.com/conix-center/arts). All settings can be default, and config files can be empty.
+    - Run the [orchestrator](https://github.com/SilverLineFramework/orchestrator). All settings can be default, and config files can be empty.
+    - The instructions here assume that the [linux runtime](https://github.com/SilverLineFramework/runtime-linux) is installed in the same directory as this repository:
+        ```
+        silverline/
+            ...
+            mqtt_pwd.txt
+            benchmarks/
+                ...
+            runtime-linux/
+                ...
+        ```
 
 1. Install dependencies:
     ```sh
@@ -24,20 +34,20 @@
 
 3. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
 
-    **NOTE**: if the MQTT server is unsecured, you should ```touch mqtt_pwd.txt```.
+    **NOTE**: if the MQTT server is unsecured (i.e. a default local install of mosquitto), you can just ```touch mqtt_pwd.txt```.
 
 4. Build benchmarks:
 
-    - ```make```, ```make wasm```: build wasm programs; saved in ```./wasm```.
-    - ```make aot```: build wasm apps into AOT; saved in ```./aot```.
+    - ```make wasm```: build wasm programs; saved to ```./wasm```.
+    - ```make rustpython```: copy rustpython to ```./wasm``` for distribution or AOT compilation.
+    - ```make aot```: build wasm apps into AOT; saved in ```./aot```. **NOTE**: this can take a very long time, especially if rustpython is included.
     - ```make clean```: remove ```./wasm``` and ```./aot```.
 
 ## Usage
 
-1. Start the runtime using a known name. For example, if ```arena-runtime-linux``` is set up in the same directory as ```runtime-benchmarks``` with local ARTS and MQTT, you can use the following command:
-
+1. Start the runtime using a known name. For example, if ```runtime-linux``` is set up in the same directory as ```benchmarks``` with a local orchestrator and MQTT server, you can use the following command:
     ```sh
-    ../arena-runtime-linux/runtime --host=localhost:1883 --name=test --dir=. --appdir=.
+    ../runtime-linux/runtime --host=localhost:1883 --name=test --dir=. --appdir=.
     ``` 
 
 2. Run the ```run.py``` script, for example:
@@ -48,15 +58,32 @@
 ## Available Options
 
 ```
-usage: run.py [-h] [--type TYPE] [--path PATH [PATH ...]] [--argv ARGV [ARGV ...]]
+usage: run.py [-h] [--arts ARTS] [--arts_port ARTS_PORT] [--mqtt MQTT]
+              [--mqtt_port MQTT_PORT] [--username USERNAME] [--pwd PWD] [--ssl]
+              [--type TYPE] [--path PATH [PATH ...]] [--argv ARGV [ARGV ...]]
               [--runtime RUNTIME [RUNTIME ...]] [--env ENV [ENV ...]] [--aot]
               [--mode MODE] [--time TIME] [--mean_size MEAN_SIZE] [--alpha ALPHA]
-              [--n N] [--delay DELAY] [--host HOST] [--port PORT]
-              [--username USERNAME] [--pwd PWD] [--use_ssl] [--arts ARTS]
-              [--arts_port ARTS_PORT]
+              [--n N] [--delay DELAY] [--config CONFIG]
 
 optional arguments:
   -h, --help            show this help message and exit
+  --config CONFIG       Config file to load; priority is (1) explicitly passed
+                        args, (2) config file, (3) defaults
+
+ARTS Options:
+  --arts ARTS           ARTS host
+  --arts_port ARTS_PORT
+                        ARTS port
+
+MQTT Options:
+  --mqtt MQTT           MQTT Host address
+  --mqtt_port MQTT_PORT
+                        MQTT port
+  --username USERNAME   Username
+  --pwd PWD             Password file
+  --ssl                 Use SSL (mqtt-secure)
+
+Benchmark Options:
   --type TYPE           PY or WA
   --path PATH [PATH ...]
                         File path(s) to execute
@@ -71,21 +98,9 @@ optional arguments:
   --mean_size MEAN_SIZE
                         Prior mean message size (used as input to dirichlet
                         process)
-  --alpha ALPHA         Dirichlet Process 'new table' parameter alpha
+  --alpha ALPHA         Dirichlet Process "new table" parameter alpha
   --n N                 Number of iterations to test for active profiling mode
   --delay DELAY         Delay between iterations for active/timed profiling mode
-
-MQTT Options:
-  --host HOST           Host address
-  --port PORT           Host port
-  --username USERNAME   Username
-  --pwd PWD             Password file
-  --use_ssl             Use SSL (mqtt-secure)
-
-ARTS Options:
-  --arts ARTS           ARTS host
-  --arts_port ARTS_PORT
-                        ARTS port
 ```
 
 Additional notes:

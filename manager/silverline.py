@@ -1,4 +1,4 @@
-"""ARTS messages."""
+"""SilverLine system interface."""
 
 import json
 import uuid
@@ -9,8 +9,8 @@ from threading import Semaphore
 import paho.mqtt.client as mqtt
 
 
-class ARTSInterface(mqtt.Client):
-    """ARTS Interface.
+class SilverLine(mqtt.Client):
+    """SilverLine Interface.
 
     Keyword Args
     ------------

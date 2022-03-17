@@ -5,7 +5,7 @@ import pandas as pd
 import subprocess
 from multiprocessing.pool import ThreadPool
 
-from manager import ARTSInterface, parse, parse_args
+from manager import SilverLine, parse, parse_args
 
 
 def _get_status(row, suffix):
@@ -73,7 +73,7 @@ def list_only(args):
     """Get runtimes from ARTS only."""
     print("Fetching runtimes...")
     try:
-        arts = ARTSInterface.from_args(args, connect=False)
+        arts = SilverLine.from_args(args, connect=False)
         runtime_dict = arts.get_runtimes()
         print("Received runtimes: {}".format(runtime_dict))
     except Exception as e:

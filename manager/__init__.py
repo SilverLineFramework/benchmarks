@@ -2,13 +2,13 @@
 
 from . import parse
 from .parse import parse_args
-from .arts import ARTSInterface
+from .silverline import SilverLine
 from .dp import DirichletProcess
 from .active import ActiveProfiler, TimedProfiler
 
 
 __all__ = [
-    "make_parser", "args", "ARTSInterface",
+    "parse_args", "parse", "SilverLine",
     "DirichletProcess",
     "ActiveProfiler", "TimedProfiler",
     "benchmark_args"

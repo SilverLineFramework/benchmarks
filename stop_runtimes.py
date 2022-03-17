@@ -1,6 +1,6 @@
 """Stop all runtimes by sending a DELETE_RUNTIME request."""
 
-from manager import ARTSInterface, parse, parse_args
+from manager import SilverLine, parse, parse_args
 
 
 def _arg(parser):
@@ -11,7 +11,7 @@ def _arg(parser):
 
 
 args = parse_args(parse.mqtt, parse.arts, _arg)
-arts = ARTSInterface.from_args(args)
+arts = SilverLine.from_args(args)
 runtimes = arts.get_runtimes()
 if len(args.runtime) > 0:
     for rt in args.runtime:

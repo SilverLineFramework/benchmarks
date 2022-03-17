@@ -78,7 +78,7 @@ def timed_round(args, arts, modules):
 if __name__ == '__main__':
 
     args = parse_args(parse.arts, parse.mqtt, parse.benchmark)
-    arts = manager.ARTSInterface.from_args(args)
+    arts = manager.SilverLine.from_args(args)
 
     tqdm.write("[Profiling] {} Runtimes: {}".format(
         len(args.runtime), " ".join(args.runtime)))
