@@ -58,11 +58,12 @@ def mqtt(parser):
     g.set_defaults(ssl=False)
 
 
-def arts(parser):
-    """Args for ARTS HTTP interface."""
-    g = parser.add_argument_group("ARTS Options")
-    g.add_argument("--arts", help="ARTS host", default="localhost")
-    g.add_argument("--arts_port", help="ARTS port", default=8000)
+def http(parser):
+    """Args for HTTP interface."""
+    g = parser.add_argument_group("HTTP Options")
+    g.add_argument(
+        "--http", help="Orchestrator HTTP hostname", default="localhost")
+    g.add_argument("--http_port", help="Orchestrator HTTP port", default=8000)
 
 
 def cluster(parser):

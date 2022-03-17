@@ -77,7 +77,7 @@ def timed_round(args, arts, modules):
 
 if __name__ == '__main__':
 
-    args = parse_args(parse.arts, parse.mqtt, parse.benchmark)
+    args = parse_args(parse.http, parse.mqtt, parse.benchmark)
     arts = manager.SilverLine.from_args(args)
 
     tqdm.write("[Profiling] {} Runtimes: {}".format(

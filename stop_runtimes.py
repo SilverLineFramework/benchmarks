@@ -10,7 +10,7 @@ def _arg(parser):
         help="Runtimes to stop; if empty, stops all runtimes.", default=[])
 
 
-args = parse_args(parse.mqtt, parse.arts, _arg)
+args = parse_args(parse.mqtt, parse.http, _arg)
 arts = SilverLine.from_args(args)
 runtimes = arts.get_runtimes()
 if len(args.runtime) > 0:

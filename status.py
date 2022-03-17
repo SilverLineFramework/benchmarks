@@ -55,7 +55,7 @@ def status_table(args):
 
     print("Fetching runtimes...")
     try:
-        arts = ARTSInterface.from_args(args, connect=False)
+        arts = SilverLine.from_args(args, connect=False)
         rt_dict = arts.get_runtimes()
         print("Received runtimes: {}".format(rt_dict))
         runtimes = [row["Device"] in rt_dict for _, row in targets.iterrows()]
@@ -82,7 +82,7 @@ def list_only(args):
 
 if __name__ == '__main__':
 
-    args = parse_args(parse.mqtt, parse.arts, parse.cluster)
+    args = parse_args(parse.mqtt, parse.http, parse.cluster)
     try:
         status_table(args)
     except FileNotFoundError:

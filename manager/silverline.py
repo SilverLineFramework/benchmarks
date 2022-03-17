@@ -14,14 +14,14 @@ class SilverLine(mqtt.Client):
 
     Keyword Args
     ------------
-    host : str
+    mqtt : str
         MQTT host server address.
-    port : int
+    mqtt_port : int
         MQTT host server port.
-    arts : str
-        ARTS HTTP server address.
-    arts_port : int
-        ARTS HTTP server port.
+    http : str
+        Orchestrator HTTP server address.
+    http_port : int
+        Orchestrator HTTP server port.
     pwd : str
         MQTT password file
     username : str
@@ -33,13 +33,12 @@ class SilverLine(mqtt.Client):
     """
 
     def __init__(
-            self, host="localhost", port=1883, pwd="mqtt_pwd.txt",
-            username="cli", use_ssl=False, arts="localhost", arts_port=8000,
+            self, mqtt="localhost", mqtt_port=1883, pwd="mqtt_pwd.txt",
+            username="cli", use_ssl=False, http="localhost", http_port=8000,
             connect=True):
 
         self.callbacks = {}
-        self.host = host
-        self.arts_api = "http://{}:{}/arts-api/v1".format(arts, arts_port)
+        self.arts_api = "http://{}:{}/arts-api/v1".format(http, http_port)
 
         super().__init__("Benchmarking")
 
@@ -52,7 +51,7 @@ class SilverLine(mqtt.Client):
             self.username_pw_set(username, passwd)
             if use_ssl:
                 self.tls_set(cert_reqs=ssl.CERT_NONE)
-            self.connect(host, port, 60)
+            self.connect(mqtt, mqtt_port, 60)
 
             # Waiting for on_connect to release
             self.loop_start()
@@ -62,9 +61,9 @@ class SilverLine(mqtt.Client):
     def from_args(cls, args, connect=True):
         """Construct from argparse.ArgumentParser."""
         return cls(
-            host=args.mqtt, port=args.mqtt_port, pwd=args.pwd,
-            username=args.username, use_ssl=args.ssl, arts=args.arts,
-            arts_port=args.arts_port, connect=connect)
+            mqtt=args.mqtt, mqtt_port=args.mqtt_port, pwd=args.pwd,
+            username=args.username, use_ssl=args.ssl, http=args.http,
+            http_port=args.http_port, connect=connect)
 
     def on_connect(self, mqttc, obj, flags, rc):
         """On connect callback."""
