@@ -1,6 +1,6 @@
 /**
- * @file runtime.c
- * @brief Replacement main file with runtime API hooks.
+ * @file active.c
+ * @brief Main loop for active profiling.
  */
 
 #include <stdlib.h>
@@ -65,11 +65,6 @@ static unsigned long hash(char *str) {
 
 /** Loop function; should be called into by main */
 int loop(int argc, char **argv, int (*func)(int, char **)) {
-
-    if (argc < 1) {
-        printf("argc should be at least 1!\n");
-        exit(-1);
-    }
 
     dp_t dp;
     dp_init(&dp, hash(argv[0]));

@@ -14,7 +14,8 @@ WASMCFLAGS+= -Wl,--export=main
 WASMCFLAGS+= -Wl,--export=_start
 WASMCFLAGS+= -Wl,--allow-undefined
 
-COMMON= polybench.c ../common/runtime.c ../common/dp.c
+# COMMON= polybench.c ../common/active.c ../common/dp.c
+COMMON= polybench.c ../common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
@@ -30,8 +31,14 @@ clean:
 	rm -r $(OUT_DIR)
 
 dir:
-	mkdir -p $(OUT_DIR)
+	mkdir -p $(OUT_DIR)/small
+	mkdir -p $(OUT_DIR)/medium
+	mkdir -p $(OUT_DIR)/large
 
 $(WASM): %.wasm : %.c
-	$(COMPILE) -D TUNED_DATASET $^ \
-		-o $(OUT_DIR)/$(notdir $(basename $@)).wasm
+	$(COMPILE) -D SMALL_DATASET $^ \
+		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
+	$(COMPILE) -D MEDIUM_DATASET $^ \
+		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
+	$(COMPILE) -D LARGE_DATASET $^ \
+		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm

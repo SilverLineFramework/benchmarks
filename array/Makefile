@@ -11,7 +11,7 @@ WASMCFLAGS+= -Wl,--export=main
 WASMCFLAGS+= -Wl,--export=_start
 WASMCFLAGS+= -Wl,--allow-undefined
 
-COMMON= ../common/runtime.c ../common/dp.c
+COMMON= ../common/active.c ../common/dp.c
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
