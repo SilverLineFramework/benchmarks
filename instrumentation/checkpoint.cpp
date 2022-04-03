@@ -54,9 +54,9 @@ namespace
 
 
     virtual bool doInitialization(Loop* L, LPPassManager &LPM) {
-      outs() << "-------------------\n";
-      outs() << getPassName().str() << " : " << L << "\n";
-      outs() << "-------------------\n";
+      //outs() << "-------------------\n";
+      //outs() << getPassName().str() << " : " << L << "\n";
+      //outs() << "-------------------\n";
 
       current_loop = L;
       current_loop_depth = L->getLoopDepth();
@@ -82,7 +82,7 @@ namespace
     {
       char name[] = "runtime_ctr";
       StringRef global_strref(name);
-      Type* int64_type = Type::getInt32Ty(current_module->getContext());
+      Type* int64_type = Type::getInt64Ty(current_module->getContext());
 
       // Get a value 0, 1
       Constant* zero = ConstantInt::get(int64_type, 0);

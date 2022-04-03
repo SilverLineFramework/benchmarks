@@ -12,7 +12,7 @@ instrument=0
 wasm: dir tests polybench cortex array
 
 wasm-instrument: instrument=1
-wasm-instrument: dir instrument tests polybench cortex array
+wasm-instrument: dir instrumentation tests polybench cortex array
 
 dir:
 	mkdir -p $(OUT_DIR)
