@@ -7,7 +7,14 @@ AOT_SRCS:=$(shell find wasm -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
+# Instrumentation variables
 instrument=0
+export INST_DIR=../instrumentation
+export XCLANG_OPTS = -Xclang -disable-O0-optnone
+export CLANG_OPTS = -O0 -emit-llvm
+export OPT_SRC_OPTS = -mem2reg -loop-simplify
+
+
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir tests polybench cortex array
 

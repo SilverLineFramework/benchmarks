@@ -14,13 +14,7 @@ WASMCFLAGS+= -Wl,--allow-undefined
 
 ## Instrumenting vars
 instrument=0
-
-INST_DIR=../instrumentation
 OUT_LL_DIR=../ll/tests
-
-XCLANG_OPTS = -Xclang -disable-O0-optnone
-CLANG_OPTS = -O0 -emit-llvm
-OPT_SRC_OPTS = -mem2reg -loop-simplify
 ##
 
 
