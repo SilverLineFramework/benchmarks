@@ -17,12 +17,11 @@ instrument=0
 OUT_LL_DIR=../ll/tests
 ##
 
-
 SRCS := $(shell ls *.c)
 WASM := $(SRCS:%.c=%.wasm)
 
 .PHONY: all clean dir
-.SECONDARY: $(wildcard $(OUT_LL_DIR)/*.inst.ll) $(wildcard $(OUT_LL_DIR)/%.ll)
+.SECONDARY: $(wildcard $(OUT_LL_DIR)/*.inst.ll)
 
 all: dir $(WASM)
 
@@ -36,6 +35,7 @@ dir:
 
 %.wasm : %.c
 	${WASMCC} ${WASMCFLAGS} $^ -o $(OUT_DIR)/$@
+
 
 # Instrumenting code
 else
@@ -56,6 +56,7 @@ $(OUT_LL_DIR)/%.inst.ll: $(OUT_LL_DIR)/%.ll
 # Get the source compiled down to LL
 $(OUT_LL_DIR)/%.ll: %.intll
 	opt $(OPT_SRC_OPTS) $^ -S -o $@
+	rm $^
 
 %.intll : %.c
 	$(WASMCC) $(XCLANG_OPTS) $(CLANG_OPTS) -S $^ -o $@
