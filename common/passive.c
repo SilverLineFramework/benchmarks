@@ -14,27 +14,41 @@ static char *path_join(char *a, char *b) {
     return res;
 }
 
+/** Subscribe to channels. */
+static void init_channels(int *in, int *out) {
+    char uuid_buf[37];
+    module_get_uuid(uuid_buf);
+
+    char *ch_in = path_join("benchmark/in", uuid_buf);
+    *in = ch_open(ch_in, CH_RDONLY, 0);
+    free(ch_in);
+
+    char *ch_out = path_join("benchmark/out", uuid_buf);
+    *out = ch_open(ch_out, CH_WRONLY, 0);
+    free(ch_out);
+}
+
+
 /** Loop function; should be called into by main */
 int loop(int argc, char **argv, int (*func)(int, char **)) {
 
     // Manual profiling mode
     period_set_flags(1);
 
-    char uuid_buf[37];
-    module_get_uuid(uuid_buf);
-    char *ch_ctrl = path_join("benchmark/in", uuid_buf);
-    int ctrl = ch_open(ch_ctrl, CH_RDONLY, 0);
-    free(ch_ctrl);
+    int data_in, data_out;
+    init_channels(&data_in, &data_out);
 
     // Module initialization always starts a period
     period_end();
 
     char buf[1];
     while (1) {
-        if(ch_read_msg(ctrl, buf, 1)) { break; }
+        if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         func(argc, argv);
         period_end();
     }
+    printf("Exiting...\n");
+    ch_write_msg(data_out, "done", 4);
     return 0;
 }

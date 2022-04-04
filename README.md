@@ -43,16 +43,18 @@
     - ```make aot```: build wasm apps into AOT; saved in ```./aot```. **NOTE**: this can take a very long time, especially if rustpython is included.
     - ```make clean```: remove ```./wasm``` and ```./aot```.
 
+5. Clone the [Python Client](https://github.com/SilverLineFramework/libsilverline), which includes scripts for launching benchmarks.
+
 ## Usage
 
 1. Start the runtime using a known name. For example, if ```runtime-linux``` is set up in the same directory as ```benchmarks``` with a local orchestrator and MQTT server, you can use the following command:
     ```sh
-    ../runtime-linux/runtime --host=localhost:1883 --name=test --dir=. --appdir=.
+    ./runtime-linux/runtime --host=localhost:1883 --name=test --dir=benchmarks --appdir=benchmarks
     ``` 
 
-2. Run the ```run.py``` script, for example:
+2. Run the ```run.py``` script (from the [Python Client](https://github.com/SilverLineFramework/libsilverline)), for example:
     ```sh
-    python run.py --path wasm/tests/helloworld.wasm --runtime test
+    python libsilverline/run.py --path wasm/tests/helloworld.wasm --runtime test
     ```
 
 ## Available Options
