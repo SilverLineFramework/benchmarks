@@ -39,14 +39,14 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     init_channels(&data_in, &data_out);
 
     // Module initialization always starts a period
-    period_end();
+    period_yield();
 
     char buf[1];
     while (1) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         func(argc, argv);
-        period_end();
+        period_yield();
     }
     printf("Exiting...\n");
     ch_write_msg(data_out, "done", 4);

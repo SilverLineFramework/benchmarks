@@ -116,7 +116,7 @@ Additional notes:
 ## Benchmarks
 
 - ```tests```: Tests for basic functionality. Currently unmaintained.
-- ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/) wrapped in distributed runtime interfaces; simulates output data using a dirichlet process ```alpha=1``` with ```geometric(0.001)``` prior. Polybench dataset sizes are manually tuned to take approximately 1 second per iteration on an i7-1165G7 @ 2.80GHz.
+- ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/) wrapped in distributed runtime interfaces; simulates output data using a dirichlet process ```alpha=1``` with ```geometric(0.001)``` prior.
 - ```cortex```: Miscellaneous machine learning benchmarks manually ported from [UCSD Cortex Suite](https://cseweb.ucsd.edu/groups/bsg/).
 
 ## Additional Scripts
