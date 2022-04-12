@@ -2,6 +2,7 @@
 WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
 OUT_DIR=./wasm
 AOT_DIR=./aot
+LL_DIR=./ll
 
 AOT_SRCS:=$(shell find wasm -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
@@ -44,7 +45,8 @@ rustpython:
 clean:
 	rm -rf $(OUT_DIR)
 	rm -rf $(AOT_DIR)
-	make -C instrumentation clean
+	rm -rf $(LL_DIR)
+	#make -C instrumentation clean
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)
