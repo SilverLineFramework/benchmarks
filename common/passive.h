@@ -8,4 +8,8 @@
 
 int loop(int argc, char **argv, int (*func)(int, char **));
 
+#if !defined REPEAT
+#define REPEAT 1
+#endif
+
 #endif

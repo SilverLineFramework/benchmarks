@@ -23,10 +23,14 @@
 
 #  ifdef SMALL_DATASET
 #   define N 90
+#undef REPEAT
+#define REPEAT 20
 #  endif
 
 #  ifdef MEDIUM_DATASET
 #   define N 250
+#undef REPEAT
+#define REPEAT 2
 #  endif
 
 #  ifdef LARGE_DATASET

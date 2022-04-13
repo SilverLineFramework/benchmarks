@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "api.h"
+#include "passive.h"
 
 /** Join topic path. */
 static char *path_join(char *a, char *b) {
@@ -45,7 +46,9 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     while (1) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
-        func(argc, argv);
+        for(int i = 0; i < REPEAT; i++) {
+            func(argc, argv);
+        }
         period_end();
     }
     printf("Exiting...\n");

@@ -25,11 +25,15 @@
 #  ifdef SMALL_DATASET
 #   define M 116
 #   define N 124
+#undef REPEAT
+#define REPEAT 20
 #  endif
 
 #  ifdef MEDIUM_DATASET
 #   define M 390
 #   define N 410
+#undef REPEAT
+#define REPEAT 2
 #  endif
 
 #  ifdef LARGE_DATASET

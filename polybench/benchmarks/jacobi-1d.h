@@ -25,11 +25,15 @@
 #  ifdef SMALL_DATASET
 #   define TSTEPS 40
 #   define N 120
+#undef REPEAT
+#define REPEAT 50
 #  endif
 
 #  ifdef MEDIUM_DATASET
 #   define TSTEPS 100
 #   define N 400
+#undef REPEAT
+#define REPEAT 10
 #  endif
 
 #  ifdef LARGE_DATASET
