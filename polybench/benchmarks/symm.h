@@ -25,8 +25,6 @@
 #  ifdef SMALL_DATASET
 #   define M 60
 #   define N 80
-#undef REPEAT
-#define REPEAT 20
 #  endif
 
 #  ifdef MEDIUM_DATASET

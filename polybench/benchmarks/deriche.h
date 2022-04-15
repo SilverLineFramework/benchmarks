@@ -25,8 +25,6 @@
 #  ifdef SMALL_DATASET
 #   define W 192
 #   define H 128
-#undef REPEAT
-#define REPEAT 10
 #  endif
 
 #  ifdef MEDIUM_DATASET

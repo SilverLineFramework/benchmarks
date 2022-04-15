@@ -25,8 +25,6 @@
 #  ifdef SMALL_DATASET
 #   define TSTEPS 40
 #   define N 90
-#undef REPEAT
-#define REPEAT 3
 #  endif
 
 #  ifdef MEDIUM_DATASET

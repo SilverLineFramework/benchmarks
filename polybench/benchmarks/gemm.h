@@ -27,8 +27,6 @@
 #   define NI 60
 #   define NJ 70
 #   define NK 80
-#undef REPEAT
-#define REPEAT 10
 #  endif
 
 #  ifdef MEDIUM_DATASET

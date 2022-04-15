@@ -46,9 +46,7 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     while (1) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
-        for(int i = 0; i < REPEAT; i++) {
-            func(argc, argv);
-        }
+        func(argc, argv);
         period_end();
         period_yield();
     }

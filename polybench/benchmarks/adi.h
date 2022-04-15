@@ -25,8 +25,6 @@
 #  ifdef SMALL_DATASET
 #   define TSTEPS 40
 #   define N 60
-#undef REPEAT
-#define REPEAT 2
 #  endif
 
 #  ifdef MEDIUM_DATASET
@@ -48,9 +46,6 @@
 #   define TSTEPS 200
 #   define N 500
 #  endif
-
-
-
 
 #endif /* !(TSTEPS N) */
 

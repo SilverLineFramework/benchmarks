@@ -27,8 +27,6 @@
 #   define NQ 20
 #   define NR 25
 #   define NP 30
-#undef REPEAT
-#define REPEAT 4
 #  endif
 
 #  ifdef MEDIUM_DATASET
