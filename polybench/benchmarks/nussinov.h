@@ -23,6 +23,8 @@
 
 #  ifdef SMALL_DATASET
 #   define N 180
+#undef REPEAT
+#define REPEAT 3
 #  endif
 
 #  ifdef MEDIUM_DATASET

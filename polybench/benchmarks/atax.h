@@ -26,7 +26,7 @@
 #   define M 116
 #   define N 124
 #undef REPEAT
-#define REPEAT 10
+#define REPEAT 30
 #  endif
 
 #  ifdef MEDIUM_DATASET

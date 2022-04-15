@@ -26,7 +26,7 @@
 #   define W 192
 #   define H 128
 #undef REPEAT
-#define REPEAT 2
+#define REPEAT 10
 #  endif
 
 #  ifdef MEDIUM_DATASET

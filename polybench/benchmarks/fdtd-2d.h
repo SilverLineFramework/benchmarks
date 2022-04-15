@@ -27,6 +27,8 @@
 #   define TMAX 40
 #   define NX 60
 #   define NY 80
+#undef REPEAT
+#define REPEAT 4
 #  endif
 
 #  ifdef MEDIUM_DATASET

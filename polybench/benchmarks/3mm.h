@@ -31,6 +31,8 @@
 #   define NK 60
 #   define NL 70
 #   define NM 80
+#undef REPEAT
+#define REPEAT 3
 #  endif
 
 #  ifdef MEDIUM_DATASET
