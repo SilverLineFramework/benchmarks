@@ -47,7 +47,6 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         func(argc, argv);
-        period_end();
         period_yield();
     }
     printf("Exiting...\n");
