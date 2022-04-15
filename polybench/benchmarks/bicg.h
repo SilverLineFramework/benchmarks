@@ -30,8 +30,6 @@
 #  ifdef MEDIUM_DATASET
 #   define M 390
 #   define N 410
-
-#define REPEAT 2
 #  endif
 
 #  ifdef LARGE_DATASET

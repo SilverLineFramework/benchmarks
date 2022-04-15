@@ -27,8 +27,6 @@
 
 #  ifdef MEDIUM_DATASET
 #   define N 400
-
-#define REPEAT 3
 #  endif
 
 #  ifdef LARGE_DATASET
