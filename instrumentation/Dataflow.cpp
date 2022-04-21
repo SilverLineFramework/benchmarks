@@ -245,31 +245,19 @@ namespace llvm {
         BB_state[BB].out = transfer_fn(BB, tempSet);
       }
 
-      if (BB_state[BB].out != prev_out)
-      {
-        // If OUT[BB] changed, insert successors to queue
-        for (BasicBlock *succ : successors(BB))
+      // If OUT[BB] stayed the same, add untraversed successors to queue
+      for (BasicBlock *succ : successors(BB))
+        if (BB_state[succ].traversed == false && L->contains(succ))
           traverse_queue.push(succ);
-      }
-      else
-      {
-        // If OUT[BB] stayed the same, add untraversed successors to queue
-        for (BasicBlock *succ : successors(BB))
-          if (BB_state[succ].traversed == false)
-            traverse_queue.push(succ);
-      }
     }
   }
+  template void DataflowAnalysis<uint32_t>::run_iterations_loop(Loop* L, Direction  _direction, Granularity _granularity);
   template void DataflowAnalysis<BitVector>::run_iterations_loop(Loop* L, Direction  _direction, Granularity _granularity);
 
 
 
 
-
-
-
-
-
+  /*
   template<typename DomainSet>
   void DataflowAnalysis<DomainSet>::print_expression_state(Function &F, std::vector<Expression> univ_set) {
     outs() << "\nIR:\n\n";
@@ -301,10 +289,10 @@ namespace llvm {
     }
   }
   template void DataflowAnalysis<BitVector>::print_expression_state(Function &F, std::vector<Expression> univ_set);
+  */
 
 
-
-
+  /*
   template<typename DomainSet>
   void DataflowAnalysis<DomainSet>::print_variable_state(Function &F, std::vector<Value *> univ_set) {
     outs() << "\nIR:\n\n";
@@ -365,9 +353,9 @@ namespace llvm {
     }
   }
   template void DataflowAnalysis<BitVector>::print_variable_state(Function &F, std::vector<Value *> univ_set);
+  */
 
-
-
+  /*
   template<typename DomainSet>
   void DataflowAnalysis<DomainSet>::print_variable_state_loop(Loop* L, std::vector<Value *> univ_set) {
     outs() << "\nIR:\n\n";
@@ -428,7 +416,7 @@ namespace llvm {
     }
   }
   template void DataflowAnalysis<BitVector>::print_variable_state_loop(Loop* L, std::vector<Value *> univ_set);
-
+  */
 
 
 
@@ -449,5 +437,6 @@ namespace llvm {
     return out;
   }
   template BitVector DataflowAnalysis<BitVector>::get_outs(Value *V, Granularity granularity);
+  template uint32_t DataflowAnalysis<uint32_t>::get_outs(Value *V, Granularity granularity);
 
 }

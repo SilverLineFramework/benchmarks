@@ -1,0 +1,133 @@
+// 15-745 Assignment 2: available.cpp
+// Group: Nishanth Subramanian (nsubram2) and Arjun Ramesh (arjunr2)
+////////////////////////////////////////////////////////////////////////////////
+
+#include "llvm/IR/Function.h"
+#include "llvm/Pass.h"
+#include "llvm/Analysis/LoopPass.h"
+#include "llvm/Analysis/ValueTracking.h"
+#include "llvm/IR/Constants.h"
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Type.h"
+#include "llvm/Support/raw_ostream.h"
+
+#include "Dataflow.h"
+#include "Global.h"
+//#include "support.h"
+
+using namespace llvm;
+using namespace std;
+
+namespace
+{
+
+  std::vector<Value *> universal_blocks;
+  std::map<BasicBlock*, bool> processed_blocks;
+
+  class WeightedCheckpoint : public LoopPass
+  {
+    Loop* current_loop;
+    unsigned current_loop_depth;
+    Module* current_module;
+
+  public:
+
+    static char ID;
+    WeightedCheckpoint() : LoopPass(ID) {}
+
+    DataflowAnalysis<uint32_t> problem;
+    
+    static uint32_t transfer_fn(Value *V, uint32_t in)
+    {
+      Instruction *I = dyn_cast<Instruction>(V);
+      // Weight instructions appropriately...
+      
+      return in + 1;
+    }
+
+    // Here, Meet is Union operator (OR)
+    static uint32_t meet(std::vector<uint32_t> ins)
+    {
+      uint32_t max = *max_element(ins.begin(), ins.end());
+      return max;
+    }
+
+
+    virtual bool doInitialization(Loop* L, LPPassManager &LPM) {
+      //outs() << "-------------------\n";
+      //outs() << getPassName().str() << " : " << L << "\n";
+      //outs() << "-------------------\n";
+      outs() << "Do-Init loop";
+      return false;
+    }
+
+    virtual bool runOnLoop(Loop* L, LPPassManager &LPM)
+    {
+
+      // Initialization
+      current_loop = L;
+      current_loop_depth = L->getLoopDepth();
+      current_module = L->getHeader()->getModule();
+
+      universal_blocks.clear();
+      for (auto &BB : L->blocks()) {
+        // If block has not been processed, add
+        if (processed_blocks.find(BB) == processed_blocks.end()) {
+          processed_blocks[BB] = true;
+          universal_blocks.push_back(BB);
+        }
+      }
+
+
+      uint32_t top = 0;
+      uint32_t entry = 0;
+      problem.set(&transfer_fn, &meet, entry, top);
+      problem.run_iterations_loop(L, FORWARDS, INSTRUCTIONS);
+
+      outs() << "\nIR:\n";
+      for (auto &BB : universal_blocks) {
+        outs() << *BB << "\n";
+        outs() << "<----- " << problem.get_outs(BB, BASIC_BLOCKS) << " ---->\n";
+      }
+
+
+      /*
+      Type* int64_type = Type::getInt64Ty(current_module->getContext());
+      GlobalVariable* global_cnt = 
+          create_int_global(int64_type, "runtime_ctr", current_module);
+
+      if (global_cnt == nullptr) {
+        errs() << "Global already exists!\n";
+      }
+      Constant* one = ConstantInt::get(int64_type, 1);
+      
+      Instruction* Inst = L->getHeader()->getFirstNonPHI();
+      IRBuilder<> Builder(Inst);
+      LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".prof.ld");
+      Value* inc = Builder.CreateAdd(li, one, ".prof.add");
+      StoreInst* si = Builder.CreateStore(inc, global_cnt);
+      */
+      // Modifies the incoming Function.
+      return true;
+    }
+
+    virtual bool doFinalization() {
+      outs() << "Completed Pass!\n";
+      outs() << "-------------------\n";
+      return false;
+    }
+
+    virtual void getAnalysisUsage(AnalysisUsage &AU) const
+    {
+      AU.setPreservesAll();
+    }
+
+    const DataflowAnalysis<uint32_t> &getWeightedCheckpointResult() const { return problem; }
+    DataflowAnalysis<uint32_t> &getWeightedCheckpointResult() { return problem; }
+
+  };
+
+  char WeightedCheckpoint::ID = 0;
+  RegisterPass<WeightedCheckpoint> weighted_checkpoint("weighted-checkpoint",
+                                       "Loop WeightedCheckpointing Pass");
+}

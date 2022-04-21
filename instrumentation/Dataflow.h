@@ -13,7 +13,6 @@
 #include <vector>
 #include <set>
 
-#include "available-support.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/Analysis/LoopPass.h"
@@ -94,7 +93,7 @@ namespace llvm
     void run_iterations_loop(Loop* L, Direction _direction, Granularity granularity);
 
     // Given a function, print final state of expressions at every program point
-    void print_expression_state(Function &F, std::vector<Expression> univ_set);
+    //void print_expression_state(Function &F, std::vector<Expression> univ_set);
 
     // Given a function, print final state of values at every program point
     void print_variable_state(Function &F, std::vector<Value *> univ_set);
