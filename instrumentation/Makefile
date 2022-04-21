@@ -14,11 +14,11 @@ SRC_LL := $(SRC_C:.c=.ll)
 
 
 
-all: checkpoint.so null.so dyn_inst_cnt.so $(SRC_LL)
+all: malloc-checkpoint.so checkpoint.so null.so dyn_inst_cnt.so $(SRC_LL)
 
 available-support.o: available-support.cpp available-support.h support.h
 
-%.so: %.o Dataflow.o available-support.o
+%.so: %.o #Dataflow.o available-support.o
 	$(CXX) -dylib -shared $^ -o $@
 
 %.ll: %.int.ll

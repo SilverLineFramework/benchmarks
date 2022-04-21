@@ -12,6 +12,7 @@
 #include "llvm/Support/raw_ostream.h"
 
 #include "Dataflow.h"
+#include "Global.h"
 #include "support.h"
 
 using namespace llvm;
@@ -80,28 +81,15 @@ namespace
 
     virtual bool runOnLoop(Loop* L, LPPassManager &LPM)
     {
-      char name[] = "runtime_ctr";
-      StringRef global_strref(name);
       Type* int64_type = Type::getInt64Ty(current_module->getContext());
+      GlobalVariable* global_cnt = 
+          create_int_global(int64_type, "runtime_ctr", current_module);
 
-      // Get a value 0, 1
-      Constant* zero = ConstantInt::get(int64_type, 0);
+      if (global_cnt == nullptr) {
+        errs() << "Global already exists!\n";
+      }
       Constant* one = ConstantInt::get(int64_type, 1);
       
-      GlobalVariable* global_cnt;
-      // Create global variable reference
-      if ((global_cnt = current_module->getNamedGlobal(global_strref)) == nullptr) {
-
-        //Constant* constant = current_module->getOrInsertGlobal(global_strref, Type::getInt64Ty(current_module->getContext()));
-        Constant* constant = current_module->getOrInsertGlobal(global_strref, int64_type, [&] {
-          return new GlobalVariable(*current_module, int64_type, false, GlobalVariable::ExternalLinkage, zero, global_strref);
-        });
-        global_cnt = dyn_cast<GlobalVariable>(constant);
-        global_cnt->setVisibility(GlobalValue::HiddenVisibility);
-        //global_cnt->setInitializer(global_cnt);
-      }
-
-
       Instruction* Inst = L->getHeader()->getFirstNonPHI();
       IRBuilder<> Builder(Inst);
       LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".prof.ld");
