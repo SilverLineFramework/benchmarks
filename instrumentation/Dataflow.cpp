@@ -175,6 +175,7 @@ namespace llvm {
     }
   }
   template void DataflowAnalysis<BitVector>::run_iterations(Function &F, Direction  _direction, Granularity _granularity);
+  template void DataflowAnalysis<uint32_t>::run_iterations(Function &F, Direction  _direction, Granularity _granularity);
 
 
 

@@ -12,8 +12,8 @@
 #include "llvm/Support/raw_ostream.h"
 
 #include "Dataflow.h"
+#include "function-weight.h"
 #include "Global.h"
-//#include "support.h"
 
 using namespace llvm;
 using namespace std;
@@ -36,13 +36,13 @@ namespace
     WeightedCheckpoint() : LoopPass(ID) {}
 
     DataflowAnalysis<uint32_t> problem;
-    
+
     static uint32_t transfer_fn(Value *V, uint32_t in)
     {
       Instruction *I = dyn_cast<Instruction>(V);
       // Weight instructions appropriately...
-      
-      return in + 1;
+      uint32_t weight = getInstructionWeight(I);
+      return in + weight;
     }
 
     // Here, Meet is Union operator (OR)
@@ -57,7 +57,7 @@ namespace
       //outs() << "-------------------\n";
       //outs() << getPassName().str() << " : " << L << "\n";
       //outs() << "-------------------\n";
-      outs() << "Do-Init loop";
+      outs() << "Do-Init loop\n";
       return false;
     }
 
@@ -120,6 +120,7 @@ namespace
     virtual void getAnalysisUsage(AnalysisUsage &AU) const
     {
       AU.setPreservesAll();
+      AU.addRequiredTransitive<FunctionWeight>();
     }
 
     const DataflowAnalysis<uint32_t> &getWeightedCheckpointResult() const { return problem; }

@@ -3,7 +3,7 @@
 uint64_t volatile cnt = 0;
 
 int main() {
-  int n = 30000;
+  int n = 300;
   int a = 1;
   int b = 2;
   int c = 3;
@@ -19,6 +19,7 @@ int main() {
     for (int j = 0; j < n; j++) {
       k = b + c;
       sum2 += k;
+      sum2 += fn(j);
     }
     if (!(i % 5000)) {
       printf("Checkpoint!\n");
@@ -26,6 +27,16 @@ int main() {
   }
   printf("%d\n", sum + sum2);
   printf("Instruction Count: %llu\n", cnt); 
+  fn(c);
 
   return sum + sum2;
+}
+
+
+int fn(int j) {
+  int sum = 0;
+  for (int i = 0; i < j; i++) {
+    sum += i;
+  }
+  return sum;
 }
