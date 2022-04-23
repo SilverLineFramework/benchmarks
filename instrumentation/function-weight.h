@@ -6,9 +6,11 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstVisitor.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/IR/ValueSymbolTable.h"
 #include "llvm/IR/InstIterator.h"
-#include "llvm/IR/ValueMap.h"
+#include "llvm/Analysis/CallGraph.h"
+#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/ADT/PostOrderIterator.h"
+
 
 #include "Dataflow.h"
 #include "support.h"
@@ -18,7 +20,7 @@ using namespace llvm;
 
 namespace {
   std::map<Function*, uint32_t> fn_straight_line_weight;
-  std::map<Function*, bool> processed_fns;
+  
   LoopInfo* LI;
 
 
@@ -108,17 +110,17 @@ namespace {
 
 
 
-  class FunctionWeight : public FunctionPass {
+  class FunctionWeight : public ModulePass {
   public:
     static char ID;
-    FunctionWeight() : FunctionPass(ID) { }
+    FunctionWeight() : ModulePass(ID) { }
     ~FunctionWeight() { }
 
 
     // We don't modify the program, so we preserve all analyses
     void getAnalysisUsage(AnalysisUsage &AU) const override {
       AU.setPreservesAll();
-      AU.addRequiredTransitive<LoopInfoWrapperPass>();
+      AU.addRequired<LoopInfoWrapperPass>();
     }
 
 
@@ -127,7 +129,6 @@ namespace {
       BasicBlock *B = dyn_cast<BasicBlock>(V);
       // Ignore blocks in Loop (null for blocks_)
       if (LI->getLoopFor(B)) {
-        //outs() << "Gets in here!: " << *B << "\n";
         return in;
       }
       // Compute straight-line weight
@@ -148,50 +149,47 @@ namespace {
       return max;
     }
 
-    // Do some initialization
-    bool doInitialization(Module &M) override {
-      errs() << "15745 Function Information Pass (straight line code)\n\n"; 
-      return false;
-    }
-
-    bool doFinalization(Module &M) override {
-      errs() << "End of Function Pass\n";
-      for (auto const& it : fn_straight_line_weight) {
-        outs() << "Found fn: " << it.first->getName() << "  Weight: " << it.second << "\n";
-      }
-      return false;
-    }
-
     // Print output for each function
-    bool runOnFunction(Function &F) override {
-      // outs() << "name" << ",\t" << "args" << ",\t" << "calls" << ",\t" << "bbs" << ",\t" << "insts" << "\n";
-      DataflowAnalysis<uint32_t> problem;
-      LI = &getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
-      if (!F.isDeclaration()) {
-        fn_straight_line_weight[&F] = 0;
+    bool runOnModule(Module &M) override {
+      CallGraph CG = CallGraph(M);
+      outs() << "Module: " << M.getName() <<"\n";
+      for (auto node = po_begin(&CG); node != po_end(&CG); ++node) {
+        if (Function* F = node->getFunction()) {
+          outs() << "Found function: " << F->getName() << "\n";
+          if (!F->isDeclaration()) {
+            // Run loop info pass
+            fn_straight_line_weight[F] = 0;
+            LI = &getAnalysis<LoopInfoWrapperPass>(*F).getLoopInfo();
 
-        // Run dataflow
-        uint32_t top = 0;
-        uint32_t entry = 0;
-        problem.set(&transfer_fn, &meet, entry, top);
-        problem.run_iterations(F, FORWARDS, BASIC_BLOCKS);
+            // Run dataflow
+            DataflowAnalysis<uint32_t> problem;
+            uint32_t top = 0;
+            uint32_t entry = 0;
+            problem.set(&transfer_fn, &meet, entry, top);
+            problem.run_iterations(*F, FORWARDS, BASIC_BLOCKS);
 
-        std::vector<uint32_t> exit_blocks_weight;
-        for (auto &BB : F) {
-          Instruction* I = BB.getTerminator();
-          if (ReturnInst *RI = dyn_cast<ReturnInst>(I)) {
-            uint32_t bw = problem.get_outs(&BB, BASIC_BLOCKS);
-            exit_blocks_weight.push_back(bw);
+            std::vector<uint32_t> exit_blocks_weight;
+            for (auto &BB : *F) {
+              Instruction* I = BB.getTerminator();
+              if (ReturnInst *RI = dyn_cast<ReturnInst>(I)) {
+                uint32_t bw = problem.get_outs(&BB, BASIC_BLOCKS);
+                exit_blocks_weight.push_back(bw);
+              }
+            }
+
+            uint32_t out_weight = *std::max_element(exit_blocks_weight.begin(), exit_blocks_weight.end());
+            fn_straight_line_weight[F] = out_weight;
+          }
+          // Declaration (external-function): set some constant weight
+          else {
+            outs() << "Declaration of " << F->getName() << "\n";
           }
         }
+      }
 
-        uint32_t out_weight = *std::max_element(exit_blocks_weight.begin(), exit_blocks_weight.end());
-        fn_straight_line_weight[&F] = out_weight;
-
-      } 
-      // Declaration (external-function): set some constant weight
-      else {
-        outs() << "Declaration of " << F.getName() << "\n";
+      outs() << "\nEnd of Module Pass\n";
+      for (auto const& it : fn_straight_line_weight) {
+        outs() << "Fn: " << it.first->getName() << "  Weight: " << it.second << "\n";
       }
 
       return false;
