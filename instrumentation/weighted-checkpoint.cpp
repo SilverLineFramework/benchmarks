@@ -21,14 +21,17 @@ using namespace std;
 namespace
 {
 
-  std::vector<Value *> universal_blocks;
   std::map<BasicBlock*, bool> processed_blocks;
+  std::vector<Value *> universal_blocks;
+  std::map<Loop*, uint32_t> loop_weights;
+
+  LoopInfo* LICP;
+  Loop* current_loop;
+  unsigned current_loop_depth;
+  Module* current_module;
 
   class WeightedCheckpoint : public LoopPass
   {
-    Loop* current_loop;
-    unsigned current_loop_depth;
-    Module* current_module;
 
   public:
 
@@ -40,9 +43,14 @@ namespace
     static uint32_t transfer_fn(Value *V, uint32_t in)
     {
       Instruction *I = dyn_cast<Instruction>(V);
-      // Weight instructions appropriately...
-      uint32_t weight = getInstructionWeight(I);
-      return in + weight;
+      if (LICP->getLoopFor(I->getParent()) != current_loop) {
+        return in;
+      }
+      else {
+        // Weight instructions appropriately...
+        uint32_t weight = getInstructionWeight(I);
+        return in + weight;
+      }
     }
 
     // Here, Meet is Union operator (OR)
@@ -57,9 +65,12 @@ namespace
       //outs() << "-------------------\n";
       //outs() << getPassName().str() << " : " << L << "\n";
       //outs() << "-------------------\n";
-      outs() << "Do-Init loop\n";
+      string fn_name = L->getHeader()->getParent()->getName();
+      outs() << "\nFn: " << fn_name << "\n";
       return false;
     }
+
+
 
     virtual bool runOnLoop(Loop* L, LPPassManager &LPM)
     {
@@ -68,6 +79,12 @@ namespace
       current_loop = L;
       current_loop_depth = L->getLoopDepth();
       current_module = L->getHeader()->getModule();
+      LICP = &getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
+
+      uint32_t top = 0;
+      uint32_t entry = 0;
+      problem.set(&transfer_fn, &meet, entry, top);
+      problem.run_iterations_loop(L, LICP, FORWARDS, INSTRUCTIONS);
 
       universal_blocks.clear();
       for (auto &BB : L->blocks()) {
@@ -77,43 +94,53 @@ namespace
           universal_blocks.push_back(BB);
         }
       }
-
-
-      uint32_t top = 0;
-      uint32_t entry = 0;
-      problem.set(&transfer_fn, &meet, entry, top);
-      problem.run_iterations_loop(L, FORWARDS, INSTRUCTIONS);
-
-      outs() << "\nIR:\n";
+      
+      /*outs() << "\nIR:\n";
       for (auto &BB : universal_blocks) {
         outs() << *BB << "\n";
         outs() << "<----- " << problem.get_outs(BB, BASIC_BLOCKS) << " ---->\n";
+      }*/
+
+      // Works because loop-simplified LL
+      BasicBlock* latch = L->getLoopLatch();
+      uint32_t loop_weight = problem.get_outs(latch, BASIC_BLOCKS);
+      loop_weights[L] = loop_weight;
+        
+
+      // Checkpoint above threshold
+      uint32_t THRESHOLD = 30;
+      string prefix = "rtloop";
+      string fn_name = L->getHeader()->getParent()->getName();
+      string loop_name = L->getName();
+      string var_name = prefix + "_" + fn_name + "_" + loop_name;
+
+      outs() << "Loop: " << loop_name << " | Weight/Thresh: " << loop_weight << "/" << THRESHOLD;
+      if (loop_weight > THRESHOLD) {
+        outs() << " ==> Inserting Checkpoint: \'" << var_name << "\'\n";
+        Type* int64_type = Type::getInt64Ty(current_module->getContext());
+        GlobalVariable* global_cnt = 
+            create_int_global(int64_type, var_name, current_module);
+
+        if (global_cnt == nullptr) {
+          errs() << "Global already exists!\n";
+        }
+        Constant* one = ConstantInt::get(int64_type, 1);
+        
+        Instruction* Inst = L->getHeader()->getFirstNonPHI();
+        IRBuilder<> Builder(Inst);
+        LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".lpchk.ld");
+        Value* inc = Builder.CreateAdd(li, one, ".lpchk.add");
+        StoreInst* si = Builder.CreateStore(inc, global_cnt);
       }
-
-
-      /*
-      Type* int64_type = Type::getInt64Ty(current_module->getContext());
-      GlobalVariable* global_cnt = 
-          create_int_global(int64_type, "runtime_ctr", current_module);
-
-      if (global_cnt == nullptr) {
-        errs() << "Global already exists!\n";
+      else {
+        outs() << "\n";
       }
-      Constant* one = ConstantInt::get(int64_type, 1);
-      
-      Instruction* Inst = L->getHeader()->getFirstNonPHI();
-      IRBuilder<> Builder(Inst);
-      LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".prof.ld");
-      Value* inc = Builder.CreateAdd(li, one, ".prof.add");
-      StoreInst* si = Builder.CreateStore(inc, global_cnt);
-      */
       // Modifies the incoming Function.
       return true;
     }
 
     virtual bool doFinalization() {
       outs() << "Completed Pass!\n";
-      outs() << "-------------------\n";
       return false;
     }
 
@@ -121,6 +148,7 @@ namespace
     {
       AU.setPreservesAll();
       AU.addRequiredTransitive<FunctionWeight>();
+      AU.addRequired<LoopInfoWrapperPass>();
     }
 
     const DataflowAnalysis<uint32_t> &getWeightedCheckpointResult() const { return problem; }

@@ -1,5 +1,5 @@
 XCLANG_OPTS = -disable-O0-optnone 
-CLANG_OPTS = -O0 -emit-llvm #-fno-discard-value-names -O0 -emit-llvm
+CLANG_OPTS = -O0 -emit-llvm -fno-discard-value-names #-O0 -emit-llvm
 OPT_OPTS = -mem2reg -loop-simplify
 
 ifeq ($(shell uname -m), x86_64)
@@ -14,7 +14,7 @@ SRC_LL := $(SRC_C:.c=.ll)
 
 
 
-all: function-weight.so weighted-checkpoint.so malloc-checkpoint.so checkpoint.so null.so dyn_inst_cnt.so $(SRC_LL)
+all: weighted-checkpoint.so malloc-checkpoint.so checkpoint.so null.so dyn_inst_cnt.so $(SRC_LL)
 
 #available-support.o: available-support.cpp available-support.h support.h
 

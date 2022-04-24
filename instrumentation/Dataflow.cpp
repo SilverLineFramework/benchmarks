@@ -7,6 +7,7 @@
 
 namespace llvm {
 
+
   template<typename DomainSet>
   void DataflowAnalysis<DomainSet>::run_iterations(Function &F, Direction _direction, 
         Granularity _granularity) {
@@ -183,7 +184,7 @@ namespace llvm {
 
 
   template<typename DomainSet>
-  void DataflowAnalysis<DomainSet>::run_iterations_loop(Loop* L, Direction _direction, 
+  void DataflowAnalysis<DomainSet>::run_iterations_loop(Loop* L, LoopInfo* LICP, Direction _direction, 
         Granularity _granularity) {
 
     direction = _direction;
@@ -246,14 +247,28 @@ namespace llvm {
         BB_state[BB].out = transfer_fn(BB, tempSet);
       }
 
-      // If OUT[BB] stayed the same, add untraversed successors to queue
-      for (BasicBlock *succ : successors(BB))
-        if (BB_state[succ].traversed == false && L->contains(succ))
+      // Add untraversed successors to queue that are in the loop
+      for (BasicBlock *succ : successors(BB)) {
+        Loop* bbl = LICP->getLoopFor(succ);
+        // Blocks in inner or outside loop: Add their successors as long as untraversed
+        if ((bbl != L) && BB_state[succ].traversed == false && L->contains(succ)) {
           traverse_queue.push(succ);
+        }
+        // Blocks in current loop: Add their successors only if all predecessors are traversed
+        else if (bbl == L) {
+          bool ready = true;
+          for (BasicBlock * pred : predecessors(succ)) {
+            ready &= BB_state[pred].traversed;
+          }
+          if (ready) {
+            traverse_queue.push(succ);
+          }
+        }
+      }
     }
   }
-  template void DataflowAnalysis<uint32_t>::run_iterations_loop(Loop* L, Direction  _direction, Granularity _granularity);
-  template void DataflowAnalysis<BitVector>::run_iterations_loop(Loop* L, Direction  _direction, Granularity _granularity);
+  template void DataflowAnalysis<uint32_t>::run_iterations_loop(Loop* L, LoopInfo* LICP, Direction  _direction, Granularity _granularity);
+  template void DataflowAnalysis<BitVector>::run_iterations_loop(Loop* L, LoopInfo* LICP, Direction  _direction, Granularity _granularity);
 
 
 

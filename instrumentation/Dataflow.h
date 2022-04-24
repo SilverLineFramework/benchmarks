@@ -90,7 +90,7 @@ namespace llvm
     void run_iterations(Function &F, Direction _direction, Granularity granularity);
 
     // This function iterates over a function in a particular direction and populates the IN/OUT DomainSets
-    void run_iterations_loop(Loop* L, Direction _direction, Granularity granularity);
+    void run_iterations_loop(Loop* L, LoopInfo* LICP, Direction _direction, Granularity granularity);
 
     // Given a function, print final state of expressions at every program point
     //void print_expression_state(Function &F, std::vector<Expression> univ_set);

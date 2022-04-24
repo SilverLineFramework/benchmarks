@@ -9,7 +9,7 @@
 
 namespace llvm {
 
-  GlobalVariable* create_int_global(Type* type, const char* name, Module* current_module) {
+  GlobalVariable* create_int_global(Type* type, std::string name, Module* current_module) {
     StringRef global_strref(name);
 
     // Get a value 0, 1
