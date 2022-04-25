@@ -1,5 +1,4 @@
 # Output
-OUT_DIR=../wasm/polybench-raw
 
 # WAMR Setup
 WAMR_DIR=../wasm-micro-runtime
@@ -17,12 +16,12 @@ WASMCFLAGS+= -Wl,--allow-undefined
 instrument=0
 OUT_LL_DIR=../ll/polybench-raw
 INST_DIR=../instrumentation
-CLANG_OPTS= -O1 -emit-llvm -fno-discard-value-names
+CLANG_OPTS= -O0 -emit-llvm -fno-discard-value-names
 OPT_SRC_OPTS= -mem2reg -loop-simplify
 SRC_C_DIR=benchmarks
 #
 
-COMMON= #polybench.c
+COMMON= polybench.c
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
@@ -45,6 +44,9 @@ dir:
 	mkdir -p $(OUT_LL_DIR)
 
 ifeq ($(instrument), 1)
+OUT_DIR=../wasm/polybench-raw-inst
+
+COMPILE= $(WASMCC) $(WASMCFLAGS)
 # Finally compile down to WASM
 $(WASM): benchmarks/%.wasm : $(OUT_LL_DIR)/%.inst.ll
 	$(COMPILE) -D SMALL_DATASET $^ \
@@ -78,9 +80,11 @@ polybench.intll : polybench.c
 #
 
 %.intll : $(SRC_C_DIR)/%.c
-	$(WASMCC) $(CLANG_OPTS) -S $^ -o $@
+	$(WASMCC) -D LARGE_DATASET $(CLANG_OPTS) -S $^ -o $@
 
 else
+OUT_DIR=../wasm/polybench-raw
+
 $(WASM): %.wasm : %.c
 	$(COMPILE) -D SMALL_DATASET $^ \
 		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm

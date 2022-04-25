@@ -14,7 +14,7 @@ SRC_LL := $(SRC_C:.c=.ll)
 
 
 
-all: weighted-checkpoint.so malloc-checkpoint.so checkpoint.so null.so dyn_inst_cnt.so $(SRC_LL)
+all: weighted-checkpoint.so malloc-checkpoint.so $(SRC_LL)
 
 #available-support.o: available-support.cpp available-support.h support.h
 

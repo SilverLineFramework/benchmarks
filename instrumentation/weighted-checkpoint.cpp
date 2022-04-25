@@ -21,9 +21,14 @@ using namespace std;
 namespace
 {
 
+  struct LoopInfoS {
+    uint32_t weight;
+    bool checkpointed;
+  };
+
   std::map<BasicBlock*, bool> processed_blocks;
   std::vector<Value *> universal_blocks;
-  std::map<Loop*, uint32_t> loop_weights;
+  std::map<Loop*, LoopInfoS> loop_info;
 
   LoopInfo* LICP;
   Loop* current_loop;
@@ -42,13 +47,16 @@ namespace
 
     static uint32_t transfer_fn(Value *V, uint32_t in)
     {
-      Instruction *I = dyn_cast<Instruction>(V);
-      if (LICP->getLoopFor(I->getParent()) != current_loop) {
+      BasicBlock* B = dyn_cast<BasicBlock>(V);
+      if (LICP->getLoopFor(B) != current_loop) {
         return in;
       }
       else {
-        // Weight instructions appropriately...
-        uint32_t weight = getInstructionWeight(I);
+        uint32_t weight = 0;
+        for (auto &I : *B) {
+          // Weight instructions appropriately...
+          weight += getInstructionWeight(&I);
+        }
         return in + weight;
       }
     }
@@ -84,7 +92,7 @@ namespace
       uint32_t top = 0;
       uint32_t entry = 0;
       problem.set(&transfer_fn, &meet, entry, top);
-      problem.run_iterations_loop(L, LICP, FORWARDS, INSTRUCTIONS);
+      problem.run_iterations_loop(L, LICP, FORWARDS, BASIC_BLOCKS);
 
       universal_blocks.clear();
       for (auto &BB : L->blocks()) {
@@ -104,18 +112,27 @@ namespace
       // Works because loop-simplified LL
       BasicBlock* latch = L->getLoopLatch();
       uint32_t loop_weight = problem.get_outs(latch, BASIC_BLOCKS);
-      loop_weights[L] = loop_weight;
+
+      // Add weights of all non-checkpointed loops inside
+      for (auto const &subL : L->getSubLoops()) {
+        // If next-level loops are not checkpointed, add their weight
+        if ((subL->getParentLoop() == L) && !loop_info[subL].checkpointed)
+          loop_weight += loop_info[subL].weight;
+      }
+      loop_info[L].weight = loop_weight;
+      loop_info[L].checkpointed = false;
         
 
-      // Checkpoint above threshold
-      uint32_t THRESHOLD = 30;
       string prefix = "rtloop";
       string fn_name = L->getHeader()->getParent()->getName();
       string loop_name = L->getName();
       string var_name = prefix + "_" + fn_name + "_" + loop_name;
 
+      // Checkpoint above threshold
+      uint32_t THRESHOLD = 30;
       outs() << "Loop: " << loop_name << " | Weight/Thresh: " << loop_weight << "/" << THRESHOLD;
       if (loop_weight > THRESHOLD) {
+        loop_info[L].checkpointed = true;
         outs() << " ==> Inserting Checkpoint: \'" << var_name << "\'\n";
         Type* int64_type = Type::getInt64Ty(current_module->getContext());
         GlobalVariable* global_cnt = 
