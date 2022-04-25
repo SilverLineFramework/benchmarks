@@ -10,6 +10,7 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Type.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/CommandLine.h"
 
 #include "Dataflow.h"
 #include "function-weight.h"
@@ -20,6 +21,7 @@ using namespace std;
 
 namespace
 {
+  static cl::opt<uint32_t> Threshold("threshold", cl::desc("Threshold for checkpointing"), cl::init(30));
 
   struct LoopInfoS {
     uint32_t weight;
@@ -129,7 +131,7 @@ namespace
       string var_name = prefix + "_" + fn_name + "_" + loop_name;
 
       // Checkpoint above threshold
-      uint32_t THRESHOLD = 30;
+      uint32_t THRESHOLD = Threshold;
       outs() << "Loop: " << loop_name << " | Weight/Thresh: " << loop_weight << "/" << THRESHOLD;
       if (loop_weight > THRESHOLD) {
         loop_info[L].checkpointed = true;
