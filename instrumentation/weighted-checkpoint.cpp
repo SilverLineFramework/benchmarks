@@ -128,9 +128,10 @@ namespace
         
         Instruction* Inst = L->getHeader()->getFirstNonPHI();
         IRBuilder<> Builder(Inst);
-        LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".lpchk.ld");
-        Value* inc = Builder.CreateAdd(li, one, ".lpchk.add");
-        StoreInst* si = Builder.CreateStore(inc, global_cnt);
+        //LoadInst* li = Builder.CreateLoad(int64_type, global_cnt, true, ".lpchk.ld");
+        //Value* inc = Builder.CreateAdd(li, one, ".lpchk.add");
+        //StoreInst* si = Builder.CreateStore(inc, global_cnt);
+        AtomicRMWInst* ai = Builder.CreateAtomicRMW(AtomicRMWInst::Add, global_cnt, one, AtomicOrdering::AcquireRelease);
       }
       else {
         outs() << "\n";
