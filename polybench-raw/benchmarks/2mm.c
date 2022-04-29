@@ -122,7 +122,6 @@ int main(int argc, char** argv)
   POLYBENCH_2D_ARRAY_DECL(C,DATA_TYPE,NJ,NL,nj,nl);
   POLYBENCH_2D_ARRAY_DECL(D,DATA_TYPE,NI,NL,ni,nl);
 
-  printf("Init step\n");
   /* Initialize array(s). */
   init_array (ni, nj, nk, nl, &alpha, &beta,
 	      POLYBENCH_ARRAY(A),
@@ -133,7 +132,6 @@ int main(int argc, char** argv)
   /* Start timer. */
   polybench_start_instruments;
 
-  printf("Kernel step\n");
   /* Run kernel. */
   kernel_2mm (ni, nj, nk, nl,
 	      alpha, beta,
@@ -143,7 +141,6 @@ int main(int argc, char** argv)
 	      POLYBENCH_ARRAY(C),
 	      POLYBENCH_ARRAY(D));
 
-  printf("Done\n");
   /* Stop and print timer. */
   polybench_stop_instruments;
   polybench_print_instruments;

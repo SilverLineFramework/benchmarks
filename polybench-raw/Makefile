@@ -14,6 +14,8 @@ WASMCFLAGS+= -Wl,--allow-undefined
 
 # Instrumentation
 instrument=0
+threshold=30
+
 OUT_LL_DIR=../ll/polybench-raw
 INST_DIR=../instrumentation
 CLANG_OPTS= -O0 -emit-llvm -fno-discard-value-names
@@ -49,17 +51,17 @@ OUT_DIR=../wasm/polybench-raw-inst
 COMPILE= $(WASMCC) $(WASMCFLAGS)
 # Finally compile down to WASM
 $(WASM): benchmarks/%.wasm : $(OUT_LL_DIR)/%.inst.ll
-	$(COMPILE) -D SMALL_DATASET $^ \
+#	$(COMPILE) -D SMALL_DATASET $^ \
 		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
 	$(COMPILE) -D MEDIUM_DATASET $^ \
 		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D LARGE_DATASET $^ \
+#	$(COMPILE) -D LARGE_DATASET $^ \
 		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
 
 
 # Instrumented LL
 $(OUT_LL_DIR)/%.inst.ll: $(OUT_LL_DIR)/%.ll
-	opt -load ./$(INST_DIR)/weighted-checkpoint.so -weighted-checkpoint $^ -S -o $@
+	opt -load ./$(INST_DIR)/weighted-checkpoint.so -weighted-checkpoint -threshold $(threshold) $^ -S -o $@
 
 # Linked LL
 $(OUT_LL_DIR)/%.ll: $(OUT_LL_DIR)/%.unlinkedll $(OUT_LL_DIR)/polybench.ll
@@ -80,17 +82,17 @@ polybench.intll : polybench.c
 #
 
 %.intll : $(SRC_C_DIR)/%.c
-	$(WASMCC) -D LARGE_DATASET $(CLANG_OPTS) -S $^ -o $@
+	$(WASMCC) -D MEDIUM_DATASET $(CLANG_OPTS) -S $^ -o $@
 
 else
 OUT_DIR=../wasm/polybench-raw
 
 $(WASM): %.wasm : %.c
-	$(COMPILE) -D SMALL_DATASET $^ \
+#	$(COMPILE) -D SMALL_DATASET $^ \
 		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
 	$(COMPILE) -D MEDIUM_DATASET $^ \
 		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D LARGE_DATASET $^ \
+#	$(COMPILE) -D LARGE_DATASET $^ \
 		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
 
 endif

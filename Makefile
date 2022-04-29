@@ -37,6 +37,10 @@ cortex:
 array:
 	make -C array instrument=$(instrument)
 
+# For compiler testing
+polybench-raw:
+	make -C polybench-raw instrument=$(instrument)
+
 # Copy rustpython to wasm folder (for distribution or AOT compilation)
 rustpython:
 	cp rustpython.wasm wasm
@@ -47,6 +51,10 @@ clean:
 	rm -rf $(AOT_DIR)
 	rm -rf $(LL_DIR)
 	#make -C instrumentation clean
+
+
+clean-ll:
+	rm -rf $(LL_DIR)
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)
