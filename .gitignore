@@ -16,6 +16,11 @@ __pycache__/
 # C extensions
 *.so
 
+# LL extensions
+*.ll
+*.inst.ll
+*.intll
+
 # Distribution / packaging
 .Python
 build/
