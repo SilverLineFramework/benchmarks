@@ -7,7 +7,7 @@ from pathlib import Path
 pattern=r"^@rtloop_.*hidden"
 
 num_matches = 0
-dir_path = Path('ll/polybench-raw')
+dir_path = Path(sys.argv[1])
 for path in dir_path.iterdir():
     if(str(path).endswith('.inst.ll')):
         f = open(path, 'r')
