@@ -32,18 +32,25 @@
     make
     ```
 
-3. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
+3. Install the WASI SDK:
+    ```shell
+    wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-11/wasi-sdk-11.0-linux.tar.gz
+    tar xvf wasi-sdk-11.0-linux.tar.gz
+    sudo cp -r wasi-sdk-11.0 /opt/wasi-sdk
+    ```
+
+4. Acquire an MQTT token and save it in a file ```./mqtt_pwd.txt```.
 
     **NOTE**: if the MQTT server is unsecured (i.e. a default local install of mosquitto), you can just ```touch mqtt_pwd.txt```.
 
-4. Build benchmarks:
+5. Build benchmarks:
 
     - ```make wasm```: build wasm programs; saved to ```./wasm```.
     - ```make rustpython```: copy rustpython to ```./wasm``` for distribution or AOT compilation.
     - ```make aot```: build wasm apps into AOT; saved in ```./aot```. **NOTE**: this can take a very long time, especially if rustpython is included.
     - ```make clean```: remove ```./wasm``` and ```./aot```.
 
-5. Clone the [Python Client](https://github.com/SilverLineFramework/libsilverline), which includes scripts for launching benchmarks.
+6. Clone the [Python Client](https://github.com/SilverLineFramework/libsilverline), which includes scripts for launching benchmarks.
 
 ## Usage
 
