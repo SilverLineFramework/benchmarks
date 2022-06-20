@@ -64,4 +64,4 @@ dir.aot:
 
 $(AOT_OUT): %.aot: wasm/%.wasm
 	mkdir -p $(dir aot/$@)
-	$(WAMR_COMPILER) -o aot/$@ $^
+	$(WAMR_COMPILER) --opt-level=1 -o aot/$@ $^
