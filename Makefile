@@ -29,13 +29,13 @@ dir:
 instrumentation:
 	make -C instrumentation
 tests:
-	make -C tests instrument=$(instrument)
+	make -C tests
 polybench:
-	make -C polybench instrument=$(instrument)
+	make -C polybench
 cortex:
-	make -C cortex instrument=$(instrument)
+	make -C cortex
 array:
-	make -C array instrument=$(instrument)
+	make -C array
 
 # For compiler testing
 polybench-raw:
