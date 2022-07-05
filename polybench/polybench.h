@@ -162,11 +162,18 @@ extern int posix_memalign(void **__memptr, size_t __alignment, size_t __size);
 #  define POLYBENCH_DCE_ONLY_CODE
 # endif
 
+/* Array dump disabled
 #define POLYBENCH_DUMP_TARGET stdout
 #define POLYBENCH_DUMP_START    fprintf(POLYBENCH_DUMP_TARGET, "==BEGIN DUMP_ARRAYS==\n")
 #define POLYBENCH_DUMP_FINISH   fprintf(POLYBENCH_DUMP_TARGET, "==END   DUMP_ARRAYS==\n")
 #define POLYBENCH_DUMP_BEGIN(s) fprintf(POLYBENCH_DUMP_TARGET, "begin dump: %s", s)
 #define POLYBENCH_DUMP_END(s)   fprintf(POLYBENCH_DUMP_TARGET, "\nend   dump: %s\n", s)
+*/
+#define POLYBENCH_DUMP_TARGET stdout
+#define POLYBENCH_DUMP_START
+#define POLYBENCH_DUMP_FINISH
+#define POLYBENCH_DUMP_BEGIN(s)
+#define POLYBENCH_DUMP_END(s)
 
 # define polybench_prevent_dce(func)		\
   POLYBENCH_DCE_ONLY_CODE			\
