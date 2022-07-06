@@ -56,8 +56,10 @@
 
 1. Start the runtime using a known name. For example, if ```runtime-linux``` is set up in the same directory as ```benchmarks``` with a local orchestrator and MQTT server, you can use the following command:
     ```sh
-    ./runtime-linux/runtime --host=localhost:1883 --name=test --dir=benchmarks --appdir=benchmarks
-    ``` 
+    ../runtime-linux/runtime --host=localhost:1883 --name=test --dir=. --appdir=.
+    ```
+
+    **NOTE**: due to runtime WASI issues, you may need to start inside the benchmarks directory like this example in order for some benchmarks to properly open files.
 
 2. Run the ```run.py``` script (from the [Python Client](https://github.com/SilverLineFramework/libsilverline)), for example:
     ```sh
@@ -122,12 +124,59 @@ Additional notes:
 
 ## Benchmarks
 
-- ```tests```: Tests for basic functionality. Currently unmaintained.
-- ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/) wrapped in distributed runtime interfaces; simulates output data using a dirichlet process ```alpha=1``` with ```geometric(0.001)``` prior.
-- ```cortex```: Miscellaneous machine learning benchmarks manually ported from [UCSD Cortex Suite](https://cseweb.ucsd.edu/groups/bsg/).
+The following benchmark suites have been modified to work with the linux runtime:
+- ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/)
+- ```mibench```: [Mibench](https://vhosts.eecs.umich.edu/mibench/)
 
 ## Additional Scripts
 
 - ```status.py```: print status table for runtime nodes specified in a TSV file.
 - ```list_devices.py```: print a list of runtimes specified in a TSV file (for passing to other commands, i.e. inside makefiles).
 - ```stop_runtimes.py```: send DELETE_RUNTIME messages to request runtimes to exit.
+
+## Conversion Guide
+
+1. Modify makefile. See this example header:
+    ```Makefile
+    # Output
+    ROOT_DIR=../../..
+    OUT_DIR=$(ROOT_DIR)/wasm/mibench/network
+    DATA_DIR=$(ROOT_DIR)/data/mibench/network
+
+    # WAMR Setup
+    WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
+    WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
+
+    WASMCC=/opt/wasi-sdk/bin/clang
+
+    WASMCFLAGS= -O0 -z
+    WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
+    WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
+    WASMCFLAGS+= -Wl,--export=main
+    WASMCFLAGS+= -Wl,--export=_start
+    WASMCFLAGS+= -Wl,--allow-undefined
+
+    COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
+
+    COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+    ```
+
+    In the makefile, the WASM output should be ```wasm/path/to/benchmark.wasm```,
+    and any accompanying data files should be copied to ```data/path/to/benchmark.dat```.
+
+2. Rename main function to ```benchmark_main```.
+
+3. In the main file, include the following:
+
+    ```c
+    #include "../../../common/runtime.h"
+    ```
+    where the appropriate relative path is given.
+
+3. Add the new main function:
+
+    ```c
+    int main(int argc, char **argv) {
+        return loop(argc, argv, &benchmark_main);
+    }
+    ```

@@ -1,13 +1,13 @@
-WASM_DIR=../../wasm/mibench
-DATA_DIR=../../data/mibench
+WASM_DIR=../../wasm/mibench/network
+DATA_DIR=../../data/mibench/network
 
 .PHONY: dir all clean children
 
 all: dir children
 
 children:
-	make -C automotive
-	make -C network
+	make -C dijkstra
+	make -C patricia
 
 dir:
 	mkdir -p $(DATA_DIR)

@@ -25,7 +25,7 @@ wasm-instrument: dir instrumentation tests polybench cortex array
 dir:
 	mkdir -p $(OUT_DIR)
 
-.PHONY: instrumentation tests polybench cortex array
+.PHONY: instrumentation tests polybench cortex array mibench
 instrumentation:
 	make -C instrumentation
 tests:
@@ -36,6 +36,8 @@ cortex:
 	make -C cortex
 array:
 	make -C array
+mibench:
+	make -C mibench
 
 # For compiler testing
 polybench-raw:
