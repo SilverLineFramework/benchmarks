@@ -34,6 +34,8 @@ int benchmark_main(int argc, char *argv[]) {
         adpcm_coder(sbuf, abuf, n/2, &state);
     }
 
+    close(input);
+
     return 0;
 }
 

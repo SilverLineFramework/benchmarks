@@ -159,7 +159,7 @@ int benchmark_main(int argc, char *argv[]) {
 			j=j%NUM_NODES;
       dijkstra(i,j);
   }
- 
+    fclose(fp);
     return 0;
 }
 

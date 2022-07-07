@@ -17,7 +17,7 @@ export OPT_SRC_OPTS = -mem2reg -loop-simplify
 
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir tests polybench cortex array
+wasm: dir tests polybench mibench
 
 wasm-instrument: instrument=1
 wasm-instrument: dir instrumentation tests polybench cortex array
@@ -26,6 +26,7 @@ dir:
 	mkdir -p $(OUT_DIR)
 
 .PHONY: instrumentation tests polybench cortex array mibench
+
 instrumentation:
 	make -C instrumentation
 tests:

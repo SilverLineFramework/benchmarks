@@ -30,6 +30,8 @@ benchmark_main(int argc, char *argv[]) {
     qsort(array,count, 32,compare);
   
   free(array);
+
+    fclose(fp);
   return 0;
 }
 

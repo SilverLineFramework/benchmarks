@@ -33,6 +33,8 @@ int benchmark_main(int argc, char *argv[]) {
         adpcm_decoder(abuf, sbuf, n*2, &state);
     }
 
+    close(input);
+
     return 0;
 }
 

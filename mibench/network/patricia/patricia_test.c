@@ -193,6 +193,8 @@ benchmark_main(int argc, char **argv)
 			exit(0);
 		}
 	}
+
+    fclose(fp);
     return 0;
 }
 

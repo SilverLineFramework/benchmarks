@@ -1,15 +1,14 @@
-WASM_DIR=../../wasm/mibench
-DATA_DIR=../../data/mibench
+WASM_DIR=../../wasm/mibench/security
+DATA_DIR=../../data/mibench/security
 
 .PHONY: dir all clean children
 
 all: dir children
 
 children:
-	make -C automotive
-	make -C network
-	make -C telecomm
-	make -C security
+	make -C sha
+	make -C rijndael
+	make -C blowfish
 
 dir:
 	mkdir -p $(DATA_DIR)
