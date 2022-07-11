@@ -40,5 +40,5 @@ $(WASM): %.wasm : %.c
 		-o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
 	$(COMPILE) -D MEDIUM_DATASET $^ \
 		-o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
-	$(COMPILE) -D LARGE_DATASET $^ \
-		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
+#	$(COMPILE) -D LARGE_DATASET $^ \
+#		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm

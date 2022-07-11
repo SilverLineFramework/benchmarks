@@ -9,7 +9,6 @@ children:
 	make -C basicmath
 	make -C bitcount
 	make -C qsort
-	make -C susan
 
 dir:
 	mkdir -p $(DATA_DIR)
