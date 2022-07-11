@@ -7,7 +7,7 @@ all: dir children
 
 children:
 	make -C dijkstra
-	make -C patricia
+#	make -C patricia
 
 dir:
 	mkdir -p $(DATA_DIR)

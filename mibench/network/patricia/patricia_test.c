@@ -53,6 +53,17 @@ struct MyNode {
 	double bar;
 };
 
+
+void _free(struct ptree *p) {
+    if (p) {
+        if (p->p_left != p) { _free(p->p_left); }
+        if (p->p_right != p) { _free(p->p_right); }
+        free(p->p_m);
+        free(p);
+    }
+}
+
+
 int
 benchmark_main(int argc, char **argv)
 {
@@ -194,7 +205,12 @@ benchmark_main(int argc, char **argv)
 		}
 	}
 
+    printf("freeing...\n"); 
+    _free(phead);
+
     fclose(fp);
+    printf("done.\n");
+
     return 0;
 }
 
