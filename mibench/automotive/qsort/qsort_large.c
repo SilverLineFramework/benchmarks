@@ -43,7 +43,7 @@ benchmark_main(int argc, char *argv[]) {
     }
 
   qsort(array,count,sizeof(struct my3DVertexStruct),compare);
-  
+  free(array);
     fclose(fp);
 
   return 0;
