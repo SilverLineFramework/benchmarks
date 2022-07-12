@@ -38,5 +38,5 @@ svd3:
 
 	mkdir -p $(DATA_DIR)
 	cp small.txt $(DATA_DIR)/small.txt
-	cp small.txt $(DATA_DIR)/med.txt
-	cp small.txt $(DATA_DIR)/large.txt
+	cp med.txt $(DATA_DIR)/med.txt
+	cp large.txt $(DATA_DIR)/large.txt

@@ -7,6 +7,9 @@ all: dir children
 
 children:
 	make -C svd3
+	make -C kmeans
+	make -C spectral
+
 dir:
 	mkdir -p $(DATA_DIR)
 	mkdir -p $(WASM_DIR)
