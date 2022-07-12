@@ -1,0 +1,18 @@
+Latent Dirichlet Allocation (LDA) is used for topic modeling large numbers of documents. The input to this
+algorithm is a bag-of-words representation of documents, which is a sparse matrix of words and associated word counts.
+The underlying algorithm uses the assumption that each document was generated using a Dirichlet Distribution, which 
+serves as a prior distribution to the Multinomial Distribution[20]. The goal of the algorithm is to find values for
+the multinomial parameter vectors and topics for each document. The underlying data sets used in this algorithm are
+obtained from David Bleis AP data [20] for the large dataset, UCIs NIPS data[21] for the medium dataset, and UCIs
+KOS data [21] for the small dataset.
+
+This specific program is obtained from David Bleis LDA C implementation[20]. It features a variable number of 
+topics N, an initial value for the alpha hyperparameter, and random or seeded sampling methods. The alpha 
+hyperparameter provides a prior distribution for the number of topics per document. Increasing the value for
+alpha allows documents to belong to more topics. Increasing the number of topics allows the algorithm to 
+find more word groupings. Finally, using random or seeded allows the user to specify a seed for the random number 
+generator used for Gibbs sampling.
+
+[20] M. I. J. David M. Blei, Andrew Y. Ng, “Latent dirichlet allocation,” Journal of Machine Learning Research, vol. 3, pp. 993–1022, January 2003.
+[21] K. Bache and M. Lichman, “UCI machine learning repository,” 2013. [Online]. Available: http://archive.ics.uci.edu/ml
+

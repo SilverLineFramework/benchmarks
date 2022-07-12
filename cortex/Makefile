@@ -9,6 +9,8 @@ children:
 	make -C svd3
 	make -C kmeans
 	make -C spectral
+	make -C pca
+	make -C lda
 
 dir:
 	mkdir -p $(DATA_DIR)

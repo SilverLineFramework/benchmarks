@@ -25,33 +25,47 @@
 #include <stdlib.h>
 #include "../../common/runtime.h"
 
+
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )
 
-int benchmark_main(argc, argv)
-int argc;
-char *argv[];
-
-{
-int  n, m,  i, j, k, k2;
+int benchmark_main(int argc, char *argv[]) {
+FILE *stream;
+int  i, j, k, k2;
 float **data, **matrix(), **symmat, **symmat2, *vector(), *evals, *interm;
 void free_matrix(), free_vector(), corcol(), covcol(), scpcol();
 void tred2(), tqli();
 float in_value;
+char option;
 
 //**Timing**/
-//char *strncpy();
 
-/*********************************************************************
-   Get from command line:
-   input data file name, #rows, #cols, option.
+unsigned int *start, *stop, *elapsed;
 
-   Open input file: fopen opens the file whose name is stored in the
-   pointer argv[argc-1]; if unsuccessful, error message is printed to
-   stderr.
-*********************************************************************/
+    #if SIZE == 0
+        char file[1000] = "data/cortex/pca/small.data";
+        // int n = 1593, m = 256;
+        int n = 1593, m = 32;
+    #elif SIZE == 1
+        char file[1000] = "data/cortex/pca/medium.data";
+        // int n = 722, m = 800;
+        int n = 722, m = 64;
+    #else /* SIZE == 2 */
+        char file[1000] = "data/cortex/pca/large.data";
+        // int n = 5000, m = 1059;
+        int n = 1000, m = 96;
+    #endif
 
-    n = 80;
-    m = 80;
+   if ((stream = fopen(argv[1],"r")) == NULL)
+      {
+      fprintf(stderr, "Program %s : cannot open file %s\n",
+                       argv[0], argv[1]);
+      fprintf(stderr, "Exiting to system.");
+      exit(1);
+      /* Note: in versions of DOS prior to 3.0, argv[0] contains the
+         string "C". */
+      }
+
+    /* Now read in data. */
 
     data = matrix(n, m);  /* Storage allocation for input data */
 
@@ -59,16 +73,16 @@ float in_value;
         {
         for (j = 1; j <= m; j++)
             {
-            data[i][j] = (float) rand() / (float) RAND_MAX;
+            fscanf(stream, "%f", &in_value);
+            data[i][j] = in_value;
             }
          }
 
-    /* Check on (part of) input data.
-    for (i = 1; i <= 18; i++) {for (j = 1; j <= 8; j++)  {
-        printf("%7.1f", data[i][j]);  }  printf("\n");  }
-    */
+    fclose(stream);
 
     symmat = matrix(m, m);  /* Allocation of correlation (etc.) matrix */
+
+   /* Look at analysis option; branch in accordance with this. */
 
     corcol(data, n, m, symmat);
 
@@ -102,13 +116,6 @@ float in_value;
         }
      }
 
-     /*ZPRINT
-     printf("\nProjections of row-points on first 3 prin. comps.:\n");
-     for (i = 1; i <= n; i++) {
-       for (j = 1; j <= 3; j++)  {
-          printf("%12.4f", data[i][j]);  }
-          printf("\n");  }
-*/
      /* Form projections of col.-points on first three prin. components. */
      /* Store in 'symmat2', overwriting what was stored in this. */
      for (j = 1; j <= m; j++) {
@@ -124,19 +131,14 @@ float in_value;
              symmat2[j][i] = 0.0;    /* Standard kludge */
         }
      }
-/*ZPRINT
-     printf("\nProjections of column-points on first 3 prin. comps.:\n");
-     for (j = 1; j <= m; j++) {
-       for (k = 1; k <= 3; k++)  {
-          printf("%12.4f", symmat2[j][k]);  }
-          printf("\n");  }
-*/
     free_matrix(data, n, m);
     free_matrix(symmat, m, m);
     free_matrix(symmat2, m, m);
     free_vector(evals, m);
     free_vector(interm, m);
+
     return 0;
+
 }
 
 /**  Correlation matrix: creation  ***********************************/
@@ -548,7 +550,6 @@ for (l = 1; l <= n; l++)
       }
  }
 
-
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
+int main(int argc, char *argv[]) {
+   return loop(argc, argv, &benchmark_main);
 }
