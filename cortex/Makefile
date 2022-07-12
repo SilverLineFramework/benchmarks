@@ -11,6 +11,7 @@ children:
 	make -C spectral
 	make -C pca
 	make -C lda
+	make -C motion
 
 dir:
 	mkdir -p $(DATA_DIR)
