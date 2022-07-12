@@ -17,19 +17,15 @@ benchmark_main(int argc, char *argv[])
     #ifdef ENCODE
         #ifdef LARGE
         char fin[80] = "data/mibench/security/input_large.asc";
-        char fout[80] = "data/mibench/security/output_large_bf.enc";
         #else
         char fin[80] = "data/mibench/security/input_small.asc";
-        char fout[80] = "data/mibench/security/output_small_bf.enc";
         #endif
         encordec = 1;
     #else
         #ifdef LARGE
         char fin[80] = "data/mibench/security/output_large_bf.enc";
-        char fout[80] = "";
         #else
         char fin[80] = "data/mibench/security/output_small_bf.enc";
-        char fout[80] = "";
         #endif
         encordec = 0;
     #endif
@@ -65,7 +61,8 @@ if(*cp)
 
 /* open the input and output files */
 fp = fopen(fin, "r");
-fp2 = fopen(fout, "w");
+// fp2 = fopen(fout, "w");
+fp2 = NULL;
 
 i=0;
 while(!feof(fp))
@@ -87,7 +84,7 @@ while(!feof(fp))
 }
 
 close(fp);
-close(fp2);
+// close(fp2);
 return 0;
 // exit(1);
 }

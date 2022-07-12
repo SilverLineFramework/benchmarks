@@ -1,23 +1,12 @@
 /**
- * @file api.h
- * @brief Header for the SilverLine runtime API.
- * 
- * @note Use `CH_RDONLY, CH_WRONLY, CH_RDWR` instead of `O_*` variants
- * from `fnctl.h` since `fnctl.h` does not guarantee that these flags will be
- * the same on all systems!
+ * @file api.c
+ * @brief Non-runtime implementation for local testing of SilverLine programs.
  */
 
-#ifndef SILVERLINE_API_H
-#define SILVERLINE_API_H
+#include <sched.h>
+#include "MQTTClient.h"
 
-#include <stdio.h> // for size_t
-
-/** @brief Read only mode */
-#define CH_RDONLY 0
-/** @brief Write only mode */
-#define CH_WRONLY 1
-/** @brief Read/write mode */
-#define CH_RDWR 2
+#include "api.h"
 
 /**
  * @brief Open channel.
@@ -26,7 +15,10 @@
  * @param mode Unused
  * @return File descriptor of opened channel, or -1 for failure.
  */
-int ch_open(const char *path, int flags, int mode);
+int ch_open(const char *path, int flags, int mode) {
+    // todo
+    return 0;
+}
 
 /**
  * @brief Write message to channel.
@@ -35,7 +27,10 @@ int ch_open(const char *path, int flags, int mode);
  * @param size Number of bytes to write
  * @return Length of message written.
  */
-int ch_write_msg(int fd, char *buf, size_t size);
+int ch_write_msg(int fd, char *buf, size_t size) {
+    // todo
+    return 0;
+}
 
 /**
  * @brief Read message from channel.
@@ -44,7 +39,10 @@ int ch_write_msg(int fd, char *buf, size_t size);
  * @param size Maximum number of bytes to read
  * @return Number of bytes actually read
  */
-int ch_read_msg(int fd, char *buf, size_t size);
+int ch_read_msg(int fd, char *buf, size_t size) {
+    // todo
+    return 0;
+}
 
 /**
  * @brief Wait for message on channel.
@@ -53,41 +51,38 @@ int ch_read_msg(int fd, char *buf, size_t size);
  * @param timeout Maximum amount of time to wait (in milliseconds)
  * @return Number of channel descriptors in `chs` which received messages.
  */
-int ch_poll(int *chs, int nchs, int timeout);
+int ch_poll(int *chs, int nchs, int timeout) {
+    // todo
+    return 0;
+}
 
 /**
  * @brief Get UUID of the current runtime.
  * @param buf Buffer to write UUID for. Should be at least 37 bytes.
  * @return 0 on success.
  */
-int runtime_get_uuid(char *buf);
+int runtime_get_uuid(char *buf) {
+    strcpy(buf, "native");
+}
 
 /**
  * @brief Get UUID of the current module.
  * @param buf Buffer to write UUID for. Should be at least 37 bytes.
  * @return 0 on success.
  */
-int module_get_uuid(char *buf);
+int module_get_uuid(char *buf) {
+    strcpy(buf, "native");
+}
 
-/**
- * @brief Start profiling period manually.
- */
-void period_start();
-
-/**
- * @brief End profiling period manually.
- */
-void period_end();
+// Profiling requires runtime infrastructure support.
+void period_start() {}
+void period_end() {}
+void period_set_flags(int flags) {}
 
 /**
  * @brief End profiling period and yield remaining time.
  */
-void period_yield();
-
-/**
- * @brief Set profiling mode.
- * @param flags 1 for manual, 0 for automatic (ch_poll).
- */
-void period_set_flags(int flags);
-
-#endif /* SILVERLINE_API_H */
+void period_yield() {
+    // Only sched_yield; no profiling here.
+    sched_yield();
+}
