@@ -66,73 +66,13 @@
     python libsilverline/run.py --path wasm/tests/helloworld.wasm --runtime test
     ```
 
-## Available Options
-
-```
-usage: run.py [-h] [--arts ARTS] [--arts_port ARTS_PORT] [--mqtt MQTT]
-              [--mqtt_port MQTT_PORT] [--username USERNAME] [--pwd PWD] [--ssl]
-              [--type TYPE] [--path PATH [PATH ...]] [--argv ARGV [ARGV ...]]
-              [--runtime RUNTIME [RUNTIME ...]] [--env ENV [ENV ...]] [--aot]
-              [--mode MODE] [--time TIME] [--mean_size MEAN_SIZE] [--alpha ALPHA]
-              [--n N] [--delay DELAY] [--config CONFIG]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --config CONFIG       Config file to load; priority is (1) explicitly passed
-                        args, (2) config file, (3) defaults
-
-ARTS Options:
-  --arts ARTS           ARTS host
-  --arts_port ARTS_PORT
-                        ARTS port
-
-MQTT Options:
-  --mqtt MQTT           MQTT Host address
-  --mqtt_port MQTT_PORT
-                        MQTT port
-  --username USERNAME   Username
-  --pwd PWD             Password file
-  --ssl                 Use SSL (mqtt-secure)
-
-Benchmark Options:
-  --type TYPE           PY or WA
-  --path PATH [PATH ...]
-                        File path(s) to execute
-  --argv ARGV [ARGV ...]
-                        Module argv passthrough
-  --runtime RUNTIME [RUNTIME ...]
-                        Target runtime names
-  --env ENV [ENV ...]   Module environment variables
-  --aot                 Use AOT python for python benchmarks
-  --mode MODE           Profiling mode (passive, active, timed)
-  --time TIME           Total time limit (seconds) for timed profiling mode
-  --mean_size MEAN_SIZE
-                        Prior mean message size (used as input to dirichlet
-                        process)
-  --alpha ALPHA         Dirichlet Process "new table" parameter alpha
-  --n N                 Number of iterations to test for active profiling mode
-  --delay DELAY         Delay between iterations for active/timed profiling mode
-```
-
-Additional notes:
-- ```runtime``` should correspond to the name of the runtime, not the UUID. This can also be a comma-separated list of names; in that case, the module specified will be created on all runtimes listed. **NOTE**: runtimes should have distinct names.
-- The behavior when multiple modules (```path```) are specified depends on the profiling mode.
-    - ```passive```: the script will instantiate the module, then exit. The module is responsible for exiting.
-    - ```active```: the script will wait for ```--n``` rounds of active profiling to complete before sending the exit signal (```"exit"```) and moving on to the next.
-    - ```timed```: the script will trigger new rounds of profiling until the time limit ```--time``` is reached, after which it will send the exit signal.
-- Active and timed profiling uses a dirichlet process with parameter ```alpha``` and prior ```geometric(1 / mean_size)``` for input message sizes.
-
 ## Benchmarks
 
 The following benchmark suites have been modified to work with the linux runtime:
 - ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/)
 - ```mibench```: [Mibench](https://vhosts.eecs.umich.edu/mibench/)
-
-## Additional Scripts
-
-- ```status.py```: print status table for runtime nodes specified in a TSV file.
-- ```list_devices.py```: print a list of runtimes specified in a TSV file (for passing to other commands, i.e. inside makefiles).
-- ```stop_runtimes.py```: send DELETE_RUNTIME messages to request runtimes to exit.
+- ```cortex```: [UCSD CortexSuite](https://cseweb.ucsd.edu//groups/bsg/), excluding the San Diego Vision Benchmark suite.
+- ```vision```: [San Diego Vision Benchmark Suite](https://michaeltaylor.org/vision/)
 
 ## Conversion Guide
 

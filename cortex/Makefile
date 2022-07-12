@@ -12,6 +12,7 @@ children:
 	make -C pca
 	make -C lda
 	make -C motion
+	make -C rbm
 
 dir:
 	mkdir -p $(DATA_DIR)
