@@ -13,6 +13,7 @@ children:
 	make -C lda
 	make -C motion
 	make -C rbm
+	make -C liblinear
 
 dir:
 	mkdir -p $(DATA_DIR)
