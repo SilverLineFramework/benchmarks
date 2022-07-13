@@ -40,4 +40,3 @@ liblinear:
 	cp data/1M/iris_cut $(DATA_DIR)/iris_cut
 	cp data/10M/surgery $(DATA_DIR)/surgery
 	cp data/100M/crime_scale $(DATA_DIR)/crime_scale
-	cp data/10B/epsilon $(DATA_DIR)/epsilon
