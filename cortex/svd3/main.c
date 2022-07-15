@@ -54,19 +54,6 @@ void printIntSubMatrix(I2D *m, int size)
 
 int benchmark_main(int argc, char **argv)
 {
-    /*
-	if (argc != 2)
-	{
-		printf("Usage: ./a.out [input]\n");
-		return 1;
-	}
-    */
-  //** Timing **//
-  unsigned int *start, *stop, *elapsed;
-	// char * inputPath = argv[1];
-
-	// printf("Input = %s.\n", inputPath);
-
     #if SIZE == 0
         char *inputPath = "data/cortex/svd3/small.txt";
     #elif SIZE == 1
@@ -80,23 +67,11 @@ int benchmark_main(int argc, char **argv)
 	F2D * s = fSetArray(1, u->width, 0);
 	F2D * v = fSetArray(u->width, u->width, 0);
 
-  // start = photonStartTiming();
-	// printf("Starting SVD...\n");
 	svd(u, s, v);
-	// printf("Sorting SVD result...\n");
 	sortSVDResult(u, s, v);
 
-	// Display SVD result
-	/*
-	printf("U:\n");
-	printMatrix(u);
-	printf("S:\n");
-	printMatrix(s);
-	printf("V:\n");
-	printMatrix(v);
-	*/
-
 	// Multiply singular values to U and V
+    /*
 	int i, j;
 	for (i = 0; i < s->width; i++)
 	{
@@ -105,18 +80,12 @@ int benchmark_main(int argc, char **argv)
 		for (j = 0; j < v->height; j++)
 					subsref(v, j, i) = subsref(v, j, i) * subsref(s, 0, i);
 	}
-  // stop = photonEndTiming();
-
-	// fWriteMatrix(u, "result", "result_U.txt");
-	// fWriteMatrix(v, "result", "result_V.txt");
-
+    */
 
 	free(u);
 	free(s);
 	free(v);
 
-  // elapsed = photonReportTiming(start,stop);
-  // photonPrintTiming(elapsed);
   return 0;
 }
 

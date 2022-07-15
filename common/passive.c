@@ -43,13 +43,15 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     period_yield();
 
     char buf[1];
-    while (1) {
+    int i = 0;
+    while(1) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         func(argc, argv);
         period_yield();
+        i += 1;
     }
-    printf("Exiting...\n");
+    printf("Exiting after %d loops\n", i);
     ch_write_msg(data_out, "done", 4);
     return 0;
 }
