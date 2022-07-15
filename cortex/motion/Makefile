@@ -20,21 +20,16 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: all clean
+.PHONY: all
 
 all: motion
-
-clean:
-	rm -r $(OUT_DIR)
-	rm -r $(DATA_DIR)
 
 SRCS= App.c BmpHandler.c FullSearch.c Motion_Estimation.c -lm
 
 motion:
-	mkdir -p $(OUT_DIR)
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)/small.wasm -D SIZE=0
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)/medium.wasm -D SIZE=1
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)/large.wasm -D SIZE=2
+	$(COMPILE) $(SRCS) -o $(OUT_DIR)_s.wasm -D SIZE=0
+	$(COMPILE) $(SRCS) -o $(OUT_DIR)_m.wasm -D SIZE=1
+	$(COMPILE) $(SRCS) -o $(OUT_DIR)_l.wasm -D SIZE=2
 
 	mkdir -p $(DATA_DIR)
 	cp -r LR/synthetic1 $(DATA_DIR)/synthetic1

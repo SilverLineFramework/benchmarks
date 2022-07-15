@@ -1,5 +1,5 @@
-WASM_DIR=../../wasm/cortex
-DATA_DIR=../../data/cortex
+WASM_DIR=../wasm/cortex
+DATA_DIR=../data/cortex
 
 .PHONY: dir all clean children
 
