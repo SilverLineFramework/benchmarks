@@ -1,6 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/security
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 DATA_DIR=$(ROOT_DIR)/data/mibench/security
 
 # WAMR Setup
@@ -20,21 +20,16 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: dir clean rijndael
+.PHONY: dir rijndael
 
 all: rijndael
-
-clean:
-	rm $(OUT_DIR)/rijndael_enc_small.wasm
-	rm $(OUT_DIR)/rijndael_enc_large.wasm
-	rm $(OUT_DIR)/rijndael_dec_small.wasm
-	rm $(OUT_DIR)/rijndael_dec_large.wasm
+	rm $(OUT_DIR)/rijndael_dec_l.wasm
 
 rijndael:
-	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_enc_small.wasm -D ENCODE
-	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_enc_large.wasm -D LARGE -D ENCODE
-	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_dec_small.wasm
-	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_dec_large.wasm -D LARGE
+	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_enc_s.wasm -D ENCODE
+	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_enc_l.wasm -D LARGE -D ENCODE
+	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_dec_s.wasm
+	$(COMPILE) aes.c aesxam.c -o $(OUT_DIR)/rijndael_dec_l.wasm -D LARGE
 
 	cp output_large.enc $(DATA_DIR)/output_large.enc
 	cp output_small.enc $(DATA_DIR)/output_small.enc

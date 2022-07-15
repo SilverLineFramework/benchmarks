@@ -1,6 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/automotive
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 
 # WAMR Setup
 WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
@@ -19,12 +19,9 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: clean all
+.PHONY: all
 
 all: bitcnts
-
-clean:
-	rm $(OUT_DIR)/bitcnts.wasm
 
 FILE = bitcnt_1.c bitcnt_2.c bitcnt_3.c bitcnt_4.c bitcnts.c bitfiles.c bitstrng.c bstr_i.c 
 

@@ -1,7 +1,6 @@
-WASM_DIR=../../wasm/mibench/security
 DATA_DIR=../../data/mibench/security
 
-.PHONY: dir all clean children
+.PHONY: dir all children
 
 all: dir children
 
@@ -12,8 +11,3 @@ children:
 
 dir:
 	mkdir -p $(DATA_DIR)
-	mkdir -p $(WASM_DIR)
-
-clean:
-	rm -r $(DATA_DIR)
-	rm -r $(WASM_DIR)

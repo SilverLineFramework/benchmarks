@@ -1,6 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/telecomm
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 DATA_DIR=$(ROOT_DIR)/data/mibench/telecomm
 
 # WAMR Setup
@@ -57,10 +57,10 @@ EXTRAS= -Wno-comment -D_WASI_EMULATED_SIGNAL -lwasi-emulated-signal
 TOAST=$(COMPILE) $(EXTRAS) $(GSM_SOURCES) $(TOAST_SOURCES)
 
 toast:
-	$(TOAST) -o $(OUT_DIR)/toast_small.wasm -D ENCODE
-	$(TOAST) -o $(OUT_DIR)/toast_large.wasm -D ENCODE -D LARGE
-	$(TOAST) -o $(OUT_DIR)/untoast_small.wasm
-	$(TOAST) -o $(OUT_DIR)/untoast_large.wasm -D LARGE
+	$(TOAST) -o $(OUT_DIR)/toast_sm.wasm -D ENCODE
+	$(TOAST) -o $(OUT_DIR)/toast_l.wasm -D ENCODE -D LARGE
+	$(TOAST) -o $(OUT_DIR)/untoast_s.wasm
+	$(TOAST) -o $(OUT_DIR)/untoast_l.wasm -D LARGE
 	cp data/small.au $(DATA_DIR)/small.au
 	cp data/large.au $(DATA_DIR)/large.au
 	cp data/small.au.run.gsm $(DATA_DIR)/small.au.run.gsm

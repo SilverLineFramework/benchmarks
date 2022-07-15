@@ -1,11 +1,11 @@
 WASM_DIR=../wasm/cortex
 DATA_DIR=../data/cortex
 
-.PHONY: dir all clean children
+.PHONY: all clean
 
-all: dir children
-
-children:
+all:
+	mkdir -p $(DATA_DIR)
+	mkdir -p $(WASM_DIR)
 	make -C svd3
 	make -C kmeans
 	make -C spectral
@@ -14,10 +14,6 @@ children:
 	make -C motion
 	make -C rbm
 	make -C liblinear
-
-dir:
-	mkdir -p $(DATA_DIR)
-	mkdir -p $(WASM_DIR)
 
 clean:
 	rm -r $(DATA_DIR)

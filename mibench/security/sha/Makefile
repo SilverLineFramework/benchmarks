@@ -1,6 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/security
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 DATA_DIR=$(ROOT_DIR)/data/mibench/security
 
 # WAMR Setup
@@ -20,16 +20,12 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: dir clean sha
+.PHONY: dir sha
 
 all: sha
 
-clean:
-	rm $(OUT_DIR)/sha_small.wasm
-	rm $(OUT_DIR)/sha_large.wasm
-
 sha:
-	$(COMPILE) sha.c sha_driver.c -o $(OUT_DIR)/sha_small.wasm
-	$(COMPILE) sha.c sha_driver.c -o $(OUT_DIR)/sha_large.wasm -D LARGE
+	$(COMPILE) sha.c sha_driver.c -o $(OUT_DIR)/sha_s.wasm
+	$(COMPILE) sha.c sha_driver.c -o $(OUT_DIR)/sha_l.wasm -D LARGE
 	cp input_small.asc $(DATA_DIR)/input_small.asc
 	cp input_large.asc $(DATA_DIR)/input_large.asc

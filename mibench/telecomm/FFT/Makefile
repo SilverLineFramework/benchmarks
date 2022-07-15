@@ -1,7 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/telecomm
-DATA_DIR=$(ROOT_DIR)/data/mibench/telecomm
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 
 # WAMR Setup
 WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
@@ -20,18 +19,12 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: all clean
+.PHONY: all
 
 all: fft
 
 fft:
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_small.wasm
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_large.wasm -D LARGE
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_small.wasm -D INV
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_large.wasm -D LARGE -D INV
-
-clean:
-	rm $(OUT_DIR)/fft_small.wasm
-	rm $(OUT_DIR)/fft_large.wasm
-	rm $(OUT_DIR)/invfft_small.wasm
-	rm $(OUT_DIR)/invfft_large.wasm
+	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_s.wasm
+	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_l.wasm -D LARGE
+	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_s.wasm -D INV
+	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_l.wasm -D LARGE -D INV

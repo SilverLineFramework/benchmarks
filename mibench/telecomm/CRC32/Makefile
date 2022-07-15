@@ -1,7 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/telecomm
-DATA_DIR=$(ROOT_DIR)/data/mibench/telecomm
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 
 # WAMR Setup
 WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
@@ -20,14 +19,10 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: all clean
+.PHONY: all
 
 all: crc
 
 crc: crc_32.c
-	$(COMPILE) crc_32.c -o $(OUT_DIR)/crc32_small.wasm
-	$(COMPILE) crc_32.c -o $(OUT_DIR)/crc32_large.wasm -D LARGE
-
-clean:
-	rm $(OUT_DIR)/crc32_small.wasm
-	rm $(OUT_DIR)/crc32_large.wasm
+	$(COMPILE) crc_32.c -o $(OUT_DIR)/crc32_s.wasm
+	$(COMPILE) crc_32.c -o $(OUT_DIR)/crc32_l.wasm -D LARGE

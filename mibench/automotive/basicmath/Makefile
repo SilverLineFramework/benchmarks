@@ -1,6 +1,6 @@
 # Output
 ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench/automotive
+OUT_DIR=$(ROOT_DIR)/wasm/mibench
 
 # WAMR Setup
 WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
@@ -19,13 +19,9 @@ COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
 
 COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
-.PHONY: dir clean
+.PHONY: dir
 
 all: basicmath_small basicmath_large
-
-clean:
-	rm $(OUT_DIR)/basicmath_large.wasm
-	rm $(OUT_DIR)/basicmath_small.wasm
 
 # Benchmark specifics
 FILE1 = basicmath_small.c rad2deg.c cubic.c isqrt.c
@@ -33,6 +29,6 @@ FILE2 = basicmath_large.c rad2deg.c cubic.c isqrt.c
 
 
 basicmath_small: $(FILE1)
-	$(COMPILE) $(FILE1) -o $(OUT_DIR)/basicmath_small.wasm -lm
+	$(COMPILE) $(FILE1) -o $(OUT_DIR)/basicmath_s.wasm -lm
 basicmath_large: $(FILE2)
-	$(COMPILE) $(FILE2) -o $(OUT_DIR)/basicmath_large.wasm -lm
+	$(COMPILE) $(FILE2) -o $(OUT_DIR)/basicmath_l.wasm -lm
