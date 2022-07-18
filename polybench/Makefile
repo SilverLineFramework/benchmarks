@@ -28,18 +28,16 @@ WASM := $(BENCHMARKS:.c=.wasm)
 all: dir $(WASM)
 
 clean:
-	rm -r $(OUT_DIR)_s
-	rm -r $(OUT_DIR)_m
+	rm -r $(OUT_DIR)
 
 dir:
-	mkdir -p $(OUT_DIR)_s
-	mkdir -p $(OUT_DIR)_m
+	mkdir -p $(OUT_DIR)
 #	mkdir -p $(OUT_DIR)/large
 
 $(WASM): %.wasm : %.c
 	$(COMPILE) -D SMALL_DATASET $^ \
-		-o $(OUT_DIR)_s/$(notdir $(basename $@))_s.wasm
+		-o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
 	$(COMPILE) -D MEDIUM_DATASET $^ \
-		-o $(OUT_DIR)_m/$(notdir $(basename $@))_m.wasm
+		-o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
 #	$(COMPILE) -D LARGE_DATASET $^ \
 #		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
