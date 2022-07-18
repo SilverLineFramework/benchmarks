@@ -35,7 +35,7 @@ int benchmark_main(int argc, char* argv[])
     F2D *STDDEV_GPSPos;
     F2D *ones, *randW;
 
-    #ifdef SIZE == 0
+    #if SIZE == 0
         char im1[100] = "data/vision/localization/sqcif/1.txt";
     #elif SIZE == 1
         char im1[100] = "data/vision/localization/qcif/1.txt";
