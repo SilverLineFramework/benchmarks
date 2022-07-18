@@ -8,23 +8,25 @@ AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir polybench mibench cortex
+wasm: dir polybench mibench cortex vision
 
 dir:
 	mkdir -p $(OUT_DIR)
 
-.PHONY: instrumentation tests polybench cortex array mibench
+.PHONY: tests polybench cortex array mibench vision
 
 tests:
 	make -C tests
-polybench:
-	make -C polybench
-cortex:
-	make -C cortex
 array:
 	make -C array
+polybench:
+	make -C polybench
 mibench:
 	make -C mibench
+cortex:
+	make -C cortex
+vision:
+	make -C vision
 
 # Copy rustpython to wasm folder (for distribution or AOT compilation)
 rustpython:

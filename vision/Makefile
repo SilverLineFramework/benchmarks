@@ -6,7 +6,9 @@ DATA_DIR=../data/vision
 all:
 	mkdir -p $(DATA_DIR)
 	mkdir -p $(WASM_DIR)
-	make -C disparity
+#	make -C disparity
+#	make -C localization
+	make -C mser
 
 clean:
 	rm -r $(DATA_DIR)

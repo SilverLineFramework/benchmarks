@@ -18,11 +18,11 @@ int benchmark_main(int argc, char* argv[])
     int WIN_SZ=8, SHIFT=64;
 
     #if SIZE == 0
-        char base[100] = "data/vision/disparity/qcif";
+        char base[100] = "data/vision/disparity/sqcif";
     #elif SIZE == 1
-        char base[100] = "data/vision/disparity/cif";
+        char base[100] = "data/vision/disparity/qcif";
     #else /* SIZE == 2 */
-        char base[100] = "data/vision/disparity/vga";
+        char base[100] = "data/vision/disparity/cif";
     #endif
 
 
