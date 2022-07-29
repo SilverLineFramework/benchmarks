@@ -7,6 +7,7 @@ mqtt_pwd.txt
 data.json
 *.aot
 *.zip
+*.tar
 
 
 # Byte-compiled / optimized / DLL files

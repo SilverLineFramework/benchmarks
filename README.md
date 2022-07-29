@@ -56,10 +56,10 @@ In total, we currently have 141 benchmarks, 63 of which are unique (differ by mo
     - ```make wasm```: build wasm programs; saved to ```./wasm```.
     - ```make {benchmark}```: make ```tests```, ```polybench```, ```mibench```, ```vision```, or ```cortex``` individually.
     - ```make rustpython```: copy rustpython to ```./wasm``` for distribution or AOT compilation.
+    - ```make aot```: build wasm apps into AOT. This will compile **all** ```*.wasm``` files in the ```./wasm``` directory to corresponding ```*.aot``` files in the ```./aot``` directory. Notes:
+        - This can take a **very long time**, especially if rustpython is included. Always ```make aot -j16``` (with the appropriate number of threads).
+        - ```make aot``` uses ```--opt-level=1```, which should not be used in deployment. This is due to a problem with valgrind, which does not recognize some instructions that are used with higher optimization levels.
     - ```make clean```: remove ```./wasm``` and ```./aot```.
-    - ```make aot```: build wasm apps into AOT. This will compile **all** ```*.wasm``` files in the ```./wasm``` directory to corresponding ```*.aot``` files in the ```./aot``` directory.
-    
-        **NOTE**: this can take a very long time, especially if rustpython is included. Always ```make aot -j16``` (with the appropriate number of threads).
 
 ## Usage
 
