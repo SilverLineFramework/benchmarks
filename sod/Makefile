@@ -14,13 +14,6 @@ WASMCC=/opt/wasi-sdk/bin/clang
 
 WASMCFLAGS= -O1 -D_WASI_EMULATED_MMAN -I.
 
-WASMCLDFLAGS= -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
-WASMCLDFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCLDFLAGS+= -Wl,--export=main
-WASMCLDFLAGS+= -Wl,--export=_start
-WASMCLDFLAGS+= -Wl,--allow-undefined
-WASMCLDFLAGS+= -Wl,-lwasi-emulated-mman
-
 WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
 WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
 WASMLDFLAGS+= --strip-all --no-entry
@@ -28,7 +21,7 @@ WASMLDFLAGS+= --export=main --export=_start
 WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
 WASMLDFLAGS+= -lc /opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
 
-BENCHMARKS := $(shell ls samples/image-processing/*.c)
+BENCHMARKS := $(shell ls samples/rt/*.c)
 WASM := $(BENCHMARKS:.c=.wasm)
 
 .PHONY: all clean dir
@@ -41,21 +34,18 @@ dir:
 sod-c: sod.c
 	$(CC) sod.c samples/dilate_image.c -o sod_face_detect -I. $(CFLAGS)
 
-sod-wasm: sod.c
-	$(WASMCC) -D_WASI_EMULATED_MMAN $(WASMCFLAGS) -I. sod.c samples/dilate_image.c -o sod_dilate.wasm
-
 sod.wasm: sod.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
 
-#$(WASM): %.wasm : %.c
-#	$(WASMCC) $(WASMCFLAGS) $(WASMCLDFLAGS) $^ sod.c -v -o $(OUT_DIR)/$(notdir $(basename $@)).wasm 
+wrapper.wasm: wrapper.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
 
-$(WASM): %.wasm : %.c sod.wasm
+$(WASM): %.wasm : %.c wrapper.wasm sod.wasm
 	$(eval INT_FILE = $(shell mktemp))
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) sod.wasm $(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
+	wasm-ld $(WASMLDFLAGS) wrapper.wasm sod.wasm $(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
 	rm $(INT_FILE)
 	
 
 clean:
-	rm -r $(OUT_DIR) sod.wasm
+	rm -r $(OUT_DIR) sod.wasm wrapper.wasm
