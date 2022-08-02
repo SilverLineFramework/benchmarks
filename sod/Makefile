@@ -40,10 +40,13 @@ sod.wasm: sod.c
 wrapper.wasm: wrapper.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
 
-$(WASM): %.wasm : %.c wrapper.wasm sod.wasm
+../common/wrapper.wasm: ../common/wrapper.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
+
+$(WASM): %.wasm : %.c ../common/wrapper.wasm sod.wasm
 	$(eval INT_FILE = $(shell mktemp))
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) wrapper.wasm sod.wasm $(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
+	wasm-ld $(WASMLDFLAGS) ../common/wrapper.wasm sod.wasm $(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
 	rm $(INT_FILE)
 	
 

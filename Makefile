@@ -38,7 +38,6 @@ rustpython:
 clean:
 	rm -rf $(OUT_DIR)
 	rm -rf $(AOT_DIR)
-	#make -C instrumentation clean
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)
