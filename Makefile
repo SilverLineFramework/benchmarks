@@ -3,17 +3,17 @@ WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
 OUT_DIR=./wasm
 AOT_DIR=./aot
 
-AOT_SRCS:=$(shell find wasm -name "*.wasm")
+AOT_SRCS:=$(shell find wasm/sod -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir polybench mibench cortex vision
+wasm: dir polybench mibench cortex vision sod
 
 dir:
 	mkdir -p $(OUT_DIR)
 
-.PHONY: tests polybench cortex array mibench vision
+.PHONY: tests polybench cortex array mibench vision sod
 
 tests:
 	make -C tests
@@ -27,6 +27,8 @@ cortex:
 	make -C cortex
 vision:
 	make -C vision
+sod:
+	make -C sod
 
 # Copy rustpython to wasm folder (for distribution or AOT compilation)
 rustpython:
@@ -46,4 +48,4 @@ dir.aot:
 
 $(AOT_OUT): %.aot: wasm/%.wasm
 	mkdir -p $(dir aot/$@)
-	$(WAMR_COMPILER) --opt-level=1 -o aot/$@ $^
+	$(WAMR_COMPILER) --instrument --opt-level=1 -o aot/$@ $^
