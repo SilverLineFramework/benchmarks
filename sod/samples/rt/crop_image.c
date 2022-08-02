@@ -49,7 +49,7 @@ int benchmark_main(int argc, char *argv[])
 	/* Crop */
 	sod_img crop = sod_crop_image(imgIn, x, y, width, height);
 	/* Save the cropped region to the specified path */
-	//sod_img_save_as_png(crop, zOut);
+	////sod_img_save_as_png(crop, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(crop);

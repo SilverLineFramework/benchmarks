@@ -66,7 +66,7 @@ int benchmark_main(int argc, char *argv[])
 	printf("number of bifurcations = %d\n\n", np2);
 
 	/* Finally save our processed image to the specified path */
-	sod_img_save_as_png(imgOut, zOut);
+	//sod_img_save_as_png(imgOut, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(binImg);

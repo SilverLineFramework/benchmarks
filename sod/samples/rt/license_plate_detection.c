@@ -85,7 +85,7 @@ int benchmark_main(int argc, char *argv[])
 	}
 	sod_image_blob_boxes_release(box);
 	/* Finally save the output image to the specified path */
-	sod_img_save_as_png(imgCopy, zOut);
+	//sod_img_save_as_png(imgCopy, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(cannyImg);

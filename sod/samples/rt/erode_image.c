@@ -48,7 +48,7 @@ int benchmark_main(int argc, char *argv[])
 	/* Finally, erode the binary image, say  5 times */
 	sod_img erodeImg = sod_erode_image(binImg, 5);
 	/* Save the eroded image to the specified path */
-	sod_img_save_as_png(erodeImg, zOut);
+	//sod_img_save_as_png(erodeImg, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(binImg);

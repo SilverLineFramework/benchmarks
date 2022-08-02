@@ -77,7 +77,7 @@ int benchmark_main(int argc, char *argv[])
 		sod_image_draw_bbox_width(imgCopy, box[i], 5, 255., 0, 225.); /* rose box */
 	}
 	/* Finally save the output image to the specified path */
-	sod_img_save_as_png(imgCopy, zOut);
+	//sod_img_save_as_png(imgCopy, zOut);
 	/* Cleanup */
 	sod_image_blob_boxes_release(box);
 	sod_free_image(imgIn);

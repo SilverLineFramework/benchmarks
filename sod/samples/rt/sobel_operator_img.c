@@ -44,7 +44,7 @@ int benchmark_main(int argc, char *argv[])
 	/* Apply Sobel operator. */
 	sod_img imgOut = sod_sobel_image(imgIn);
 	/* Finally save our processed image to the specified path */
-	sod_img_save_as_png(imgOut, zOut);
+	//sod_img_save_as_png(imgOut, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(imgOut);

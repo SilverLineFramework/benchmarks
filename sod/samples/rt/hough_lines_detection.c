@@ -68,7 +68,7 @@ int benchmark_main(int argc, char *argv[])
 		sod_image_draw_line(imgCopy, aLines[i], aLines[i + 1], 255, 0, 255);
 	}
 	/* Finally save the output image to the specified path */
-	sod_img_save_as_png(imgCopy, zOut);
+	//sod_img_save_as_png(imgCopy, zOut);
 	/* Cleanup */
 	sod_hough_lines_release(aLines);
 	sod_free_image(imgIn);

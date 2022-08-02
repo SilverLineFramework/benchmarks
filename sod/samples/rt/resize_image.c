@@ -47,7 +47,7 @@ int benchmark_main(int argc, char *argv[])
 	
 	sod_img rz = sod_resize_image(imgIn, newWidth, newHeight);
 	/* Save the resized image to the specified path */
-	sod_img_save_as_png(rz, zOut);
+	//sod_img_save_as_png(rz, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(rz);
