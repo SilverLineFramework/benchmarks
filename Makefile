@@ -8,7 +8,7 @@ AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
 # WAMR Setup
-export WAMR_DIR=../wasm-micro-runtime
+export WAMR_DIR=$(shell pwd)/wasm-micro-runtime
 export WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
 
 # Compilation flags
@@ -33,7 +33,7 @@ export WASMCLFLAGS+= -Wl,--allow-undefined
 
 
 # Used by benchmarks to access the wrapper
-export WRAPPER_WASM= ../common/wrapper.wasm
+export WRAPPER_WASM= $(shell pwd)/common/wrapper.wasm
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir polybench mibench cortex vision sod
@@ -48,15 +48,13 @@ common:
 # Test
 tests: common
 	make -C tests
-array:
-	make -C array
 polybench: common
 	make -C polybench
-mibench:
+mibench: common
 	make -C mibench
-cortex:
+cortex: common
 	make -C cortex
-vision:
+vision: common
 	make -C vision
 sod: common
 	make -C sod
