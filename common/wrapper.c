@@ -51,37 +51,40 @@ static void free_args(int argc, char ***argv) {
 /** Parse argv from the input data stream 
 *   Assume comma-separated inputs for now 
 *   Return argc */
-static int parse_args(char*** argv, char *data) {
+static int parse_args(char*** argv, int *repeat, char *data) {
   int argc;
   const char d[2] = ",";
 
   char *token = strtok(data, d);
   if (token == NULL) {
     printf("Null data-in\n");
-    *argv = NULL;
-    return 0;
+    goto fail;
   } 
   else {
+    *repeat = atoi(token);
+    if (!(token = strtok(NULL, d))) { goto fail; }
     argc = atoi(token);
     *argv = (char **) malloc(argc * sizeof(char*));
     int i = 0;
-
+    /* Get argvs */
     while ((token = strtok(NULL, d))) {
       (*argv)[i++] = strdup(token);
     }
     if (i != argc) {
       printf("Error: Inconsistent argc (%d) and parsed count (%d)\n", argc, i);
       free_args(i, argv);
-      return 0;
+      goto fail;
     }
   }
 
-  //printf("Num args: %d\n", argc);
-  //for (int i = 0; i < argc; i++) {
-  //  printf("Arg %d: %s\n", i, (*argv)[i]);
-  //}
-  printf("Bench argv[1]: %s\n", (*argv)[1]);
+  printf("Repeat: %d | Bench argv[1]: %s\n", *repeat, (*argv)[1]);
 
+  return argc;
+
+fail:
+  *repeat = 0;
+  *argv = NULL;
+  argc = 0;
   return argc;
 }
 
@@ -107,6 +110,7 @@ int main(int argc, char **argv) {
 
     int bench_argc;
     char **bench_argv;
+    int repeat = 1;
 
     int i = 0;
     while(1) {
@@ -118,15 +122,18 @@ int main(int argc, char **argv) {
             break;
           }
           ch_read_msg(data_in_fd, buf, BUF_LEN);
-          bench_argc = parse_args(&bench_argv, buf);
+          bench_argc = parse_args(&bench_argv, &repeat, buf);
 
-          period_start();
-          benchmark_main(bench_argc, bench_argv);
-          period_yield();
-          printf("Done\n");
+          while (repeat > 0) {
+            period_start();
+            benchmark_main(bench_argc, bench_argv);
+            period_yield();
+            repeat--;
+            i += 1;
+          }
           free_args(bench_argc, &bench_argv);
-          i += 1;
-        } else {
+        } 
+        else {
           // Default implemented provided by approriate benchmark suite
           printf("No args\n");
           // bench_argc = get_default_args(&bench_argv);
