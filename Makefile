@@ -50,7 +50,7 @@ tests: common
 	make -C tests
 array:
 	make -C array
-polybench:
+polybench: common
 	make -C polybench
 mibench:
 	make -C mibench
@@ -71,6 +71,7 @@ clean:
 	rm -rf $(AOT_DIR)
 	make -C sod clean
 	make -C common clean
+	make -C polybench clean
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)

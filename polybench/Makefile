@@ -1,23 +1,7 @@
 # Output
 OUT_DIR=../wasm/polybench
 
-# WAMR Setup
-WAMR_DIR=../wasm-micro-runtime
-WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
 # COMMON= polybench.c ../common/active.c ../common/dp.c
-COMMON= polybench.c ../common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
 
 # Folders must start with pb_; pulls all .c files in that directory.
 BENCHMARKS := $(shell ls benchmarks/*.c)
@@ -27,17 +11,18 @@ WASM := $(BENCHMARKS:.c=.wasm)
 
 all: dir $(WASM)
 
-clean:
-	rm -r $(OUT_DIR)
-
 dir:
 	mkdir -p $(OUT_DIR)
-#	mkdir -p $(OUT_DIR)/large
 
-$(WASM): %.wasm : %.c
-	$(COMPILE) -D SMALL_DATASET $^ \
-		-o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
-	$(COMPILE) -D MEDIUM_DATASET $^ \
-		-o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
-#	$(COMPILE) -D LARGE_DATASET $^ \
-#		-o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
+polybench.wasm: polybench.c
+	$(WASMCC) $(WASMCFLAGS) -D SMALL_DATASET -c $^ -o $@
+
+$(WASM): %.wasm : %.c polybench.wasm
+	$(eval INT_FILE = $(shell mktemp))
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
+	wasm-ld $(WASMLDFLAGS) ../common/passive.wasm polybench.wasm \
+		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
+	rm $(INT_FILE)
+
+clean:
+	rm -f *.wasm

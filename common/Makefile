@@ -3,10 +3,13 @@ WASMCFLAGS= -O1
 
 .PHONY: all clean
 
-all: wrapper.wasm
+all: wrapper.wasm passive.wasm
 
 wrapper.wasm: wrapper.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
 
+passive.wasm: passive.c
+	$(WASMCC) $(WASMCFLAGS) -D PROFILE_PASSIVE -c $^ -o $@
+
 clean:
-	rm -f wrapper.wasm
+	rm -f *.wasm

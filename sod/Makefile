@@ -5,7 +5,6 @@ CFLAGS = -lm -Ofast -march=native -Wall -std=c99
 
 # Benchmark specific flags
 WASMCFLAGS+= -I.
-SODFLAGS= -D_WASI_EMULATED_MMAN
 
 # Output
 OUT_DIR=../wasm/sod/image-processing
@@ -13,7 +12,7 @@ OUT_DIR=../wasm/sod/image-processing
 BENCHMARKS := $(shell ls samples/rt/*.c)
 WASM := $(BENCHMARKS:.c=.wasm)
 
-.PHONY: all clean dir $(WASM)
+.PHONY: all clean dir
 
 all: dir $(WASM)
 
@@ -24,7 +23,7 @@ sod-c: sod.c
 	$(CC) sod.c samples/dilate_image.c -o sod_face_detect -I. $(CFLAGS)
 
 sod.wasm: sod.c
-	$(WASMCC) $(WASMCFLAGS) $(SODFLAGS) -c $^ -o $@
+	$(WASMCC) $(WASMCFLAGS) -D_WASI_EMULATED_MMAN -c $^ -o $@
 
 $(WASM): %.wasm : %.c sod.wasm
 	$(eval INT_FILE = $(shell mktemp))
@@ -34,4 +33,4 @@ $(WASM): %.wasm : %.c sod.wasm
 	rm $(INT_FILE)
 
 clean:
-	rm -f sod.wasm	
+	rm -f *.wasm	
