@@ -10,6 +10,7 @@ WASMCFLAGS+= -I.
 OUT_DIR=../wasm/sod/image-processing
 COMMON_DIR=../wasm/sod/common
 
+# Common files
 COMMON = sod.wasm
 
 BENCHMARKS := $(shell ls samples/rt/*.c)
@@ -26,10 +27,10 @@ dir:
 sod-c: sod.c
 	$(CC) sod.c samples/dilate_image.c -o sod_face_detect -I. $(CFLAGS)
 
-$(COMMON_DIR)/sod.wasm: sod.c
-	$(WASMCC) $(WASMCFLAGS) -D_WASI_EMULATED_MMAN -c $^ -o $@
+$(COMMON) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -D_WASI_EMULATED_MMAN -c $^ -o $(COMMON_DIR)/$@
 
-$(WASM): %.wasm : %.c $(COMMON_DIR)/sod.wasm
+$(WASM): %.wasm : %.c $(COMMON)
 	$(eval INT_FILE = $(shell mktemp))
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
 	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/sod.wasm \

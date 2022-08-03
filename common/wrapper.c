@@ -30,7 +30,7 @@ static void init_channels(int *exit_in, int *in, int *out) {
     free(ch_in);
 
     // Exit condition
-    ch_in = path_join("benchmark/exit", uuid_buf);
+    ch_in = path_join("benchmark/exit", "all");
     *exit_in = ch_open(ch_in, CH_RDONLY, 0);
     free(ch_in);
 
@@ -123,6 +123,7 @@ int main(int argc, char **argv) {
           period_start();
           benchmark_main(bench_argc, bench_argv);
           period_yield();
+          printf("Done\n");
           free_args(bench_argc, &bench_argv);
           i += 1;
         } else {
