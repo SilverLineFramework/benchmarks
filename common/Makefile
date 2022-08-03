@@ -1,15 +1,18 @@
 WASMCC=/opt/wasi-sdk/bin/clang
 WASMCFLAGS= -O1
 
-.PHONY: all clean
+OUT_DIR=../wasm/common
 
-all: wrapper.wasm passive.wasm
+.PHONY: all dir
+
+all: dir wrapper.wasm passive.wasm
+
+dir:
+	mkdir -p $(OUT_DIR)
 
 wrapper.wasm: wrapper.c
-	$(WASMCC) $(WASMCFLAGS) -c $^ -o $@
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(OUT_DIR)/$@
 
 passive.wasm: passive.c
-	$(WASMCC) $(WASMCFLAGS) -D PROFILE_PASSIVE -c $^ -o $@
+	$(WASMCC) $(WASMCFLAGS) -D PROFILE_PASSIVE -c $^ -o $(OUT_DIR)/$@
 
-clean:
-	rm -f *.wasm

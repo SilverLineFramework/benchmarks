@@ -3,7 +3,7 @@ WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
 OUT_DIR=./wasm
 AOT_DIR=./aot
 
-AOT_SRCS:=$(shell find wasm -name "*.wasm")
+AOT_SRCS:=$(shell find wasm -not -path "*/common/*" -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
 AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 
@@ -32,8 +32,8 @@ export WASMCLFLAGS+= -Wl,--export=_start
 export WASMCLFLAGS+= -Wl,--allow-undefined
 
 
-# Used by benchmarks to access the wrapper
-export WRAPPER_WASM= $(shell pwd)/common/wrapper.wasm
+# Benchmark base common: Used by benchmarks to access the wrapper
+export WRAPPER_WASM= $(shell pwd)/wasm/common/wrapper.wasm
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir polybench mibench cortex vision sod
@@ -67,9 +67,6 @@ rustpython:
 clean:
 	rm -rf $(OUT_DIR)
 	rm -rf $(AOT_DIR)
-	make -C sod clean
-	make -C common clean
-	make -C polybench clean
 
 # AOT: goes in ./aot folder.
 aot: dir.aot $(AOT_OUT)
