@@ -11,17 +11,29 @@ AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 export WAMR_DIR=../wasm-micro-runtime
 export WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
 
+# Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
-export WASMCFLAGS= -O1 -D_WASI_EMULATED_MMAN -I.
+export WASMCFLAGS= -O1
 
+# Linking flags
 export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
 export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
 export WASMLDFLAGS+= --strip-all --no-entry
 export WASMLDFLAGS+= --export=main --export=_start
 export WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
 export WASMLDFLAGS+= -lc /opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
-export WASMCFLAGS= -O1 -D_WASI_EMULATED_MMAN -I.
 
+# For compilation+linking
+export WASMCLFLAGS= -O1
+export WASMCLFLAGS+= -Wl,--allow-undefined-file=${WAMR_SYMBOLS}
+export WASMCLFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
+export WASMCLFLAGS+= -Wl,--export=main
+export WASMCLFLAGS+= -Wl,--export=_start
+export WASMCLFLAGS+= -Wl,--allow-undefined
+
+
+# Used by benchmarks to access the wrapper
+export WRAPPER_WASM= ../common/wrapper.wasm
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir polybench mibench cortex vision sod
@@ -29,11 +41,11 @@ wasm: dir polybench mibench cortex vision sod
 dir:
 	mkdir -p $(OUT_DIR)
 
-.PHONY: common tests polybench cortex array mibench vision sod
+.PHONY: common tests polybench cortex array mibench vision sod clean
 
 common:
 	make -C common
-
+# Test
 tests: common
 	make -C tests
 array:
@@ -57,6 +69,7 @@ rustpython:
 clean:
 	rm -rf $(OUT_DIR)
 	rm -rf $(AOT_DIR)
+	make -C sod clean
 	make -C common clean
 
 # AOT: goes in ./aot folder.
