@@ -151,10 +151,6 @@ int benchmark_main(int argc, char **argv)
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}
-
 void do_cross_validation()
 {
 	int i;

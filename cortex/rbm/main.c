@@ -330,6 +330,3 @@ int benchmark_main(int argc, char *argv[])
 
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

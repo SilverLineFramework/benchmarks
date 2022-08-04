@@ -549,6 +549,3 @@ for (l = 1; l <= n; l++)
       }
  }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

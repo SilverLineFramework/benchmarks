@@ -33,7 +33,9 @@ export WASMCLFLAGS+= -Wl,--allow-undefined
 
 
 # Benchmark base common: Used by benchmarks to access the wrapper
-export WRAPPER_WASM= $(shell pwd)/wasm/common/wrapper.wasm
+export ROOT_DIR= $(shell pwd)
+export WRAPPER_WASM= $(ROOT_DIR)/wasm/common/wrapper.wasm
+export WRAPPER_C= $(ROOT_DIR)/common/wrapper.c
 
 # WASM: goes in ./wasm folder; also copy rustpython.wasm
 wasm: dir polybench mibench cortex vision sod

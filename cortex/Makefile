@@ -1,11 +1,12 @@
-WASM_DIR=../wasm/cortex
-DATA_DIR=../data/cortex
+export WASM_DIR=$(shell pwd)/../wasm/cortex
+export BASE_DATA_DIR=$(shell pwd)/../data/cortex
+export COMMON_DIR=$(WASM_DIR)/common
 
 .PHONY: all clean
 
 all:
-	mkdir -p $(DATA_DIR)
-	mkdir -p $(WASM_DIR)
+	mkdir -p $(BASE_DATA_DIR)
+	mkdir -p $(COMMON_DIR)
 	make -C svd3
 	make -C kmeans
 	make -C spectral
