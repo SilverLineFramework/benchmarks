@@ -5,7 +5,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "../../../../common/runtime.h"
 
 struct adpcm_state state;
 

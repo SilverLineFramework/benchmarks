@@ -5,7 +5,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include "linear.h"
-#include "../../common/runtime.h"
 
 
 //#include "cycle_counter.h"

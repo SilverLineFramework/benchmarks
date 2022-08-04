@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 #if SIZE == 0
 #define SYNTHETIC1

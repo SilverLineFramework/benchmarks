@@ -5,7 +5,6 @@ Author: Sravanthi Kota Venkata
 #include <stdio.h>
 #include <stdlib.h>
 #include "disparity.h"
-#include "../../../common/runtime.h"
 
 int benchmark_main(int argc, char* argv[])
 {

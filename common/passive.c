@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "api.h"
-#include "passive.h"
 
 /** Join topic path. */
 static char *path_join(char *a, char *b) {

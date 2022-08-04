@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "common/sdvbs_common.h"
-#include "../../common/runtime.h"
 
 
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))

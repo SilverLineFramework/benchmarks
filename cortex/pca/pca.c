@@ -23,7 +23,6 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#include "../../common/runtime.h"
 
 
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )

@@ -2,7 +2,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 #include "rbm.h"
 

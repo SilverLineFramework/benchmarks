@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 int *k_means(double **data, int n, int m, int k, double t, double **centroids);
 

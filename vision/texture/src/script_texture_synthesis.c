@@ -3,7 +3,6 @@ Author: Sravanthi Kota Venkata
 ********************************/
 
 #include "texture.h"
-#include "../../../common/runtime.h"
 
 int WIDTHin,HEIGHTin;
 F2D *target, *result;

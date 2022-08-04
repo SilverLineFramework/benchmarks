@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "../../../common/runtime.h"
 
 #define UNLIMIT
 #define MAXARRAY 60000 /* this number, if too large, will cause a seg. fault!! */

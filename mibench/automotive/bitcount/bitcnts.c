@@ -13,7 +13,6 @@
 #include <time.h>
 #include <float.h>
 #include "bitops.h"
-#include "../../../common/runtime.h"
 
 #define FUNCS  7
 

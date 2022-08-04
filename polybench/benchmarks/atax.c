@@ -14,7 +14,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "../../common/runtime.h"
 
 /* Include polybench common header. */
 #define POLYBENCH_DUMP_ARRAYS

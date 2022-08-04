@@ -1,12 +1,11 @@
 /**
- * @file passive.c
+ * @file wrapper.c
  * @brief Passive profiling with data inputs.
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include "api.h"
-#include "passive.h"
 #include "wrapper.h"
 
 #define BUF_LEN 1000

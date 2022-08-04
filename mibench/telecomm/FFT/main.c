@@ -3,7 +3,6 @@
 #include <math.h>
 #include "fourier.h"
 #include "ddcmath.h"
-#include "../../../common/runtime.h"
 
 int benchmark_main(int argc, char *argv[]) {
 	unsigned MAXSIZE;

@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include "crc.h"
-#include "../../../common/runtime.h"
 
 #ifdef __TURBOC__
  #pragma warn -cln

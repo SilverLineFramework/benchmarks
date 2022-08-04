@@ -5,7 +5,6 @@
 #include <string.h>
 #include <time.h>
 #include "sha.h"
-#include "../../../common/runtime.h"
 
 int benchmark_main(int argc, char **argv)
 {

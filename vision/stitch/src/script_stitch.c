@@ -3,7 +3,6 @@ Author: Sravanthi Kota Venkata
 ********************************/
 
 #include "stitch.h"
-#include "../../../common/runtime.h"
 
 int benchmark_main(int argc, char* argv[])
 {

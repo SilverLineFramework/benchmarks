@@ -5,7 +5,7 @@ OUT_DIR=../wasm/common
 
 .PHONY: all dir
 
-all: dir wrapper.wasm passive.wasm
+all: dir wrapper.wasm
 
 dir:
 	mkdir -p $(OUT_DIR)

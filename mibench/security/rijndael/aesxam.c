@@ -40,7 +40,6 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <ctype.h>
-#include "../../../common/runtime.h"
 
 #include "aes.h"
 
