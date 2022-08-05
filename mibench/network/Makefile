@@ -1,4 +1,4 @@
-DATA_DIR=../../data/mibench/network
+export DATA_DIR=$(BASE_DATA_DIR)/network
 
 .PHONY: dir all clean children
 

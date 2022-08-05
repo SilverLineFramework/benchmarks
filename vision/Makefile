@@ -22,7 +22,6 @@ all: dir $(COMMON)
 
 dir:
 	mkdir -p $(COMMON_DIR)
-	echo $(COMMON)
 
 $(COMMON) : %.wasm : %.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)

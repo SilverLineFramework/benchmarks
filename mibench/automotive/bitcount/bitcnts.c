@@ -61,6 +61,3 @@ static int CDECL bit_shifter(long int x)
   return n;
 }
 
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
-}
