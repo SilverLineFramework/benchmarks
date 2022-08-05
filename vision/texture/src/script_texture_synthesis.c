@@ -39,10 +39,6 @@ int  benchmark_main(int argc, char **argv)
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}
-
 I2D* parse_flags(int argc, char ** argv)
 {
     int i, tsx,tsy;

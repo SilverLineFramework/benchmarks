@@ -1,22 +1,35 @@
 # Output
-ROOT_DIR=../..
-OUT_DIR=$(ROOT_DIR)/wasm/vision/stitch
-DATA_DIR=$(ROOT_DIR)/data/vision/stitch
+MAIN_C := src/script_stitch.c
+SUPP_C := $(filter-out $(MAIN_C), $(shell ls src/*.c))
 
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
+SUPP := $(SUPP_C:.c=.wasm)
+SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-COMPILE= $(WASMCC) $(WASMCLFLAGS) $(COMMON)
+DATA_DIR=$(BASE_DATA_DIR)/stitch
 
 .PHONY: all
 
 all: stitch
 
-SRCS= src/*.c ../common/*.c
+$(SUPP) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
-stitch:
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_s.wasm -D SIZE=0 -D sqcif
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_m.wasm -D SIZE=1 -D qcif
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_l.wasm -D SIZE=2 -D cif
+stitch: $(SUPP)
+	$(eval INT_FILE = $(shell mktemp))
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 -D sqcif $(MAIN_C) -c -o $(INT_FILE)
+	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 -D qcif $(MAIN_C) -c -o $(INT_FILE)
+	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
+	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
 	cp -r data/sqcif $(DATA_DIR)
