@@ -17,5 +17,5 @@ all:
 	make -C liblinear
 
 clean:
-	rm -r $(DATA_DIR)
+	rm -r $(BASE_DATA_DIR)
 	rm -r $(WASM_DIR)

@@ -1,40 +1,35 @@
 # Output
-MAIN_C= main.c
-COMMON_C= svd.c svd2.c sortSVDResult.c $(shell ls common/*.c)
+MAIN_C := main.c
+COMMON_C := svd.c svd2.c sortSVDResult.c $(shell ls common/*.c)
 
 COMMON := $(COMMON_C:.c=.wasm)
+COMMON_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(COMMON)))
+
 DATA_DIR := $(BASE_DATA_DIR)/svd3
 
 .PHONY: all
 
-all: dir svd3
-
-dir:
-	mkdir -p $(COMMON_DIR)
+all: svd3
 
 $(COMMON) : %.wasm : %.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
 svd3: $(COMMON)
-	$(eval COMMON_WASM = $(shell ls $(COMMON_DIR)/*.wasm))
+	$(eval INT_FILE = $(shell mktemp))
 
-	$(eval INT_FILE_S = $(shell mktemp))
-	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE_S)
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE)
 	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
-		$(INT_FILE_S) -o $(WASM_DIR)/$@_s.wasm
-	rm $(INT_FILE_S)
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
 
-	$(eval INT_FILE_M = $(shell mktemp))
-	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE_M)
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 $(MAIN_C) -c -o $(INT_FILE)
 	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
-		$(INT_FILE_M) -o $(WASM_DIR)/$@_m.wasm
-	rm $(INT_FILE_M)
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
 
-	$(eval INT_FILE_L = $(shell mktemp))
-	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE_L)
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 $(MAIN_C) -c -o $(INT_FILE)
 	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
-		$(INT_FILE_L) -o $(WASM_DIR)/$@_l.wasm
-	rm $(INT_FILE_L)
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
 	cp small.txt $(DATA_DIR)/small.txt
