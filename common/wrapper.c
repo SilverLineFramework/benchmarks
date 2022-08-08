@@ -24,12 +24,12 @@ static void init_channels(int *exit_in, int *in, int *out) {
 
     char *ch_in;
     // Input data
-    ch_in = path_join("in", "1");
+    ch_in = path_join("benchmark/in", uuid_buf);
     *in = ch_open(ch_in, CH_RDONLY, 0);
     free(ch_in);
 
     // Exit condition
-    ch_in = path_join("benchmark/exit", "all");
+    ch_in = path_join("benchmark/exit", uuid_buf);
     *exit_in = ch_open(ch_in, CH_RDONLY, 0);
     free(ch_in);
 
@@ -94,6 +94,9 @@ fail:
 */
 int main(int argc, char **argv) {
 
+    int bench_argc;
+    char **bench_argv;
+
     // Manual profiling mode
     period_set_flags(1);
 
@@ -107,8 +110,6 @@ int main(int argc, char **argv) {
     char *buf = (char*) malloc(BUF_LEN);
     int poll_fds[] = {data_in_fd};
 
-    int bench_argc;
-    char **bench_argv;
     int repeat = 1;
 
     int i = 0;
@@ -133,9 +134,7 @@ int main(int argc, char **argv) {
           free_args(bench_argc, &bench_argv);
         } 
         else {
-          // Default implemented provided by approriate benchmark suite
-          printf("No args\n");
-          // bench_argc = get_default_args(&bench_argv);
+          printf("Wait 5 sec\n");
         }
     }
     printf("Exiting after %d loops\n", i);
