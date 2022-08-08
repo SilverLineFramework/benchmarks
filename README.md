@@ -119,11 +119,15 @@ In total, we currently have 141 benchmarks, 63 of which are unique (differ by mo
 
 Input data to the benchmark is provided using MQTT commands to the topic `benchmark/in/{benchmark-uuid}`.
 The format for the command is comma-separated values as follows:
-  ```{# of times to execute loop},{# of args},{arg1},{arg2}..,{argN}```
-NOTE: This string must be NULL-terminated to be processed correctly. If generating using Python, make
+<br/>
+```{# of loop executions},{# of args},{arg1},{arg2}..,{argN}```
+
+For example, to run an benchmark `grayscale` that produces a grayscale version of an
+image 5 times, the command might look like ```5,2,input_img.png,output_img.png```
+
+**NOTE**: This string must be NULL-terminated to be processed correctly. If generating using Python, make
 sure to tack NULL at the end of the string.
 
 Stopping benchmarks is done by sending any data to `benchmark/exit/{benchmark-uuid}`
 
-For example, to run an benchmark `grayscale` that produces a grayscale version of an
-image 5 times, the command might look like ```5,2,input_img.png,output_img.png```
+
