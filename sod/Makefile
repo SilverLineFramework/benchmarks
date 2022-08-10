@@ -7,8 +7,8 @@ CFLAGS = -lm -Ofast -march=native -Wall -std=c99
 WASMCFLAGS+= -I.
 
 # Output
-OUT_DIR=../wasm/sod/image-processing
-COMMON_DIR=../wasm/sod/common
+OUT_DIR=$(ROOT_WASM_DIR)/sod/image-processing
+COMMON_DIR=$(ROOT_WASM_DIR)/sod/common
 
 # Common files
 COMMON = sod.wasm
@@ -33,7 +33,7 @@ $(COMMON) : %.wasm : %.c
 $(WASM): %.wasm : %.c $(COMMON)
 	$(eval INT_FILE = $(shell mktemp))
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/sod.wasm \
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/sod.wasm \
 		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@)).wasm
 	rm $(INT_FILE)
 

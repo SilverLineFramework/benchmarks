@@ -1,7 +1,5 @@
 # Main makefile for WASM benchmarks
 WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
-OUT_DIR=./wasm
-AOT_DIR=./aot
 
 AOT_SRCS:=$(shell find wasm -not -path "*/common/*" -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
@@ -16,12 +14,15 @@ export WASMCC=/opt/wasi-sdk/bin/clang
 export WASMCFLAGS= -O1
 
 # Linking flags
-export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi /opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
+export WASMLD=/opt/wasi-sdk/bin/wasm-ld
+export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi \
+	/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
 export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
 export WASMLDFLAGS+= --strip-all --no-entry
 export WASMLDFLAGS+= --export=main --export=_start
 export WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
-export WASMLDFLAGS+= -lc /opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
+export WASMLDFLAGS+= -lc \
+	/opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
 
 # For compilation+linking
 export WASMCLFLAGS= -O1
@@ -31,23 +32,24 @@ export WASMCLFLAGS+= -Wl,--export=main
 export WASMCLFLAGS+= -Wl,--export=_start
 export WASMCLFLAGS+= -Wl,--allow-undefined
 
-
 # Benchmark base common: Used by benchmarks to access the wrapper
 export ROOT_DIR= $(shell pwd)
+export ROOT_DATA_DIR=$(ROOT_DIR)/data
+export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
+export ROOT_AOT_DIR=$(ROOT_DIR)/aot
+
 export WRAPPER_WASM= $(ROOT_DIR)/wasm/common/wrapper.wasm
 export WRAPPER_C= $(ROOT_DIR)/common/wrapper.c
 
-# WASM: goes in ./wasm folder; also copy rustpython.wasm
-wasm: dir polybench mibench cortex vision sod
+# WASM: goes in ./wasm folder
+.PHONY: wasm
+wasm: polybench mibench cortex vision sod
 
-dir:
-	mkdir -p $(OUT_DIR)
-
-.PHONY: common tests polybench cortex array mibench vision sod clean
-
+.PHONY: common
 common:
 	make -C common
-# Test
+
+.PHONY: tests polybench mibench cortex vision sod
 tests: common
 	make -C tests
 polybench: common
@@ -62,19 +64,24 @@ sod: common
 	make -C sod
 
 # Copy rustpython to wasm folder (for distribution or AOT compilation)
-rustpython:
+.PHONY: rustpython
+rustpython: wasm/rustpython.wasm
+wasm/rustpython.wasm: rustpython.wasm
 	cp rustpython.wasm wasm
 
 # Clean
+.PHONY: clean
 clean:
-	rm -rf $(OUT_DIR)
-	rm -rf $(AOT_DIR)
+	rm -rf $(ROOT_WASM_DIR)
+	rm -rf $(ROOT_AOT_DIR)
+	rm -rf $(ROOT_DATA_DIR)
 
 # AOT: goes in ./aot folder.
+.PHONY: aot
 aot: dir.aot $(AOT_OUT)
 
 dir.aot:
-	mkdir -p $(AOT_DIR)
+	mkdir -p $(ROOT_AOT_DIR)
 
 $(AOT_OUT): %.aot: wasm/%.wasm
 	mkdir -p $(dir aot/$@)

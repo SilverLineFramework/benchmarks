@@ -1,5 +1,5 @@
-export WASM_DIR=$(shell pwd)/../wasm/vision
-export BASE_DATA_DIR=$(shell pwd)/../data/vision
+export WASM_DIR=$(ROOT_WASM_DIR)/vision
+export BASE_DATA_DIR=$(ROOT_DATA_DIR)/vision
 export COMMON_DIR=$(WASM_DIR)/common
 
 COMMON_C := $(shell ls common/*.c)
@@ -9,7 +9,6 @@ export COMMON_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(COMMON)))
 .PHONY: all dir clean
 
 all: dir $(COMMON)
-	mkdir -p $(BASE_DATA_DIR)
 	make -C disparity
 	make -C localization
 	make -C mser
@@ -22,6 +21,7 @@ all: dir $(COMMON)
 
 dir:
 	mkdir -p $(COMMON_DIR)
+	mkdir -p $(BASE_DATA_DIR)
 
 $(COMMON) : %.wasm : %.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)

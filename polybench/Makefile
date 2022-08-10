@@ -1,5 +1,5 @@
 # Output
-OUT_DIR=../wasm/polybench
+OUT_DIR=$(ROOT_WASM_DIR)/polybench
 COMMON_DIR=$(OUT_DIR)/common
 
 # COMMON= polybench.c ../common/active.c ../common/dp.c
@@ -23,9 +23,8 @@ polybench: polybench.c
 $(WASM): %.wasm : %.c polybench
 	$(eval INT_FILE = $(shell mktemp))
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_s.wasm \
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_s.wasm \
 		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
-	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_m.wasm \
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_m.wasm \
 		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
 	rm $(INT_FILE)
-

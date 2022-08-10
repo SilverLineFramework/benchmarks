@@ -18,11 +18,11 @@ basicmath: $(SUPP)
 	$(eval INT_FILE = $(shell mktemp))
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN1_C) -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
 		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN2_C) -c -o $(INT_FILE)
-	wasm-ld $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
 		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
 
 	rm $(INT_FILE)

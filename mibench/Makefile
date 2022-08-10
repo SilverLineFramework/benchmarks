@@ -1,6 +1,6 @@
-export WASM_DIR=$(shell pwd)/../wasm/mibench
-export BASE_DATA_DIR=$(shell pwd)/../data/mibench
-export COMMON_DIR=$(WASM_DIR)/common
+export WASM_DIR=$(ROOT_WASM_DIR)/mibench
+export BASE_DATA_DIR=$(ROOT_DATA_DIR)/mibench
+export COMMON_DIR=$(ROOT_WASM_DIR)/common
 
 .PHONY: all dir clean
 

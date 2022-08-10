@@ -1,5 +1,5 @@
-export WASM_DIR=$(shell pwd)/../wasm/cortex
-export BASE_DATA_DIR=$(shell pwd)/../data/cortex
+export WASM_DIR=$(ROOT_WASM_DIR)/cortex
+export BASE_DATA_DIR=$(ROOT_DATA_DIR)/cortex
 export COMMON_DIR=$(WASM_DIR)/common
 
 .PHONY: all clean
