@@ -733,6 +733,7 @@ int benchmark_main P2((ac, av), int ac, char **av)
     #endif
 
     fclose(in);
+    fclose(out);
 
     return 0;
 }
