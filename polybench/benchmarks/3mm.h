@@ -44,11 +44,11 @@
 //#   define NK 200
 //#   define NL 210
 //#   define NM 220
-#   define NI 280
-#   define NJ 290
-#   define NK 300
-#   define NL 310
-#   define NM 320
+#   define NI 240
+#   define NJ 250
+#   define NK 260
+#   define NL 270
+#   define NM 280
 #  endif
 
 #  ifdef LARGE_DATASET

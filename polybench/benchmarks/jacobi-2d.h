@@ -33,7 +33,7 @@
 // #   define TSTEPS 100
 // #   define N 250
 #define TSTEPS 200
-#define N 500
+#define N 400
 #  endif
 
 #  ifdef LARGE_DATASET

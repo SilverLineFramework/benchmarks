@@ -36,9 +36,9 @@
 // #   define TMAX 100
 // #   define NX 200
 // #   define NY 240
-#   define TMAX 200
-#   define NX 400
-#   define NY 480
+#   define TMAX 150
+#   define NX 300
+#   define NY 400
 #  endif
 
 #  ifdef LARGE_DATASET

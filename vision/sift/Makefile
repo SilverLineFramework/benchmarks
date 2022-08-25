@@ -32,6 +32,7 @@ sift: $(SUPP)
 	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
+	cp -r data/sim_fast $(DATA_DIR)
 	cp -r data/sqcif $(DATA_DIR)
 	cp -r data/qcif $(DATA_DIR)
-	cp -r data/cif $(DATA_DIR)
+	

@@ -32,8 +32,8 @@
 #  ifdef MEDIUM_DATASET
 // #   define M 200
 //#   define N 240
-#define M 600
-#define N 720
+#define M 400
+#define N 480
 #  endif
 
 #  ifdef LARGE_DATASET

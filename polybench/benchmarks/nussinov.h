@@ -28,7 +28,7 @@
 
 #  ifdef MEDIUM_DATASET
 // #   define N 500
-#define N 1000
+#define N 600
 #  endif
 
 #  ifdef LARGE_DATASET
