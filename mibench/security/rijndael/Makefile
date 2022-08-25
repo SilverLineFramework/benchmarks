@@ -36,3 +36,5 @@ rijndael: $(SUPP)
 
 	cp output_large.enc $(DATA_DIR)/output_large.enc
 	cp output_small.enc $(DATA_DIR)/output_small.enc
+	cp input_large.asc $(DATA_DIR)/input_large.asc
+	cp input_small.asc $(DATA_DIR)/input_small.asc

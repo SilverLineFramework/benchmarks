@@ -63,8 +63,7 @@ toast: $(SUPP)
 		$(INT_FILE) -o $(WASM_DIR)/un$@_l.wasm
 
 	rm $(INT_FILE)
-	
-	
+
 	cp data/small.au $(DATA_DIR)/small.au
 	cp data/large.au $(DATA_DIR)/large.au
 	cp data/small.au.run.gsm $(DATA_DIR)/small.au.run.gsm

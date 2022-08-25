@@ -5,10 +5,10 @@
 The following benchmark suites have been modified to work with the linux runtime:
 - ```polybench```: [Polybench](https://web.cse.ohio-state.edu/~pouchet.2/software/polybench/); 60 benchmarks (30 benchmarks x 2 sizes)
 - ```mibench```: [Mibench](https://vhosts.eecs.umich.edu/mibench/); 30 benchmarks (16 benchmarks, with 14 having small and large sizes)
-- ```cortex```: [UCSD CortexSuite](https://cseweb.ucsd.edu//groups/bsg/), excluding the San Diego Vision Benchmark suite; 24 benchmarks (8 benchmarks x 3 sizes)
+- ```cortex```: [UCSD CortexSuite](https://cseweb.ucsd.edu//groups/bsg/), excluding the San Diego Vision Benchmark suite; 23 benchmarks (8 benchmarks x 3 sizes, 1 size omitted)
 - ```vision```: [San Diego Vision Benchmark Suite](https://michaeltaylor.org/vision/); 27 benchmarks (9 benchmarks x 3 sizes)
 
-In total, we currently have 141 benchmarks, 63 of which are unique (differ by more than just data / parameters).
+In total, we currently have 140 benchmarks, 63 of which are unique (differ by more than just data / parameters).
 
 ## Setup
 

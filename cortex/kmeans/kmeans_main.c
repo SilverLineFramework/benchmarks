@@ -45,7 +45,7 @@ int benchmark_main(int argc, char *argv[])
     #else /* SIZE == 2 */
         char data_file[1000] = "data/cortex/kmeans/MNIST";
         // int n = 10000, m = 748, k = 10;
-        int n = 1000, m = 50, k = 10;
+        int n = 1000, m = 20, k = 10;
     #endif
 
 

@@ -39,11 +39,11 @@ int benchmark_main(int argc, char* argv[])
     
     
     #if SIZE == 0
-        char imSrc[100] = "data/vision/sift/sqcif/1.bmp";
+        char imSrc[100] = "data/vision/sift/sim_fast/1.bmp";
     #elif SIZE == 1
-        char imSrc[100] = "data/vision/sift/qcif/1.bmp";
+        char imSrc[100] = "data/vision/sift/sqcif/1.bmp";
     #else
-        char imSrc[100] = "data/vision/sift/cif/1.bmp";
+        char imSrc[100] = "data/vision/sift/qcif/1.bmp";
     #endif
 
     im = readImage(imSrc);

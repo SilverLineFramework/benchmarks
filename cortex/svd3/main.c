@@ -63,6 +63,8 @@ int benchmark_main(int argc, char **argv)
 
 	// Initialize u,s,v
 	F2D * u = readFile(inputPath);
+    u->width = 150;
+    u->height = 150;
 	F2D * s = fSetArray(1, u->width, 0);
 	F2D * v = fSetArray(u->width, u->width, 0);
 

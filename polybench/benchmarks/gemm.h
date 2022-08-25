@@ -24,15 +24,21 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define NI 60
-#   define NJ 70
-#   define NK 80
+// #   define NI 60
+// #   define NJ 70
+// #   define NK 80
+#define NI 120
+#define NJ 140
+#define NK 160
 #  endif
 
 #  ifdef MEDIUM_DATASET
-#   define NI 200
-#   define NJ 220
-#   define NK 240
+// #   define NI 200
+// #   define NJ 220
+// #   define NK 240
+#define NI 400
+#define NJ 440
+#define NK 480
 #  endif
 
 #  ifdef LARGE_DATASET

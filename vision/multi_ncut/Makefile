@@ -25,13 +25,13 @@ multi_ncut: $(SUPP)
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
 		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
 
-	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
-	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+#	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
+#	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+#		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
 
 	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
 	cp -r data/sqcif $(DATA_DIR)
 	cp -r data/qcif $(DATA_DIR)
-	cp -r data/cif $(DATA_DIR)
+#	cp -r data/cif $(DATA_DIR)
