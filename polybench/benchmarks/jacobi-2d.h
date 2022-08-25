@@ -23,13 +23,17 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define TSTEPS 40
-#   define N 90
+// #   define TSTEPS 40
+// #   define N 90
+#define TSTEPS 80
+#define N 180
 #  endif
 
 #  ifdef MEDIUM_DATASET
-#   define TSTEPS 100
-#   define N 250
+// #   define TSTEPS 100
+// #   define N 250
+#define TSTEPS 200
+#define N 500
 #  endif
 
 #  ifdef LARGE_DATASET

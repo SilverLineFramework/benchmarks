@@ -23,13 +23,17 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define W 192
-#   define H 128
+// #   define W 192
+// #   define H 128
+#   define W 720
+#   define H 480
 #  endif
 
 #  ifdef MEDIUM_DATASET
-#   define W 720
-#   define H 480
+// #   define W 720
+// #   define H 480
+#define W 1920
+#define H 1080
 #  endif
 
 #  ifdef LARGE_DATASET

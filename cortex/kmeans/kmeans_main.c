@@ -37,15 +37,15 @@ int benchmark_main(int argc, char *argv[])
     #if SIZE == 0
         char data_file[1000] = "data/cortex/kmeans/spiral";
         // int n = 1484, m = 8, k = 10;
-        int n = 1000, m = 8, k = 10;
+        int n = 1484, m = 8, k = 10;
     #elif SIZE == 1
         char data_file[1000] = "data/cortex/kmeans/finland";
         // int n = 13467, m = 2, k = 15;
-        int n = 2000, m = 2, k = 15;
+        int n = 3000, m = 2, k = 15;
     #else /* SIZE == 2 */
         char data_file[1000] = "data/cortex/kmeans/MNIST";
         // int n = 10000, m = 748, k = 10;
-        int n = 1000, m = 20, k = 10;
+        int n = 1000, m = 30, k = 10;
     #endif
 
 

@@ -23,13 +23,17 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define M 80
-#   define N 100
+// #   define M 80
+// #   define N 100
+#define M 160
+#define N 200
 #  endif
 
 #  ifdef MEDIUM_DATASET
-#   define M 240
-#   define N 260
+// #   define M 240
+// #   define N 260
+#define M 480
+#define N 520
 #  endif
 
 #  ifdef LARGE_DATASET

@@ -24,15 +24,21 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define NQ 20
-#   define NR 25
-#   define NP 30
-#  endif
-
-#  ifdef MEDIUM_DATASET
+// #   define NQ 20
+// #   define NR 25
+// #   define NP 30
 #   define NQ 40
 #   define NR 50
 #   define NP 60
+#  endif
+
+#  ifdef MEDIUM_DATASET
+// #   define NQ 40
+// #   define NR 50
+// #   define NP 60
+#   define NQ 90
+#   define NR 100
+#   define NP 110
 #  endif
 
 #  ifdef LARGE_DATASET

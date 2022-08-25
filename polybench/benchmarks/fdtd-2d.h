@@ -24,15 +24,21 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-#   define TMAX 40
-#   define NX 60
-#   define NY 80
+// #   define TMAX 40
+// #   define NX 60
+// #   define NY 80
+#   define TMAX 80
+#   define NX 120
+#   define NY 160
 #  endif
 
 #  ifdef MEDIUM_DATASET
-#   define TMAX 100
-#   define NX 200
-#   define NY 240
+// #   define TMAX 100
+// #   define NX 200
+// #   define NY 240
+#   define TMAX 200
+#   define NX 400
+#   define NY 480
 #  endif
 
 #  ifdef LARGE_DATASET
