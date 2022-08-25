@@ -1,4 +1,4 @@
-DATA_DIR=../../data/mibench/telecomm
+export DATA_DIR=$(BASE_DATA_DIR)/telecomm
 
 .PHONY: dir all children
 

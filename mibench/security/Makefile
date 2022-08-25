@@ -1,4 +1,4 @@
-DATA_DIR=../../data/mibench/security
+export DATA_DIR=$(BASE_DATA_DIR)/security
 
 .PHONY: dir all children
 

@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include "crc.h"
-#include "../../../common/runtime.h"
 
 #ifdef __TURBOC__
  #pragma warn -cln
@@ -190,6 +189,3 @@ benchmark_main(int argc, char *argv[])
       return(errors != 0);
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

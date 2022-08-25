@@ -1,12 +1,14 @@
 /**
  * @file active.c
- * @brief Main loop for active profiling.
+ * @brief Active profiling with data inputs.
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include "api.h"
-#include "dp.h"
+#include "wrapper.h"
+
+#define BUF_LEN 1000
 
 /** Join topic path. */
 static char *path_join(char *a, char *b) {
@@ -16,7 +18,7 @@ static char *path_join(char *a, char *b) {
 }
 
 /** Subscribe to channels. */
-static void init_channels(int *in, int *out) {
+static void init_channels(int *exit_in, int *in, int *out) {
     char uuid_buf[37];
     module_get_uuid(uuid_buf);
 
@@ -24,72 +26,113 @@ static void init_channels(int *in, int *out) {
     *in = ch_open(ch_in, CH_RDONLY, 0);
     free(ch_in);
 
+    char *ch_exit = path_join("benchmark/exit", uuid_buf);
+    *exit_in = ch_open(ch_in, CH_RDONLY, 0);
+    free(ch_in);
+
     char *ch_out = path_join("benchmark/out", uuid_buf);
     *out = ch_open(ch_out, CH_WRONLY, 0);
     free(ch_out);
 }
 
-/** Exhaust input data */
-static int handle_input(int data_in) {
-    // Read to exhaustion
-    char read_buf[1024];
-    int bytes_read = 1;
-    while (bytes_read > 0) {
-        bytes_read = ch_read_msg(data_in, read_buf, 1024);
-    }
-    // Super janky exit condition
-    return strncmp(read_buf, "exit", 4);
+
+static void free_args(int argc, char ***argv) {
+    for (int i = 0; i < argc; i++) { free((*argv)[i]); }
+    free(*argv);
+    *argv = NULL;
 }
 
-/** Write random output data */
-static void handle_output(int data_out, dp_t *dp) {
-    int size = dp_draw(dp);
-    char *buf = malloc(size);
-    for (int i = 0; i < size / 4; i++) {
-        ((int *) buf)[i] = rand();
-    }
-    ch_write_msg(data_out, buf, size);
-    free(buf);
+/** Parse argv from the input data stream 
+*   Assume comma-separated inputs for now 
+*   Return argc */
+static int parse_args(char*** argv, int *repeat, char *data) {
+    int argc;
+    const char d[2] = ",";
+
+    char *token = strtok(data, d);
+    if (token == NULL) {
+        printf("Null data-in\n");
+        goto fail;
+    } 
+    else {
+        *repeat = atoi(token);
+        if (!(token = strtok(NULL, d))) { goto fail; }
+        argc = atoi(token);
+        *argv = (char **) malloc(argc * sizeof(char*));
+        int i = 0;
+        /* Get argvs */
+        while ((token = strtok(NULL, d))) {
+            (*argv)[i++] = strdup(token);
+        }
+        if (i != argc) {
+            printf("Error: Inconsistent argc (%d) and parsed count (%d)\n", argc, i);
+            free_args(i, argv);
+            goto fail;
+        }
+  }
+
+  printf("Repeat: %d | Bench argv[1]: %s\n", *repeat, (*argv)[1]);
+
+  return argc;
+
+fail:
+  *repeat = 0;
+  *argv = NULL;
+  argc = 0;
+  return argc;
 }
 
-/** Hash function: djb2 (http://www.cse.yorku.ca/~oz/hash.html) */
-static unsigned long hash(char *str) {
-    unsigned long hash = 5381;
-    int c;
 
-    while ((c = *str++)) {
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-    }
-    return hash;
-}
+/** Loop wrapper around benchmark main
+*   Called by the main function for a given benchmark suite
+*   Funnels appropriate inputs to benchmarks argc/argv
+*/
+int main(int argc, char **argv) {
 
-/** Loop function; should be called into by main */
-int loop(int argc, char **argv, int (*func)(int, char **)) {
+    int bench_argc;
+    char **bench_argv;
 
-    dp_t dp;
-    dp_init(&dp, hash(argv[0]));
+    // Manual profiling mode
+    period_set_flags(1);
 
-    int data_in, data_out;
-    init_channels(&data_in, &data_out);
+    int exit_fd, data_in_fd, data_out_fd;
+    init_channels(&exit_fd, &data_in_fd, &data_out_fd);
 
-    // Start with data out to act as a ready signal
-    handle_output(data_out, &dp);
+    // Module initialization always starts a period
+    period_yield();
 
-    int poll_chs[] = {data_in};
-    while (1) {
-        int res = ch_poll(poll_chs, 1, 5000);
+    char exit[1];
+    char *buf = (char*) malloc(BUF_LEN);
+    int poll_fds[] = {data_in_fd};
+
+    int repeat = 1;
+
+    int i = 0;
+    while(1) {
+        if(ch_read_msg(exit_fd, exit, 1)) { break; }
+        int res = ch_poll(poll_fds, 1, 5000);
         if (res != 0) {
             if (res < 0) {
                 printf("Exiting due to error.\n");
                 break;
             }
-            if (!handle_input(data_in)) {
-                printf("Received exit signal.\n");
-                break;
+            ch_read_msg(data_in_fd, buf, BUF_LEN);
+            bench_argc = parse_args(&bench_argv, &repeat, buf);
+
+            while (repeat > 0) {
+                period_start();
+                benchmark_main(bench_argc, bench_argv);
+                period_yield();
+                repeat--;
+                i += 1;
             }
-            func(argc, argv);
-            handle_output(data_out, &dp);
+            free_args(bench_argc, &bench_argv);
+        } 
+        else {
+            printf("Wait 5 sec\n");
         }
     }
+    printf("Exiting after %d loops\n", i);
+    ch_write_msg(data_out_fd, "done", 4);
     return 0;
 }

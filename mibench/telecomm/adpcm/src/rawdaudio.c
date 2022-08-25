@@ -4,7 +4,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "../../../../common/runtime.h"
 
 struct adpcm_state state;
 
@@ -38,6 +37,3 @@ int benchmark_main(int argc, char *argv[]) {
     return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

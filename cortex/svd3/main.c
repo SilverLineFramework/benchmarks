@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "common/sdvbs_common.h"
-#include "../../common/runtime.h"
 
 
 #define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
@@ -87,8 +86,4 @@ int benchmark_main(int argc, char **argv)
 	free(v);
 
   return 0;
-}
-
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
 }

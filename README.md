@@ -54,7 +54,7 @@ In total, we currently have 141 benchmarks, 63 of which are unique (differ by mo
 4. Build benchmarks:
 
     - ```make wasm```: build wasm programs; saved to ```./wasm```.
-    - ```make {benchmark}```: make ```tests```, ```polybench```, ```mibench```, ```vision```, or ```cortex``` individually.
+    - ```make {benchmark}```: make ```tests```, ```polybench```, ```mibench```, ```vision```, ```sod```, or ```cortex``` individually.
     - ```make rustpython```: copy rustpython to ```./wasm``` for distribution or AOT compilation.
     - ```make aot```: build wasm apps into AOT. This will compile **all** ```*.wasm``` files in the ```./wasm``` directory to corresponding ```*.aot``` files in the ```./aot``` directory. Notes:
         - This can take a **very long time**, especially if rustpython is included. Always ```make aot -j16``` (with the appropriate number of threads).
@@ -83,58 +83,51 @@ In total, we currently have 141 benchmarks, 63 of which are unique (differ by mo
 
 ## Conversion Guide
 
-1. Modify makefile. For example:
+1. Rename main function of benchmark to ```benchmark_main```.
+
+2. Modify makefile. For example:
     ```Makefile
     # Output
-    BENCHMARK_NAME=network
-    ROOT_DIR=../../..
-    OUT_DIR=$(ROOT_DIR)/wasm/mibench/$(BENCHMARK_NAME)
-    DATA_DIR=$(ROOT_DIR)/data/mibench/$(BENCHMARK_NAME)
+    BENCHMARK_NAME=pca
+    DATA_DIR=$(BASE_DATA_DIR)/$(BENCHMARK_NAME)
 
-    # WAMR Setup
-    WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-    WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
-    WASMCC=/opt/wasi-sdk/bin/clang
-
-    WASMCFLAGS= -O0 -z
-    WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-    WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-    WASMCFLAGS+= -Wl,--export=main
-    WASMCFLAGS+= -Wl,--export=_start
-    WASMCFLAGS+= -Wl,--allow-undefined
-
-    COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-    COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+    COMPILE= $(WASMCC) $(WASMCFLAGS) $(WRAPPER_C)
 
     .phony: all
 
-    SRCS= src/*.c ../common/*.c
+    SRCS= pca.c -lm
 
     all:
-        $(COMPILE) $(SRCS) -o $(OUT_DIR).wasm
+        $(COMPILE) $(SRCS) -o $(WASM_DIR)/pca.wasm
+        
+        mkdir -p $(DATA_DIR)
         cp data.dat $(DATA_DIR)/data.dat
     ```
 
     In the makefile, the WASM output should be ```wasm/path/to/benchmark.wasm```,
-    and any accompanying data files should be copied to ```data/path/to/benchmark.dat```. No specific data file naming/directory scheme is required, as long as it does not conflict with other benchmarks.
+    and any accompanying data files should be copied to ```data/path/to/benchmark.dat```.
 
-2. Rename main function to ```benchmark_main```.
+    The ```BASE_DATA_DIR``` and ```WASM_DIR``` are exported from parent Makefile. 
+    In some benchmarks, common files are compiled separately to speed up performance. 
+    Refer to `vision` benchmark suite as an example for how to do this
 
-3. In the main file, include the following:
 
-    ```c
-    #include "../../../common/runtime.h"
-    ```
-    where the appropriate relative path is given.
+3. Run on the runtime and observe the number of loops (should be printed out by the common driver at exit). Generally, you should get at least 10 loops in a 10s interval, and at most 2000.
 
-3. Add the new main function:
 
-    ```c
-    int main(int argc, char **argv) {
-        return loop(argc, argv, &benchmark_main);
-    }
-    ```
+## Benchmarking Guide
 
-4. Run on the runtime and observe the number of loops (should be printed out by the common driver at exit). Generally, you should get at least 10 loops in a 10s interval, and at most 2000.
+Input data to the benchmark is provided using MQTT commands to the topic `benchmark/in/{benchmark-uuid}`.
+The format for the command is comma-separated values as follows:
+<br/>
+```{# of loop executions},{# of args},{arg1},{arg2}..,{argN}```
+
+For example, to run an benchmark `grayscale` that produces a grayscale version of an
+image 5 times, the command might look like ```5,2,input_img.png,output_img.png```
+
+**NOTE**: This string must be NULL-terminated to be processed correctly. If generating using Python, make
+sure to tack NULL at the end of the string.
+
+Stopping benchmarks is done by sending any data to `benchmark/exit/{benchmark-uuid}`
+
+

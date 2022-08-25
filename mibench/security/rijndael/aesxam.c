@@ -40,7 +40,6 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <ctype.h>
-#include "../../../common/runtime.h"
 
 #include "aes.h"
 
@@ -318,6 +317,3 @@ exit:
     return err;
 }
 
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
-}

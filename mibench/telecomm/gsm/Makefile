@@ -1,24 +1,5 @@
 # Output
-ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench
-DATA_DIR=$(ROOT_DIR)/data/mibench/telecomm
-
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+COMPILE= $(WASMCC) $(WASMCLFLAGS) $(WRAPPER_C)
 
 .PHONY: all clean toast
 
@@ -43,24 +24,47 @@ GSM_SOURCES =	$(SRC)/add.c		\
 		$(SRC)/short_term.c	\
 		$(SRC)/table.c
 
-TOAST_SOURCES = $(SRC)/toast.c 		\
-		$(SRC)/toast_lin.c	\
+TOAST_SOURCES = $(SRC)/toast_lin.c	\
 		$(SRC)/toast_ulaw.c	\
 		$(SRC)/toast_alaw.c	\
 		$(SRC)/toast_audio.c
 
+MAIN_C = $(SRC)/toast.c
+SUPP_C := $(GSM_SOURCES) $(TOAST_SOURCES)
+
+SUPP := $(SUPP_C:.c=.wasm)
+SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
+
+WASMCFLAGS+= -Wno-comment -D_WASI_EMULATED_SIGNAL 
+WASMLDFLAGS+= -lwasi-emulated-signal
 
 all: toast
 
-EXTRAS= -Wno-comment -D_WASI_EMULATED_SIGNAL -lwasi-emulated-signal
+$(SUPP) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
-TOAST=$(COMPILE) $(EXTRAS) $(GSM_SOURCES) $(TOAST_SOURCES)
+toast: $(SUPP)
+	$(eval INT_FILE = $(shell mktemp))
 
-toast:
-	$(TOAST) -o $(OUT_DIR)/toast_sm.wasm -D ENCODE
-	$(TOAST) -o $(OUT_DIR)/toast_l.wasm -D ENCODE -D LARGE
-	$(TOAST) -o $(OUT_DIR)/untoast_s.wasm
-	$(TOAST) -o $(OUT_DIR)/untoast_l.wasm -D LARGE
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D ENCODE -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_sm.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D ENCODE -D LARGE -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/un$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D LARGE -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/un$@_l.wasm
+
+	rm $(INT_FILE)
+	
+	
 	cp data/small.au $(DATA_DIR)/small.au
 	cp data/large.au $(DATA_DIR)/large.au
 	cp data/small.au.run.gsm $(DATA_DIR)/small.au.run.gsm

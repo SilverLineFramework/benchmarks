@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 #if SIZE == 0
 #define SYNTHETIC1
@@ -168,7 +167,3 @@ int benchmark_main(int argc, char *argv[])
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-   LoadLR();
-   return loop(argc, argv, &benchmark_main);
-}

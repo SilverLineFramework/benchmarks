@@ -3,7 +3,6 @@ Author: Sravanthi Kota Venkata
 ********************************/
 
 #include "texture.h"
-#include "../../../common/runtime.h"
 
 int WIDTHin,HEIGHTin;
 F2D *target, *result;
@@ -38,10 +37,6 @@ int  benchmark_main(int argc, char **argv)
 //    free(yloopout);
     
 	return 0;
-}
-
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
 }
 
 I2D* parse_flags(int argc, char ** argv)

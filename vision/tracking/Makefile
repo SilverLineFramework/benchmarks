@@ -1,33 +1,35 @@
 # Output
-ROOT_DIR=../..
-OUT_DIR=$(ROOT_DIR)/wasm/vision/tracking
-DATA_DIR=$(ROOT_DIR)/data/vision/tracking
+MAIN_C := src/script_tracking.c
+SUPP_C := $(filter-out $(MAIN_C), $(shell ls src/*.c))
 
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
+SUPP := $(SUPP_C:.c=.wasm)
+SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+DATA_DIR=$(BASE_DATA_DIR)/tracking
 
 .PHONY: all
 
-SRCS= src/*.c ../common/*.c
+all: tracking
 
-all:
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_s.wasm -D SIZE=0 -D sqcif
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_m.wasm -D SIZE=1 -D qcif
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_l.wasm -D SIZE=2 -D cif
+$(SUPP) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
+
+tracking: $(SUPP)
+	$(eval INT_FILE = $(shell mktemp))
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 -D sqcif $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 -D qcif $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
 	cp -r data/sqcif $(DATA_DIR)

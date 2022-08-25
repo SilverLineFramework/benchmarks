@@ -48,10 +48,6 @@ void bitstring(char *str, long byze, int biz, int strwid)
 
 #include <stdlib.h>
 
-int main(void)
-{
-      char s[80]; long j;
-      for (j = 1L; j <= 16L; j++)
       {
             bitstring(s, (long)j, (int)j, 16);
             printf("%2ld: %s\n", j, s);

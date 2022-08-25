@@ -320,10 +320,6 @@ int print_test_data()
 	return(0);
 	}
 
-int main(argc,argv)
-int argc;
-char *argv[];
-	{
 	int ret;
 
 	if (argc > 1)

@@ -18,7 +18,6 @@
 // USA
 
 #include "lda-estimate.h"
-#include "../../common/runtime.h"
 
 /*
  * perform inference on a document and update sufficient statistics
@@ -298,6 +297,3 @@ int benchmark_main(int argc, char* argv[])
     return(0);
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

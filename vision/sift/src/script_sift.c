@@ -5,7 +5,6 @@ Author: Sravanthi Kota Venkata
 #include <stdio.h>
 #include <stdlib.h>
 #include "sift.h"
-#include "../../../common/runtime.h"
 
 void normalizeImage(F2D* image)
 {
@@ -77,6 +76,3 @@ int benchmark_main(int argc, char* argv[])
 }
 
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

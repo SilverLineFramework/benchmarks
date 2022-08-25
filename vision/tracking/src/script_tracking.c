@@ -3,7 +3,6 @@ Author: Sravanthi Kota Venkata
 ********************************/
 
 #include "tracking.h"
-#include "../../../common/runtime.h"
 
 int benchmark_main(int argc, char* argv[])
 {
@@ -228,6 +227,3 @@ for(count=1; count<=counter; count++)
 
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

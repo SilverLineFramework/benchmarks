@@ -1,35 +1,35 @@
 # Output
-ROOT_DIR=../..
-OUT_DIR=$(ROOT_DIR)/wasm/cortex/spectral
-DATA_DIR=$(ROOT_DIR)/data/cortex/spectral
+MAIN_C= spectral.c
+COMMON_C= eigen.c kmeans.c
 
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
+COMMON := $(COMMON_C:.c=.wasm)
+COMMON_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(COMMON)))
 
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+DATA_DIR := $(BASE_DATA_DIR)/spectral
 
 .PHONY: all
 
 all: spectral
 
-SRCS= eigen.c kmeans.c spectral.c -lm
+$(COMMON) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
-spectral:
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_s.wasm -D SIZE=0
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_m.wasm -D SIZE=1
-	$(COMPILE) $(SRCS) -o $(OUT_DIR)_l.wasm -D SIZE=2
+spectral: $(COMMON)
+	$(eval INT_FILE = $(shell mktemp))
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
+
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	rm $(INT_FILE)
 
 	mkdir -p $(DATA_DIR)
 	cp Aggregation $(DATA_DIR)/Aggregation

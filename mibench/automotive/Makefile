@@ -1,13 +1,9 @@
-DATA_DIR=../../data/mibench/automotive
+export DATA_DIR=$(BASE_DATA_DIR)/automotive
 
-.PHONY: dir all children
-
-all: dir children
+.PHONY: children
 
 children:
+	mkdir -p $(DATA_DIR)
 	make -C basicmath
 	make -C bitcount
 	make -C qsort
-
-dir:
-	mkdir -p $(DATA_DIR)

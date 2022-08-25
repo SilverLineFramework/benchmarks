@@ -1,34 +1,28 @@
+WASMLDFLAGS+= -lm
 # Output
-ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench
+MAIN1_C := basicmath_small.c
+MAIN2_C := basicmath_large.c
+SUPP_C := rad2deg.c cubic.c isqrt.c
 
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
+SUPP := $(SUPP_C:.c=.wasm)
+SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-WASMCC=/opt/wasi-sdk/bin/clang
+.PHONY: all
 
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
+all: basicmath
 
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
+$(SUPP) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+basicmath: $(SUPP)
+	$(eval INT_FILE = $(shell mktemp))
 
-.PHONY: dir
+	$(WASMCC) $(WASMCFLAGS) $(MAIN1_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
 
-all: basicmath_small basicmath_large
+	$(WASMCC) $(WASMCFLAGS) $(MAIN2_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
 
-# Benchmark specifics
-FILE1 = basicmath_small.c rad2deg.c cubic.c isqrt.c
-FILE2 = basicmath_large.c rad2deg.c cubic.c isqrt.c
-
-
-basicmath_small: $(FILE1)
-	$(COMPILE) $(FILE1) -o $(OUT_DIR)/basicmath_s.wasm -lm
-basicmath_large: $(FILE2)
-	$(COMPILE) $(FILE2) -o $(OUT_DIR)/basicmath_l.wasm -lm
+	rm $(INT_FILE)

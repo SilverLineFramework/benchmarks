@@ -1,6 +1,5 @@
 #include "snipmath.h"
 #include <math.h>
-#include "../../../common/runtime.h"
 
 /* The printf's may be removed to isolate just the math calculations */
 
@@ -55,6 +54,3 @@ int benchmark_main(int argc, char **argv)
   return 0;
 }
 
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
-}

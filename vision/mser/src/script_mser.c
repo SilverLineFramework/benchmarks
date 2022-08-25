@@ -3,7 +3,6 @@ Author: Sravanthi Kota Venkata
 ********************************/
 
 #include "mser.h"
-#include "../../../common/runtime.h"
 
 #define min(a,b) (a<b)?a:b
 #define max(a,b) (a>b)?a:b
@@ -68,6 +67,3 @@ int benchmark_main(int argc, char* argv[])
     return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

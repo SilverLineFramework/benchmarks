@@ -185,10 +185,6 @@ int s;
 #endif
 	}
 
-int main(argc,argv)
-int argc;
-char **argv;
-	{
 	long count;
 	static unsigned char buf[BUFSIZE];
 	static unsigned char key[] ={

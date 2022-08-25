@@ -5,7 +5,6 @@
 #include <ctype.h>
 #include <errno.h>
 #include "linear.h"
-#include "../../common/runtime.h"
 
 
 //#include "cycle_counter.h"
@@ -150,10 +149,6 @@ int benchmark_main(int argc, char **argv)
 	free(line);
 
 	return 0;
-}
-
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
 }
 
 void do_cross_validation()

@@ -2,7 +2,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 #include "rbm.h"
 
@@ -331,6 +330,3 @@ int benchmark_main(int argc, char *argv[])
 
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

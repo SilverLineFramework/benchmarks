@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 int *k_means(double **data, int n, int m, int k, double t, double **centroids);
 
@@ -79,6 +78,3 @@ int benchmark_main(int argc, char *argv[])
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

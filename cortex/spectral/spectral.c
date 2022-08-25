@@ -3,7 +3,6 @@
 #include <math.h>
 #include <float.h>
 #include <string.h>
-#include "../../common/runtime.h"
 
 int *k_means(double **data, int n, int m, int k, double t, double **centroids);
 void eigen(double *a,double *ev,int n);
@@ -191,6 +190,3 @@ int benchmark_main(int argc, char *argv[])
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}

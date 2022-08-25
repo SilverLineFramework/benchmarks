@@ -1,36 +1,17 @@
 # Output
-ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench
-DATA_DIR=$(ROOT_DIR)/data/mibench/telecomm
-
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+COMPILE= $(WASMCC) $(WASMCLFLAGS) $(WRAPPER_C)
 
 .PHONY: all pcm adpcm data
 
 all: pcm adpcm data
 
 pcm:
-	$(COMPILE) -o $(OUT_DIR)/adpcm_enc_s.wasm src/rawcaudio.c src/adpcm.c
-	$(COMPILE) -o $(OUT_DIR)/adpcm_enc_l.wasm src/rawcaudio.c src/adpcm.c -D LARGE
+	$(COMPILE) -o $(WASM_DIR)/adpcm_enc_s.wasm src/rawcaudio.c src/adpcm.c
+	$(COMPILE) -o $(WASM_DIR)/adpcm_enc_l.wasm src/rawcaudio.c src/adpcm.c -D LARGE
 
 adpcm:
-	$(COMPILE) -o $(OUT_DIR)/adpcm_dec_s.wasm src/rawdaudio.c src/adpcm.c
-	$(COMPILE) -o $(OUT_DIR)/adpcm_dec_l.wasm src/rawdaudio.c src/adpcm.c -D LARGE
+	$(COMPILE) -o $(WASM_DIR)/adpcm_dec_s.wasm src/rawdaudio.c src/adpcm.c
+	$(COMPILE) -o $(WASM_DIR)/adpcm_dec_l.wasm src/rawdaudio.c src/adpcm.c -D LARGE
 
 data:
 	cp data/large.adpcm $(DATA_DIR)/large.adpcm

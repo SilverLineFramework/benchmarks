@@ -1,12 +1,14 @@
 /**
- * @file active.c
- * @brief Main loop for passive profiling.
+ * @file passive.c
+ * @brief Passive profiling with data inputs.
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include "api.h"
-#include "passive.h"
+#include "wrapper.h"
+
+#define BUF_LEN 1000
 
 /** Join topic path. */
 static char *path_join(char *a, char *b) {
@@ -29,9 +31,11 @@ static void init_channels(int *in, int *out) {
     free(ch_out);
 }
 
-
-/** Loop function; should be called into by main */
-int loop(int argc, char **argv, int (*func)(int, char **)) {
+/** Loop wrapper around benchmark main
+*   Called by the main function for a given benchmark suite
+*   Funnels appropriate inputs to benchmarks argc/argv
+*/
+int main(int argc, char **argv) {
 
     // Manual profiling mode
     period_set_flags(1);
@@ -47,7 +51,7 @@ int loop(int argc, char **argv, int (*func)(int, char **)) {
     while(1) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
-        func(argc, argv);
+        benchmark_main(argc, argv);
         period_yield();
         i += 1;
     }

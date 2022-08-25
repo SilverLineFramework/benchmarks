@@ -26,10 +26,6 @@ unsigned int bstr_i(char *cptr)
 
 #include <stdlib.h>
 
-int main(int argc, char *argv[])
-{
-      char *arg;
-      unsigned int x;
 
       while (--argc)
       {

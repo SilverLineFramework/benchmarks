@@ -13,7 +13,6 @@
 #include <time.h>
 #include <float.h>
 #include "bitops.h"
-#include "../../../common/runtime.h"
 
 #define FUNCS  7
 
@@ -62,6 +61,3 @@ static int CDECL bit_shifter(long int x)
   return n;
 }
 
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
-}

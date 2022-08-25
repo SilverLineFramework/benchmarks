@@ -1,30 +1,34 @@
 # Output
-ROOT_DIR=../../..
-OUT_DIR=$(ROOT_DIR)/wasm/mibench
+MAIN_C := main.c
+SUPP_C := fourierf.c fftmisc.c
 
-# WAMR Setup
-WAMR_DIR=$(ROOT_DIR)/wasm-micro-runtime
-WAMR_SYMBOLS=$(WAMR_DIR)/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
-WASMCC=/opt/wasi-sdk/bin/clang
-
-WASMCFLAGS= -O0 -z
-WASMCFLAGS+= -Wl,-allow-undefined-file=$(WAMR_SYMBOLS)
-WASMCFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
-WASMCFLAGS+= -Wl,--export=main
-WASMCFLAGS+= -Wl,--export=_start
-WASMCFLAGS+= -Wl,--allow-undefined
-
-COMMON= $(ROOT_DIR)/common/passive.c -D PROFILE_PASSIVE
-
-COMPILE= $(WASMCC) $(WASMCFLAGS) $(COMMON)
+SUPP := $(SUPP_C:.c=.wasm)
+SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
 .PHONY: all
 
 all: fft
 
-fft:
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_s.wasm
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/fft_l.wasm -D LARGE
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_s.wasm -D INV
-	$(COMPILE) main.c fourierf.c fftmisc.c -o $(OUT_DIR)/invfft_l.wasm -D LARGE -D INV
+$(SUPP) : %.wasm : %.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
+
+fft: $(SUPP)
+	$(eval INT_FILE = $(shell mktemp))
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D LARGE -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D INV -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/inv$@_s.wasm
+
+	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D LARGE -D INV -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/inv$@_l.wasm
+
+	rm $(INT_FILE)

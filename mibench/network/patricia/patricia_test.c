@@ -37,7 +37,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "../../../common/runtime.h"
 
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -214,8 +213,4 @@ benchmark_main(int argc, char **argv)
     return 0;
 }
 
-
-int main(int argc, char **argv) {
-  return loop(argc, argv, &benchmark_main);
-}
 

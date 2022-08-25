@@ -738,6 +738,3 @@ int benchmark_main P2((ac, av), int ac, char **av)
     return 0;
 }
 
-int main(int argc, char *argv[]) {
-   return loop(argc, argv, &benchmark_main);
-}
