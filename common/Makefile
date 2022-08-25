@@ -10,9 +10,6 @@ all: dir wrapper.wasm
 dir:
 	mkdir -p $(OUT_DIR)
 
-wrapper.wasm: wrapper.c
+wrapper.wasm: $(WRAPPER_C)
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(OUT_DIR)/$@
-
-passive.wasm: passive.c
-	$(WASMCC) $(WASMCFLAGS) -D PROFILE_PASSIVE -c $^ -o $(OUT_DIR)/$@
 

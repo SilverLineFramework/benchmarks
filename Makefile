@@ -39,7 +39,8 @@ export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
 export ROOT_AOT_DIR=$(ROOT_DIR)/aot
 
 export WRAPPER_WASM= $(ROOT_DIR)/wasm/common/wrapper.wasm
-export WRAPPER_C= $(ROOT_DIR)/common/wrapper.c
+# export WRAPPER_C= $(ROOT_DIR)/common/active.c
+export WRAPPER_C= $(ROOT_DIR)/common/passive.c
 
 # WASM: goes in ./wasm folder
 .PHONY: wasm
