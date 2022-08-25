@@ -21,10 +21,14 @@ polybench: polybench.c
 	$(WASMCC) $(WASMCFLAGS) -D MEDIUM_DATASET -c $^ -o $(COMMON_DIR)/polybench_m.wasm
 
 $(WASM): %.wasm : %.c polybench
-	$(eval INT_FILE = $(shell mktemp))
-	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE)
+	$(eval INT_FILE_S = $(shell mktemp))
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE_S) -D SMALL_DATASET
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_s.wasm \
-		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
+		$(INT_FILE_S) -o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
+	rm $(INT_FILE_S)
+
+	$(eval INT_FILE_M = $(shell mktemp))
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE_M) -D MEDIUM_DATASET
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_m.wasm \
-		$(INT_FILE) -o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
-	rm $(INT_FILE)
+		$(INT_FILE_M) -o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
+	rm $(INT_FILE_M)
