@@ -16,15 +16,15 @@
 
 #define FUNCS  7
 
-static int CDECL bit_shifter(long int x);
+static int CDECL bit_shifter(unsigned long int x);
 
 int benchmark_main(int argc, char *argv[])
 {
   double ct, cmin = DBL_MAX, cmax = 0;
   int i, cminix, cmaxix;
-  long j, n, seed;
+  unsigned long j, n, seed;
   int iterations = 100000;
-  static int (* CDECL pBitCntFunc[FUNCS])(long) = {
+  static int (* CDECL pBitCntFunc[FUNCS])(unsigned long) = {
     bit_count,
     bitcount,
     ntbl_bitcnt,
@@ -51,7 +51,7 @@ int benchmark_main(int argc, char *argv[])
   return 0;
 }
 
-static int CDECL bit_shifter(long int x)
+static int CDECL bit_shifter(unsigned long int x)
 {
   int i, n;
   

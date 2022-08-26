@@ -86,27 +86,27 @@ unsigned int bstr_i(char *cptr);
 **  BITCNT_1.C
 */
 
-int CDECL bit_count(long x);
+int CDECL bit_count(unsigned long x);
 
 /*
 **  BITCNT_2.C
 */
 
-int CDECL bitcount(long i);
+int CDECL bitcount(unsigned long i);
 
 /*
 **  BITCNT_3.C
 */
 
-int CDECL ntbl_bitcount(long int x);
-int CDECL BW_btbl_bitcount(long int x);
-int CDECL AR_btbl_bitcount(long int x);
+int CDECL ntbl_bitcount(unsigned long int x);
+int CDECL BW_btbl_bitcount(unsigned long int x);
+int CDECL AR_btbl_bitcount(unsigned long int x);
 
 /*
 **  BITCNT_4.C
 */
 
-int CDECL ntbl_bitcnt(long x);
-int CDECL btbl_bitcnt(long x);
+int CDECL ntbl_bitcnt(unsigned long x);
+int CDECL btbl_bitcnt(unsigned long x);
 
 #endif /*  BITOPS__H */

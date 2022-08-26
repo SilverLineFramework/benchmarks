@@ -35,7 +35,7 @@ static char bits[256] =
 **        omitted.
 */
 
-int CDECL ntbl_bitcnt(long x)
+int CDECL ntbl_bitcnt(unsigned long x)
 {
       int cnt = bits[(int)(x & 0x0000000FL)];
 
@@ -49,7 +49,7 @@ int CDECL ntbl_bitcnt(long x)
 **  Count bits in each byte
 */
 
-int CDECL btbl_bitcnt(long x)
+int CDECL btbl_bitcnt(unsigned long x)
 {
       int cnt = bits[ ((char *)&x)[0] & 0xFF ];
 

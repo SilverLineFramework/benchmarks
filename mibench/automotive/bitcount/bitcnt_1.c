@@ -6,7 +6,7 @@
 
 #include "bitops.h"
 
-int CDECL bit_count(long x)
+int CDECL bit_count(unsigned long x)
 {
         int n = 0;
 /*
