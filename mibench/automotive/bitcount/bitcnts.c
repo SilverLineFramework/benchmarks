@@ -23,7 +23,8 @@ int benchmark_main(int argc, char *argv[])
   double ct, cmin = DBL_MAX, cmax = 0;
   int i, cminix, cmaxix;
   unsigned long j, n, seed;
-  int iterations = 1000000;
+  // Cannot increase iterations due to unknown overflow bug!
+  int iterations = 100000;
   static int (* CDECL pBitCntFunc[FUNCS])(unsigned long) = {
     bit_count,
     bitcount,
