@@ -5,7 +5,7 @@ int
 benchmark_main(int argc, char *argv[])
 {
 	BF_KEY key;
-	unsigned char ukey[8];
+	unsigned char ukey[100];
 	unsigned char indata[40],outdata[40],ivec[8];
 	int num;
 	int by=0,i=0;
