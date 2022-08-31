@@ -170,6 +170,10 @@ int decfile(FILE *fin, FILE *fout, aes *ctx)
 {   char    inbuf1[16], inbuf2[16], outbuf[16], *bp1, *bp2, *tp;
     int     i, l, flen;
 
+    memset(inbuf1, 0, 16);
+    memset(inbuf2, 0, 16);
+    memset(outbuf, 0, 16);
+
     if(fread(inbuf1, 1, 16, fin) != 16)  /* read Initialisation Vector   */
     {
         return 9;
