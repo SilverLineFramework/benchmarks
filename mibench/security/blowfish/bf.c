@@ -6,7 +6,7 @@ benchmark_main(int argc, char *argv[])
 {
 	BF_KEY key;
 	unsigned char ukey[100];
-	unsigned char indata[40],outdata[40],ivec[8];
+	unsigned char indata[100],outdata[100],ivec[100];
 	int num;
 	int by=0,i=0;
 	int encordec=-1;
@@ -15,22 +15,22 @@ benchmark_main(int argc, char *argv[])
 
     #ifdef ENCODE
         #ifdef LARGE
-        char fin[80] = "data/mibench/security/input_large.asc";
+        char fin[100] = "data/mibench/security/input_large.asc";
         #else
-        char fin[80] = "data/mibench/security/input_small.asc";
+        char fin[100] = "data/mibench/security/input_small.asc";
         #endif
         encordec = 1;
     #else
         #ifdef LARGE
-        char fin[80] = "data/mibench/security/output_large_bf.enc";
+        char fin[100] = "data/mibench/security/output_large_bf.enc";
         #else
-        char fin[80] = "data/mibench/security/output_small_bf.enc";
+        char fin[100] = "data/mibench/security/output_small_bf.enc";
         #endif
         encordec = 0;
     #endif
 
 /* Read the key */
-char cpval[80] = "1234567890abcdeffedcba0987654321";
+char cpval[100] = "1234567890abcdeffedcba0987654321";
 cp = cpval;
 while(i < 64 && *cp)    /* the maximum key length is 32 bytes and   */
 {                       /* hence at most 64 hexadecimal digits      */
