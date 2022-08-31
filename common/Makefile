@@ -1,15 +1,10 @@
-WASMCC=/opt/wasi-sdk/bin/clang
-WASMCFLAGS= -O1
-
-OUT_DIR=../wasm/common
-
 .PHONY: all dir
 
 all: dir wrapper.wasm
 
 dir:
-	mkdir -p $(OUT_DIR)
+	mkdir -p $(shell dirname $(WRAPPER_WASM))
 
 wrapper.wasm: $(WRAPPER_C)
-	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(OUT_DIR)/$@
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(WRAPPER_WASM)
 

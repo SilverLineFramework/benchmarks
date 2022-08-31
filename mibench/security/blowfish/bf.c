@@ -72,10 +72,10 @@ while(!feof(fp))
 		indata[i++]=getc(fp);
 
 	BF_cfb64_encrypt(indata,outdata,i,&key,ivec,&num,encordec);
-
+    i = 0;
 }
 
-close(fp);
+fclose(fp);
 
 // close(fp2);
 return 0;
