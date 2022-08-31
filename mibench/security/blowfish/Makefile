@@ -1,6 +1,6 @@
 # Output
 MAIN_C := bf.c
-SUPP_C := bf_cbc.c bf_cfb64.c bf_ecb.c bf_enc.c bf_ofb64.c bf_skey.c
+SUPP_C := bf_cbc.c bf_cfb64.c bf_ecb.c bf_enc.c bf_ofb64.c bf_skey.c bf_pi.c
 
 SUPP := $(SUPP_C:.c=.wasm)
 SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))

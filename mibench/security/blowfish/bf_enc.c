@@ -74,7 +74,7 @@ BF_LONG *data;
 BF_KEY *key;
 int encrypt;
 	{
-	register BF_LONG l,r,*p,*s;
+	BF_LONG l,r,*p,*s;
 
 	p=key->P;
 	s= &(key->S[0]);

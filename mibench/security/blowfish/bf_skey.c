@@ -60,7 +60,8 @@
 #include <string.h>
 #include "blowfish.h"
 #include "bf_locl.h"
-#include "bf_pi.h"
+
+extern BF_KEY bf_init;
 
 void BF_set_key(key,len,data)
 BF_KEY *key;
@@ -71,8 +72,13 @@ unsigned char *data;
 	BF_LONG *p,ri,in[2];
 	unsigned char *d,*end;
 
+    for (int a = 0; a < BF_ROUNDS + 2; a++) {
+        key->P[a] = bf_init.P[a];
+    }
+    for (int b = 0; b < 4 * 256; b++) {
+        key->S[b] = bf_init.S[b];
+    }
 
-	memcpy((char *)key,(char *)&bf_init,sizeof(BF_KEY));
 	p=key->P;
 
 	if (len > ((BF_ROUNDS+2)*4)) len=(BF_ROUNDS+2)*4;

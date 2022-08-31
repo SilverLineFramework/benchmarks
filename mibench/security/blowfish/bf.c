@@ -6,12 +6,14 @@ benchmark_main(int argc, char *argv[])
 {
 	BF_KEY key;
 	unsigned char ukey[100];
-	unsigned char indata[100],outdata[100],ivec[100];
-	int num;
+	unsigned char indata[100],outdata[100],ivec[8];
+	int num=0;
 	int by=0,i=0;
 	int encordec=-1;
 	char *cp,ch;
 	FILE *fp,*fp2;
+
+    for (int i = 0; i < 8; i++) { ivec[i] = 0; }
 
     #ifdef ENCODE
         #ifdef LARGE
@@ -58,7 +60,6 @@ if(*cp)
 	exit(-1);
 }
 
-/* open the input and output files */
 fp = fopen(fin, "r");
 // fp2 = fopen(fout, "w");
 fp2 = NULL;
@@ -72,17 +73,10 @@ while(!feof(fp))
 
 	BF_cfb64_encrypt(indata,outdata,i,&key,ivec,&num,encordec);
 
-    if(fp2 != NULL) {
-	for(j=0;j<i;j++)
-	{
-		/*printf("%c",outdata[j]);*/
-		fputc(outdata[j],fp2);
-	}
-    }
-	i=0;
 }
 
 close(fp);
+
 // close(fp2);
 return 0;
 // exit(1);
