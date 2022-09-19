@@ -52,7 +52,8 @@ int main(int argc, char **argv) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         benchmark_main(argc, argv);
-        period_yield();
+        // period_yield();
+        period_end();
         i += 1;
     }
     printf("Exiting after %d loops\n", i);
