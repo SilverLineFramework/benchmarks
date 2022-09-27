@@ -86,3 +86,11 @@ void period_yield() {
     // Only sched_yield; no profiling here.
     sched_yield();
 }
+
+
+/**
+ * @brief Sliverline memory consistency check API
+ */
+int sl_memcheck() {
+    return 0;
+}

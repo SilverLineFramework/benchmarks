@@ -18,7 +18,7 @@ export WASMLD=/opt/wasi-sdk/bin/wasm-ld
 export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi \
 	/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
 export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
-export WASMLDFLAGS+= --strip-all --no-entry
+export WASMLDFLAGS+= --no-entry
 export WASMLDFLAGS+= --export=main --export=_start
 export WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
 export WASMLDFLAGS+= -lc \
@@ -27,7 +27,7 @@ export WASMLDFLAGS+= -lc \
 # For compilation+linking
 export WASMCLFLAGS= -O1
 export WASMCLFLAGS+= -Wl,--allow-undefined-file=${WAMR_SYMBOLS}
-export WASMCLFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
+export WASMCLFLAGS+= -Wl,--no-threads,--no-entry
 export WASMCLFLAGS+= -Wl,--export=main
 export WASMCLFLAGS+= -Wl,--export=_start
 export WASMCLFLAGS+= -Wl,--allow-undefined

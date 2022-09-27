@@ -90,4 +90,9 @@ void period_yield();
  */
 void period_set_flags(int flags);
 
+/**
+ * @brief Memory consistency check API
+ */
+int sl_memcheck();
+
 #endif /* SILVERLINE_API_H */
