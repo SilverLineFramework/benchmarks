@@ -13,14 +13,14 @@
 /** Join topic path. */
 static char *path_join(char *a, char *b) {
     char *res = malloc(strlen(a) + strlen(b) + 2);
-    sprintf(res, "%s/%s", a, b);
+    sprintf(res, "%s/%s", a, "4");
     return res;
 }
 
 /** Subscribe to channels. */
 static void init_channels(int *in, int *out) {
     char uuid_buf[37];
-    module_get_uuid(uuid_buf);
+    //module_get_uuid(uuid_buf);
 
     char *ch_in = path_join("benchmark/in", uuid_buf);
     *in = ch_open(ch_in, CH_RDONLY, 0);
@@ -48,14 +48,15 @@ int main(int argc, char **argv) {
 
     char buf[1];
     int i = 0;
-    while(1) {
+    while(i < 3) {
         if(ch_read_msg(data_in, buf, 1)) { break; }
         period_start();
         benchmark_main(argc, argv);
         period_yield();
         i += 1;
+        sl_memcheck();
     }
-    printf("Exiting after %d loops\n", i);
+    //printf("Exiting after %d loops\n", i);
     ch_write_msg(data_out, "done", 4);
     return 0;
 }

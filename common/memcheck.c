@@ -10,13 +10,20 @@
 #include "wrapper.h"
 
 #define BUF_LEN 1000
-#define N 2
+//#define N 2
 
 /** Loop wrapper around benchmark main
 *   Called by the main function for a given benchmark suite
 *   Funnels appropriate inputs to benchmarks argc/argv
 */
 int main(int argc, char **argv) {
+    
+    int N = 2;
+    if (argc > 1) {
+      N = atoi(argv[1]);
+    }
+    printf("argc: %d\n", argc);
+    printf("N = %d\n", N);
 
     char ch_in[] = "memcheck/vote";
     char ch_out[] = "memcheck/result";
