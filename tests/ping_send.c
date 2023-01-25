@@ -28,7 +28,7 @@ static struct option long_options[] = {
 };
 
 char* TOPIC_ID = "default";
-uint32_t MSG_INTERVAL = 100*MS;
+uint32_t MSG_INTERVAL = 10*MS;
 uint32_t MAX_ITER = 20;
 uint32_t PAYLOAD_SIZE = 64;
 
@@ -72,8 +72,9 @@ int main(int argc, char* argv[]) {
 	struct timespec send_ts;
 	struct timespec recv_ts;
 
-	int ct_val = 0;
+	int ct_val = 1;
 	char* packet = malloc(PAYLOAD_SIZE);
+	packet[sizeof(int)] = 0;
 	long* results = malloc(MAX_ITER * sizeof(long));
 		
 	for (int i = 0; i < MAX_ITER; i++) {
@@ -96,8 +97,21 @@ int main(int argc, char* argv[]) {
 			printf("RTT time: %lu\n", results[i]);
 		}
 		ct_val++;
-
 		// Wait
-		usleep(MSG_INTERVAL);
+		long sleep_time = MSG_INTERVAL - results[i];
+		sleep_time = ((sleep_time < 0) ? 0 : sleep_time);
+		usleep(sleep_time);
+	}
+
+	// Send end packet: ct = 0
+	int zero_val = 0;
+	memcpy(packet, &zero_val, sizeof(int));
+	ch_write_msg(fd_sd, packet, PAYLOAD_SIZE);
+
+	char outfile[60];
+	sprintf(outfile, "%s.results", TOPIC_ID);
+	FILE *fp = fopen(outfile, "w");
+	for (int i = 0; i < MAX_ITER; i++) {
+		fprintf(fp, "%lu,", results[i]);
 	}
 }
