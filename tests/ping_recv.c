@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
 	}
 	char send_path[60];
 	char recv_path[60];
-	sprintf(send_path, "test/ping_send_%s", TOPIC_ID);
-	sprintf(recv_path, "test/ping_recv_%s", TOPIC_ID);
+	sprintf(send_path, "test/ping_send/%s", TOPIC_ID);
+	sprintf(recv_path, "test/ping_recv/%s", TOPIC_ID);
 
 	int fd_rd = ch_open(recv_path, CH_WRONLY, 0);
 	int fd_sd = ch_open(send_path, CH_RDONLY, 0);
