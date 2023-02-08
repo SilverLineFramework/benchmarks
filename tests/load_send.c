@@ -5,9 +5,9 @@
 #include <time.h>
 #include "api.h"
 
-#define PL_SIZE 512
+#define PL_SIZE 1024
 #define US 1
-#define INTERVAL 200 * US
+#define INTERVAL 2 * US
 
 int main() {
   char send_path[] = "test/load_gen";

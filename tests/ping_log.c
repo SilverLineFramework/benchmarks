@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <getopt.h>
@@ -60,43 +59,59 @@ void parse_args(int argc, char* argv[]) {
   return;
 }
 
+
 int main(int argc, char* argv[]) {
-	parse_args(argc, argv);
+  parse_args(argc, argv);
 
-	char send_path[60];
-	sprintf(send_path, "test/ping_send/%s", TOPIC_ID);
-	int fd_sd = ch_open(send_path, CH_WRONLY, 0);
+  struct timespec recv_ts;
+	char recv_path[60];
+	sprintf(recv_path, "test/ping_recv/%s", TOPIC_ID);
 
-	struct timespec send_ts;
-  struct timespec now_ts;
+	int fd_rd = ch_open(recv_path, CH_RDONLY, 0);
 
+	char recv_packet[65536];
 	int ct_val = 1;
-	char* packet = malloc(PAYLOAD_SIZE);
-	packet[sizeof(int) + sizeof(uint64_t)] = 0;
-		
-	for (int i = 0; i < MAX_ITER; i++) {
-		// Get send time
-		gettime(&send_ts);
-    uint64_t send_time = ts2us(&send_ts);
 
-		memcpy(packet, &ct_val, sizeof(int));
-    memcpy(packet + sizeof(int), &send_time, sizeof(uint64_t));
+	uint64_t* results = malloc(MAX_ITER * sizeof(uint64_t));
+  int num_dropped = 0;
 
-    //printf("Sending ct_val: %d\n", ct_val);
-		ch_write_msg(fd_sd, packet, PAYLOAD_SIZE);
-		ct_val++;
+	while(1) {
+		while (!ch_poll(&fd_rd, 1, 10000)) { };
+		int size = ch_read_msg(fd_rd, recv_packet, PAYLOAD_SIZE);
+    gettime(&recv_ts);
+    uint64_t recv_time = ts2us(&recv_ts);
 
-		// Wait
-    gettime(&now_ts);
-    uint64_t proc_time = send_time - ts2us(&now_ts);
-		uint64_t sleep_time = MSG_INTERVAL - proc_time;
-		sleep_time = ((sleep_time < 0) ? 0 : sleep_time);
-		usleep(sleep_time);
+		int ct_recv_val;
+		memcpy(&ct_recv_val, recv_packet, sizeof(int));
+
+		// Check for end packet: val = 0
+    if (ct_recv_val == 0) {
+			printf("End packet found\n");
+			break;
+		}
+    else if (ct_recv_val != ct_val + 0xDEADBEEF) {
+			printf("Invalid offset; packet dropped");
+    }
+
+    uint64_t send_time;
+    memcpy(&send_time, recv_packet + sizeof(int), sizeof(uint64_t));
+    uint64_t rtt_time = recv_time - send_time;
+    results[ct_val-1] = rtt_time;
+    printf("RTT time: %llu\n", rtt_time);
+
+    ct_val++;
 	}
 
-  // Send end packet: ct = 0
-  int zero_val = 0;
-  memcpy(packet, &zero_val, sizeof(int));
-  ch_write_msg(fd_sd, packet, PAYLOAD_SIZE);
+	char outfile[60];
 
+	sprintf(outfile, "nw_results/if%u_i%u_m%u_s%u.results", INTERF, MAX_ITER, MSG_INTERVAL, PAYLOAD_SIZE);
+	FILE *fp = fopen(outfile, "w");
+	for (int i = 0; i < MAX_ITER; i++) {
+		fprintf(fp, "%llu,", results[i]);
+	}
+
+	// Signal end of test
+	char done_topic[] = "test/finish";
+	int fd_done = ch_open(done_topic, CH_WRONLY, 0);
+	ch_write_msg(fd_done, &ct_val, 1);
 }
