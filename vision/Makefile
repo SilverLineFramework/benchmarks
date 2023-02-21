@@ -1,5 +1,5 @@
 export WASM_DIR=$(ROOT_WASM_DIR)/vision
-export BASE_DATA_DIR=$(ROOT_DATA_DIR)/vision
+export DATA_DIR=$(ROOT_DATA_DIR)/vision
 export COMMON_DIR=$(WASM_DIR)/common
 
 COMMON_C := $(shell ls common/*.c)
@@ -21,11 +21,11 @@ all: dir $(COMMON)
 
 dir:
 	mkdir -p $(COMMON_DIR)
-	mkdir -p $(BASE_DATA_DIR)
+	mkdir -p $(DATA_DIR)
 
 $(COMMON) : %.wasm : %.c
 	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
 
 clean:
-	rm -r $(BASE_DATA_DIR)
+	rm -r $(DATA_DIR)
 	rm -r $(WASM_DIR)

@@ -2,8 +2,6 @@
 OUT_DIR=$(ROOT_WASM_DIR)/polybench
 COMMON_DIR=$(OUT_DIR)/common
 
-# COMMON= polybench.c ../common/active.c ../common/dp.c
-
 # Folders must start with pb_; pulls all .c files in that directory.
 BENCHMARKS := $(shell ls benchmarks/*.c)
 WASM := $(BENCHMARKS:.c=.wasm)
@@ -12,29 +10,32 @@ WASM := $(BENCHMARKS:.c=.wasm)
 
 all: dir $(WASM)
 
+clean:
+	rm -rf $(OUT_DIR)
+
 dir:
 	mkdir -p $(OUT_DIR)
+	mkdir -p $(OUT_DIR)/mini
+	mkdir -p $(OUT_DIR)/small
+	mkdir -p $(OUT_DIR)/medium
+	mkdir -p $(OUT_DIR)/large
 	mkdir -p $(COMMON_DIR)
 
-polybench: polybench.c
-	$(WASMCC) $(WASMCFLAGS) -D MINI_DATASET -c $^ -o $(COMMON_DIR)/polybench_mi.wasm
-	#$(WASMCC) $(WASMCFLAGS) -D SMALL_DATASET -c $^ -o $(COMMON_DIR)/polybench_s.wasm
-	#$(WASMCC) $(WASMCFLAGS) -D MEDIUM_DATASET -c $^ -o $(COMMON_DIR)/polybench_m.wasm
+polybench: $(COMMON_DIR) polybench.c
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/polybench.wasm
+
+LINKCOMMON=$(WASMLD) $(WASMLDFLAGS) $(COMMON_DIR)/polybench.wasm
+
 
 $(WASM): %.wasm : %.c polybench
-	$(eval INT_FILE_MI = $(shell mktemp))
-	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE_MI) -D MINI_DATASET
-	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_mi.wasm \
-		$(INT_FILE_MI) -o $(OUT_DIR)/$(notdir $(basename $@))_mi.wasm
-	rm $(INT_FILE_MI)
-#	$(eval INT_FILE_S = $(shell mktemp))
-#	$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE_S) -D SMALL_DATASET
-#	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_s.wasm \
-#		$(INT_FILE_S) -o $(OUT_DIR)/$(notdir $(basename $@))_s.wasm
-#	rm $(INT_FILE_S)
+	$(eval TMP = $(shell mktemp))
 
-	#$(eval INT_FILE_M = $(shell mktemp))
-	#$(WASMCC) $(WASMCFLAGS) $< -c -o $(INT_FILE_M) -D MEDIUM_DATASET
-	#$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_DIR)/polybench_m.wasm \
-	#	$(INT_FILE_M) -o $(OUT_DIR)/$(notdir $(basename $@))_m.wasm
-	#rm $(INT_FILE_M)
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D MINI_DATASET -I./
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/mini/$(notdir $(basename $@)).wasm
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D SMALL_DATASET -I./
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D MEDIUM_DATASET -I./
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm
+	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D LARGE_DATASET -I./
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm
+	rm $(TMP)

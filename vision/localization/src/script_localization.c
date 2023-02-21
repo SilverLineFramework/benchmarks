@@ -6,7 +6,7 @@ Author: Sravanthi Kota Venkata
 #include <stdlib.h>
 #include "localization.h"
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int n, i, j, k, icount=-1;
     F2D* fid;

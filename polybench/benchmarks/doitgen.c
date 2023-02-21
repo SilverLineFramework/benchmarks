@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "doitgen.h"
 
 
@@ -87,7 +85,7 @@ void kernel_doitgen(int nr, int nq, int np,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int nr = NR;
@@ -128,4 +126,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

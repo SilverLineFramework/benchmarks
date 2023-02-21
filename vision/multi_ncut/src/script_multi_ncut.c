@@ -6,7 +6,7 @@ Author: Sravanthi Kota Venkata
 #include <stdlib.h>
 #include "segment.h"
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     float sigma = 0.6;
     float k = 4;

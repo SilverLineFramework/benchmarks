@@ -11,7 +11,7 @@
 # define _FLOYD_WARSHALL_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -37,9 +37,6 @@
 #   define N 5600
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define N 700
-#  endif
 
 #endif /* !(N) */
 

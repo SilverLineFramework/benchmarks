@@ -32,18 +32,18 @@ void get_data(const char* data_file, int n, int m, double **data)
     fclose(fp);
 }
 
-int benchmark_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     #if SIZE == 0
-        char data_file[1000] = "data/cortex/kmeans/spiral";
+        char data_file[1000] = "data/cortex/kmeans_small";
         // int n = 1484, m = 8, k = 10;
         int n = 1484, m = 8, k = 10;
     #elif SIZE == 1
-        char data_file[1000] = "data/cortex/kmeans/finland";
+        char data_file[1000] = "data/cortex/kmeans_medium";
         // int n = 13467, m = 2, k = 15;
         int n = 3000, m = 2, k = 15;
     #else /* SIZE == 2 */
-        char data_file[1000] = "data/cortex/kmeans/MNIST";
+        char data_file[1000] = "data/cortex/kmeans_large";
         // int n = 10000, m = 748, k = 10;
         int n = 1000, m = 280, k = 10;
     #endif

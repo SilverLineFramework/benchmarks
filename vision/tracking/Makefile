@@ -5,8 +5,6 @@ SUPP_C := $(filter-out $(MAIN_C), $(shell ls src/*.c))
 SUPP := $(SUPP_C:.c=.wasm)
 SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-DATA_DIR=$(BASE_DATA_DIR)/tracking
-
 .PHONY: all
 
 all: tracking
@@ -31,7 +29,7 @@ tracking: $(SUPP)
 
 	rm $(INT_FILE)
 
-	mkdir -p $(DATA_DIR)
-	cp -r data/sqcif $(DATA_DIR)
-	cp -r data/qcif $(DATA_DIR)
-	cp -r data/cif $(DATA_DIR)
+	mkdir -p $(DATA_DIR)/tracking
+	cp -r data/sqcif $(DATA_DIR)/tracking
+	cp -r data/qcif $(DATA_DIR)/tracking
+	cp -r data/cif $(DATA_DIR)/tracking

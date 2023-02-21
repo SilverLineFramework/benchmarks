@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "jacobi-1d.h"
 
 
@@ -83,7 +81,7 @@ void kernel_jacobi_1d(int tsteps,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int n = N;
@@ -117,4 +115,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

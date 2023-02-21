@@ -110,14 +110,14 @@ int flag_cross_validation;
 int nr_fold;
 double bias;
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     #if SIZE == 0
-        char input_file_name[1024] = "data/cortex/liblinear/iris_cut";
+        char input_file_name[1024] = "data/cortex/liblinear_small";
     #elif SIZE == 1
-        char input_file_name[1024] = "data/cortex/liblinear/surgery";
+        char input_file_name[1024] = "data/cortex/liblinear_medium";
     #else /* SIZE == 2 */
-        char input_file_name[1024] = "data/cortex/liblinear/crime_scale";
+        char input_file_name[1024] = "data/cortex/liblinear_large";
     #endif
 
 	const char *error_msg;

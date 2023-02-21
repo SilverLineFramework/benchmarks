@@ -93,24 +93,24 @@ void USAGE()
 	printf("m = number of columns (data point dimensions)\n");
 }
 
-int benchmark_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int i, j;
 
     #if SIZE == 0
-        char data_file[1000] = "data/cortex/spectral/R15";
+        char data_file[1000] = "data/cortex/spectral_small";
         // int n = 600, m = 2, k = 15;
         int n = 100, m = 2, k = 5;
         SIGMA = 0.707;
         DIV_FACTOR = 1;
     #elif SIZE == 1
-        char data_file[1000] = "data/cortex/spectral/Aggregation";
+        char data_file[1000] = "data/cortex/spectral_medium";
         // int n = 788, m = 2, k = 7;
         int n = 150, m = 2, k = 7;
         SIGMA = 0.707;
         DIV_FACTOR = 1;
     #else /* SIZE == 2 */
-        char data_file[1000] = "data/cortex/spectral/D31";
+        char data_file[1000] = "data/cortex/spectral_large";
         // int n = 1600, m = 2, k = 16;
         int n = 200, m = 2, k = 10;
         SIGMA = 0.707;

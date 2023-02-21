@@ -270,7 +270,7 @@ void infer(char* model_root, char* save, corpus* corpus)
  *
  */
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     // (est / inf) alpha k settings data (random / seed/ model) (directory / out)
 
@@ -284,13 +284,13 @@ int benchmark_main(int argc, char* argv[])
 
     INITIAL_ALPHA = 0.1;
     NTOPICS = 3;
-    read_settings("data/cortex/lda/settings.txt");
+    read_settings("data/cortex/lda_settings.txt");
     #if SIZE == 0
-        corpus = read_data("data/cortex/lda/small_data.dat");
+        corpus = read_data("data/cortex/lda_small.dat");
     #elif SIZE == 1
-        corpus = read_data("data/cortex/lda/medium_data.dat");
+        corpus = read_data("data/cortex/lda_medium.dat");
     #else /* SIZE == 2 */
-        corpus = read_data("data/cortex/lda/large_data.dat");
+        corpus = read_data("data/cortex/lda_large.dat");
     #endif
     run_em("random", NULL, corpus);
 

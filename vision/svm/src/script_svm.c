@@ -6,7 +6,7 @@ Author: Sravanthi Kota Venkata
 #include <stdlib.h>
 #include "svm.h"
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int iter, N, Ntst, i, j, k, n;
     F2D* trn1, *tst1, *trn2, *tst2, *Yoffset;

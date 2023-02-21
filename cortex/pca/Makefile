@@ -1,7 +1,4 @@
-# Output
-DATA_DIR=$(BASE_DATA_DIR)/pca
-
-COMPILE= $(WASMCC) $(WASMCLFLAGS) $(WRAPPER_C)
+COMPILE= $(WASMCC) $(WASMCLFLAGS)
 
 .PHONY: all
 
@@ -14,7 +11,6 @@ pca:
 	$(COMPILE) $(SRCS) -o $(WASM_DIR)/$@_m.wasm -D SIZE=1
 	$(COMPILE) $(SRCS) -o $(WASM_DIR)/$@_l.wasm -D SIZE=2
 
-	mkdir -p $(DATA_DIR)
-	cp large.data $(DATA_DIR)/large.data
-	cp medium.data $(DATA_DIR)/medium.data
-	cp small.data $(DATA_DIR)/small.data
+	cp large.data $(DATA_DIR)/pca_large.data
+	cp medium.data $(DATA_DIR)/pca_medium.data
+	cp small.data $(DATA_DIR)/pca_small.data

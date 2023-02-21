@@ -30,7 +30,7 @@ void normalizeImage(F2D* image)
         asubsref(image,i) = ( asubsref(image,i) / (tempMax+0.0) );
 }
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     I2D* im;
     F2D *image;

@@ -5,8 +5,6 @@ SUPP_C := $(filter-out $(MAIN_C), $(shell ls src/*.c))
 SUPP := $(SUPP_C:.c=.wasm)
 SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-DATA_DIR=$(BASE_DATA_DIR)/sift
-
 .PHONY: all
 
 all: sift
@@ -31,8 +29,8 @@ sift: $(SUPP)
 
 	rm $(INT_FILE)
 
-	mkdir -p $(DATA_DIR)
-	cp -r data/sim_fast $(DATA_DIR)
-	cp -r data/sqcif $(DATA_DIR)
-	cp -r data/qcif $(DATA_DIR)
+	mkdir -p $(DATA_DIR)/sift
+	cp -r data/sim_fast $(DATA_DIR)/sift
+	cp -r data/sqcif $(DATA_DIR)/sift
+	cp -r data/qcif $(DATA_DIR)/sift
 	

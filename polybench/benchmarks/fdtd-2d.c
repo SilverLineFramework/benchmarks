@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "fdtd-2d.h"
 
 
@@ -121,7 +119,7 @@ void kernel_fdtd_2d(int tmax,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int tmax = TMAX;
@@ -170,4 +168,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

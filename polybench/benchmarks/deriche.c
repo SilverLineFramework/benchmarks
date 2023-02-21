@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "deriche.h"
 
 
@@ -157,7 +155,7 @@ void kernel_deriche(int w, int h, DATA_TYPE alpha,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int w = W;
@@ -196,4 +194,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

@@ -8,7 +8,6 @@ AOT_OUT:=$(AOT_SRCS:%.wasm=%.aot)
 # WAMR Setup
 export WAMR_DIR=${PWD}/../runtime/wamr
 export WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-symbols.txt
-
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
 export WASMCFLAGS= -O1 -nostdlib
@@ -16,9 +15,6 @@ export WASMCFLAGS= -O1 -nostdlib
 
 # Linking flags
 export WASMLD=/opt/wasi-sdk/bin/wasm-ld
-#export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi \
-#	/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
-#export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
 export WASMLDFLAGS= --initial-memory=8192
 export WASMLDFLAGS+= --allow-undefined
 export WASMLDFLAGS+= --allow-undefined-file=${WAMR_SYMBOLS}
@@ -55,35 +51,25 @@ export WRAPPER_C= $(ROOT_DIR)/common/test_main.c
 .PHONY: wasm
 wasm: polybench mibench cortex vision sod
 
-.PHONY: common
-common:
-	make -C common
-
-.PHONY: tests polybench mibench cortex vision sod
-tests: common
+.PHONY: tests polybench mibench cortex vision
+tests:
 	make -C tests
-polybench: common
+polybench:
 	make -C polybench
-mibench: common
+mibench:
 	make -C mibench
-cortex: common
+cortex:
 	make -C cortex
-vision: common
+vision:
 	make -C vision
-sod: common
-	make -C sod
 
-# Copy rustpython to wasm folder (for distribution or AOT compilation)
-.PHONY: rustpython
-rustpython: wasm/rustpython.wasm
-wasm/rustpython.wasm: rustpython.wasm
-	cp rustpython.wasm wasm
+sod:
+	make -C sod
 
 # Clean
 .PHONY: clean
 clean:
 	rm -rf $(ROOT_WASM_DIR)
-	rm -rf $(ROOT_AOT_DIR)
 	rm -rf $(ROOT_DATA_DIR)
 
 # AOT: goes in ./aot folder.

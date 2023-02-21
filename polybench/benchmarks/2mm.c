@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "2mm.h"
 
 
@@ -107,7 +105,7 @@ void kernel_2mm(int ni, int nj, int nk, int nl,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int ni = NI;
@@ -160,4 +158,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

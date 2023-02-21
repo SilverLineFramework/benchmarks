@@ -47,7 +47,7 @@ int LoadLR()
 		"Output4.bmp", "Output5.bmp", "Output6.bmp", "Output7.bmp",
 		"Output8.bmp", "Output9.bmp", "Output10.bmp", "Output11.bmp",
 		"Output12.bmp", "Output13.bmp", "Output14.bmp", "Output15.bmp" };
-	char path1[256] = "data/cortex/motion/synthetic1/";
+	char path1[256] = "data/cortex/motion_small/";
 #endif
 
 	//alpaca
@@ -56,7 +56,7 @@ int LoadLR()
 	"Alpaca Frame 8.bmp", "Alpaca Frame 38.bmp", "Alpaca Frame 16.bmp", "Alpaca Frame 7.bmp",
 	"Alpaca Frame 32.bmp", "Alpaca Frame 19.bmp", "Alpaca Frame 21.bmp", "Alpaca Frame 28.bmp",
 	"Alpaca Frame 33.bmp", "Alpaca Frame 13.bmp", "Alpaca Frame 20.bmp", "Alpaca Frame 41.bmp" };
-	char path1[256] = "data/cortex/motion/alpaca/";
+	char path1[256] = "data/cortex/motion_medium/";
 #endif
 
 	//BookCase
@@ -65,7 +65,7 @@ int LoadLR()
 	"o_762e7e8ed9e5ddc7-4.bmp", "o_762e7e8ed9e5ddc7-5.bmp", "o_762e7e8ed9e5ddc7-6.bmp", "o_762e7e8ed9e5ddc7-7.bmp",
 	"o_762e7e8ed9e5ddc7-8.bmp", "o_762e7e8ed9e5ddc7-9.bmp", "o_762e7e8ed9e5ddc7-10.bmp", "o_762e7e8ed9e5ddc7-11.bmp",
 	"o_762e7e8ed9e5ddc7-12.bmp", "o_762e7e8ed9e5ddc7-13.bmp", "o_762e7e8ed9e5ddc7-14.bmp", "o_762e7e8ed9e5ddc7-15.bmp" };
-	char path1[256] = "data/cortex/motion/BookCase/";
+	char path1[256] = "data/cortex/motion_large/";
 #endif
 
 	int i, j;
@@ -120,7 +120,7 @@ void Bidirectional_ME(Image* IM1, Image* IM2, Opts Opts, double* dx, double* dy)
 	*dy = max(dy1, -dy2);
 }
 
-int benchmark_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	//Read image1
 	//Read image2
