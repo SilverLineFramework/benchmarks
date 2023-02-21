@@ -14,13 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#define POLYBENCH_DUMP_ARRAYS
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "atax.h"
 
 
@@ -89,7 +86,7 @@ void kernel_atax(int m, int n,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int m = M;
@@ -130,4 +127,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

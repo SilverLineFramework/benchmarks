@@ -23,8 +23,8 @@
 #endif
 
 // Input/output data
-#define TRAIN_FILE "data/cortex/rbm/data.txt"
-#define TEST_FILE "data/cortex/rbm/data.txt"
+#define TRAIN_FILE "data/cortex/rbm_data.txt"
+#define TEST_FILE "data/cortex/rbm_data.txt"
 
 // Free parameters
 #define DEBUG 0
@@ -238,7 +238,7 @@ void processLine(int target[], FILE * stream, int optActual[])
 	}
 }
 
-int benchmark_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	// -------- Preparing training data ---------
 

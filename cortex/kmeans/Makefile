@@ -1,7 +1,4 @@
-# Output
-DATA_DIR=$(BASE_DATA_DIR)/kmeans
-
-COMPILE= $(WASMCC) $(WASMCLFLAGS) $(WRAPPER_C)
+COMPILE= $(WASMCC) $(WASMCLFLAGS)
 
 .PHONY: all
 
@@ -14,7 +11,6 @@ kmeans:
 	$(COMPILE) $(SRCS) -o $(WASM_DIR)/$@_m.wasm -D SIZE=1
 	$(COMPILE) $(SRCS) -o $(WASM_DIR)/$@_l.wasm -D SIZE=2
 
-	mkdir -p $(DATA_DIR)
-	cp finland $(DATA_DIR)/finland
-	cp MNIST $(DATA_DIR)/MNIST
-	cp spiral $(DATA_DIR)/spiral
+	cp finland $(DATA_DIR)/kmeans_small
+	cp MNIST $(DATA_DIR)/kmeans_medium
+	cp spiral $(DATA_DIR)/kmeans_large

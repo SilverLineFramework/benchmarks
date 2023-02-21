@@ -5,8 +5,6 @@ SUPP_C := $(filter-out $(MAIN_C), $(shell ls src/*.c))
 SUPP := $(SUPP_C:.c=.wasm)
 SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
-DATA_DIR=$(BASE_DATA_DIR)/multi_ncut
-
 .PHONY: all
 
 all: multi_ncut
@@ -25,13 +23,13 @@ multi_ncut: $(SUPP)
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
 		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
 
-#	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
-#	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
-#		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
+	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
 
 	rm $(INT_FILE)
 
-	mkdir -p $(DATA_DIR)
-	cp -r data/sqcif $(DATA_DIR)
-	cp -r data/qcif $(DATA_DIR)
-#	cp -r data/cif $(DATA_DIR)
+	mkdir -p $(DATA_DIR)/multi_ncut
+	cp -r data/sqcif $(DATA_DIR)/multi_ncut
+	cp -r data/qcif $(DATA_DIR)/multi_ncut
+	cp -r data/cif $(DATA_DIR)/multi_ncut

@@ -23,7 +23,13 @@
 # include <omp.h>
 #endif
 
-#include "polybench.h"
+#if defined(POLYBENCH_PAPI)
+# undef POLYBENCH_PAPI
+# include "polybench.h"
+# define POLYBENCH_PAPI
+#else
+# include "polybench.h"
+#endif
 
 /* By default, collect PAPI counters on thread 0. */
 #ifndef POLYBENCH_THREAD_MONITOR
@@ -166,8 +172,13 @@ void test_fail(char *file, int line, char *call, int retval)
   else
     {
       char errstring[PAPI_MAX_STR_LEN];
+      // PAPI 5.4.3 has changed the API for PAPI_perror.
+      #if defined (PAPI_VERSION) && ((PAPI_VERSION_MAJOR(PAPI_VERSION) == 5 && PAPI_VERSION_MINOR(PAPI_VERSION) >= 4) || PAPI_VERSION_MAJOR(PAPI_VERSION) > 5)
+      fprintf (stdout, "Error in %s: %s\n", call, PAPI_strerror(retval));
+      #else
       PAPI_perror (retval, errstring, PAPI_MAX_STR_LEN);
       fprintf (stdout,"Error in %s: %s\n", call, errstring);
+      #endif
     }
   fprintf (stdout,"\n");
   if (PAPI_is_initialized ())
@@ -270,10 +281,6 @@ int polybench_papi_start_counter(int evid)
 #pragma omp barrier
 # endif
   return 0;
-}
-
-int main(int argc, char **argv) {
-  return loop(argc, argv, &_main);
 }
 
 
@@ -513,7 +520,7 @@ xmalloc(size_t alloc_sz)
   /* By default, post-pad the arrays. Safe behavior, but likely useless. */
   polybench_inter_array_padding_sz += POLYBENCH_INTER_ARRAY_PADDING_FACTOR;
   size_t padded_sz = alloc_sz + polybench_inter_array_padding_sz;
-  int err = posix_memalign (&ret, sizeof(void *), padded_sz);
+  int err = posix_memalign (&ret, 4096, padded_sz);
   if (! ret || err)
     {
       fprintf (stderr, "[PolyBench] posix_memalign: cannot allocate memory");

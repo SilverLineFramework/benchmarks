@@ -7,7 +7,7 @@ Author: Sravanthi Kota Venkata
 #define min(a,b) (a<b)?a:b
 #define max(a,b) (a>b)?a:b
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 
     int which_image;

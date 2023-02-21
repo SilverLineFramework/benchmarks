@@ -4,7 +4,7 @@ Author: Sravanthi Kota Venkata
 
 #include "stitch.h"
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int rows, cols;
     F2D *x, *y, *v, *interestPnts, *Fcur, *int1, *int2;
