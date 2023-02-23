@@ -1,4 +1,25 @@
-export MODE=wasm
+# ------------------------ Root / common directories ------------------------ #
+export ROOT_DIR= $(shell pwd)
+export ROOT_DATA_DIR=$(ROOT_DIR)/data
+
+
+# -------------------------------- WASM mode -------------------------------- #
+ifeq ($(MODE),native)
+
+# Compilation flags
+export WASMCC=gcc
+export WASMCFLAGS=-O1
+
+# Linking flags
+export WASMLD=gcc
+export WASMLDFLAGS=
+
+# Out: ./native
+export ROOT_WASM_DIR=$(ROOT_DIR)/native
+
+
+# ------------------------------- Native mode ------------------------------- #
+else
 
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
@@ -21,10 +42,11 @@ export WASMCLFLAGS+= -Wl,--export=main
 export WASMCLFLAGS+= -Wl,--export=_start
 export WASMCLFLAGS+= -Wl,--allow-undefined
 
-# Benchmark base common: Used by benchmarks to access the wrapper
-export ROOT_DIR= $(shell pwd)
-export ROOT_DATA_DIR=$(ROOT_DIR)/data
+# Out: ./wasm
 export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
+
+endif
+
 
 # WASM: goes in ./wasm folder
 .PHONY: wasm
