@@ -24,7 +24,7 @@ dir:
 	mkdir -p $(DATA_DIR)
 
 $(COMMON) : %.wasm : %.c
-	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@)
+	$(WASMCC) $(WASMCFLAGS) -c $^ -o $(COMMON_DIR)/$(notdir $@) -lm
 
 clean:
 	rm -r $(DATA_DIR)

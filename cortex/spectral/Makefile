@@ -17,15 +17,15 @@ spectral: $(COMMON)
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(COMMON_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(COMMON_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(COMMON_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm -lm
 
 	rm $(INT_FILE)
 

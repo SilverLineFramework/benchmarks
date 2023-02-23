@@ -2,6 +2,8 @@
 run.sh
 /wasm/
 /data/
+/native/
+/aot/
 mqtt_pwd.txt
 data.json
 *.aot

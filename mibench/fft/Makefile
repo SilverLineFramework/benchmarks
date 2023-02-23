@@ -17,18 +17,18 @@ fft: $(SUPP)
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D LARGE -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D INV -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/inv$@_s.wasm
+		$(INT_FILE) -o $(WASM_DIR)/inv$@_s.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN_C) -D LARGE -D INV -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/inv$@_l.wasm
+		$(INT_FILE) -o $(WASM_DIR)/inv$@_l.wasm -lm
 
 	rm $(INT_FILE)
