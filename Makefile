@@ -1,5 +1,27 @@
 # Main makefile for WASM benchmarks
 WAMR_COMPILER=wamrc
+# ------------------------ Root / common directories ------------------------ #
+export ROOT_DIR= $(shell pwd)
+export ROOT_DATA_DIR=$(ROOT_DIR)/data
+
+
+# -------------------------------- WASM mode -------------------------------- #
+ifeq ($(MODE),native)
+
+# Compilation flags
+export WASMCC=gcc
+export WASMCFLAGS=-O1
+
+# Linking flags
+export WASMLD=gcc
+export WASMLDFLAGS=
+
+# Out: ./native
+export ROOT_WASM_DIR=$(ROOT_DIR)/native
+
+
+# ------------------------------- Native mode ------------------------------- #
+else
 
 AOT_SRCS:=$(shell find wasm -not -path "*/common/*" -name "*.wasm")
 AOT_SRCS:=$(AOT_SRCS:wasm/%=%)
@@ -36,9 +58,7 @@ export WASMCLFLAGS+= -Wl,--strip-all,--no-entry
 export WASMCLFLAGS+= -Wl,--export-dynamic
 export WASMCLFLAGS+= -nostdlib -Ilib
 
-# Benchmark base common: Used by benchmarks to access the wrapper
-export ROOT_DIR= $(shell pwd)
-export ROOT_DATA_DIR=$(ROOT_DIR)/data
+# Out: ./wasm
 export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
 export ROOT_AOT_DIR=$(ROOT_DIR)/aot
 
@@ -46,6 +66,9 @@ export WRAPPER_WASM= $(ROOT_DIR)/wasm/common/wrapper.wasm
 # export WRAPPER_C= $(ROOT_DIR)/common/active.c
 #export WRAPPER_C= $(ROOT_DIR)/common/passive.c
 export WRAPPER_C= $(ROOT_DIR)/common/test_main.c
+
+endif
+
 
 # WASM: goes in ./wasm folder
 .PHONY: wasm
