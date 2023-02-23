@@ -17,15 +17,15 @@ stitch: $(SUPP)
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=0 -D sqcif $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_s.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=1 -D qcif $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_m.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) -D SIZE=2 -D cif $(MAIN_C) -c -o $(INT_FILE)
 	$(WASMLD) $(WASMLDFLAGS) $(WRAPPER_WASM) $(COMMON_WASM) $(SUPP_WASM) \
-		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm
+		$(INT_FILE) -o $(WASM_DIR)/$@_l.wasm -lm
 
 	rm $(INT_FILE)
 

@@ -1,4 +1,3 @@
-WASMLDFLAGS+= -lm
 # Output
 MAIN1_C := basicmath_small.c
 MAIN2_C := basicmath_large.c
@@ -18,9 +17,9 @@ basicmath: $(SUPP)
 	$(eval TMP = $(shell mktemp))
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN1_C) -c -o $(TMP)
-	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) $(TMP) -o $(WASM_DIR)/$@_s.wasm
+	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) $(TMP) -o $(WASM_DIR)/$@_s.wasm -lm
 
 	$(WASMCC) $(WASMCFLAGS) $(MAIN2_C) -c -o $(TMP)
-	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) $(TMP) -o $(WASM_DIR)/$@_l.wasm
+	$(WASMLD) $(WASMLDFLAGS) $(SUPP_WASM) $(TMP) -o $(WASM_DIR)/$@_l.wasm -lm
 
 	rm $(TMP)

@@ -35,8 +35,10 @@ SUPP_C := $(GSM_SOURCES) $(TOAST_SOURCES)
 SUPP := $(SUPP_C:.c=.wasm)
 SUPP_WASM := $(addprefix $(COMMON_DIR)/, $(notdir $(SUPP)))
 
+ifneq ($(MODE),native)
 WASMCFLAGS+= -Wno-comment -D_WASI_EMULATED_SIGNAL 
 WASMLDFLAGS+= -lwasi-emulated-signal
+endif
 
 all: toast
 

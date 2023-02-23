@@ -1,5 +1,4 @@
-# Main makefile for WASM benchmarks
-WAMR_COMPILER=./wasm-micro-runtime/wamr-compiler/build/wamrc
+export MODE=wasm
 
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
