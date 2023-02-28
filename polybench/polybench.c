@@ -12,11 +12,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <assert.h>
 #include <time.h>
 #include <sys/time.h>
-#include <sys/resource.h>
+//#include <sys/resource.h>
 #include <sched.h>
 #include <math.h>
 #ifdef _OPENMP

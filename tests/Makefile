@@ -1,6 +1,7 @@
 OUT_DIR=../wasm/tests
 
-SRCS := $(shell ls *.c)
+#SRCS := $(shell ls *.c)
+SRCS := counter.c helloworld.c
 WASM := $(SRCS:%.c=%.wasm)
 
 .PHONY: all clean dir
