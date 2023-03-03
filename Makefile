@@ -11,18 +11,24 @@ export WAMR_SYMBOLS=${WAMR_DIR}/wamr-sdk/app/libc-builtin-sysroot/share/defined-
 
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
-export WASMCFLAGS= -O1
+export WASMCFLAGS= -O1 -nostdlib
+
 
 # Linking flags
 export WASMLD=/opt/wasi-sdk/bin/wasm-ld
-export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi \
-	/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
-export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
+#export WASMLDFLAGS= -L/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi \
+#	/opt/wasi-sdk/share/wasi-sysroot/lib/wasm32-wasi/crt1.o
+#export WASMLDFLAGS+= -z -Wl,-allow-undefined-file=${WAMR_SYMBOLS}
+export WASMLDFLAGS= --initial-memory=8192
+export WASMLDFLAGS+= --allow-undefined
+export WASMLDFLAGS+= --allow-undefined-file=${WAMR_SYMBOLS}
+export WASMLDFLAGS+= --export=main
+export WASMLDFLAGS+= --export=__main_argc_argv
 export WASMLDFLAGS+= --strip-all --no-entry
 export WASMLDFLAGS+= --export-dynamic
-export WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
-export WASMLDFLAGS+= -lc \
-	/opt/wasi-sdk/lib/clang/14.0.4/lib/wasi/libclang_rt.builtins-wasm32.a
+#export WASMLDFLAGS+= --allow-undefined -lwasi-emulated-mman
+#export WASMLDFLAGS+= -lc \
+#	/opt/wasi-sdk/lib/clang/14.0.4/lib/wasi/libclang_rt.builtins-wasm32.a
 
 # For compilation+linking
 export WASMCLFLAGS= --target=wasm32 -O1 -z stack-size=4096
@@ -42,7 +48,8 @@ export ROOT_AOT_DIR=$(ROOT_DIR)/aot
 
 export WRAPPER_WASM= $(ROOT_DIR)/wasm/common/wrapper.wasm
 # export WRAPPER_C= $(ROOT_DIR)/common/active.c
-export WRAPPER_C= $(ROOT_DIR)/common/passive.c
+#export WRAPPER_C= $(ROOT_DIR)/common/passive.c
+export WRAPPER_C= $(ROOT_DIR)/common/test_main.c
 
 # WASM: goes in ./wasm folder
 .PHONY: wasm
