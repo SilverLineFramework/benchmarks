@@ -25,6 +25,8 @@
 
 #include "polybench.h"
 
+#define NO_MANGLE __attribute__((export_name("main")))
+
 /* By default, collect PAPI counters on thread 0. */
 #ifndef POLYBENCH_THREAD_MONITOR
 # define POLYBENCH_THREAD_MONITOR 0
@@ -272,7 +274,7 @@ int polybench_papi_start_counter(int evid)
   return 0;
 }
 
-int main(int argc, char **argv) {
+NO_MANGLE int main(int argc, char **argv) {
   return loop(argc, argv, &_main);
 }
 
@@ -513,10 +515,10 @@ xmalloc(size_t alloc_sz)
   /* By default, post-pad the arrays. Safe behavior, but likely useless. */
   polybench_inter_array_padding_sz += POLYBENCH_INTER_ARRAY_PADDING_FACTOR;
   size_t padded_sz = alloc_sz + polybench_inter_array_padding_sz;
-  int err = posix_memalign (&ret, sizeof(void *), padded_sz);
-  if (! ret || err)
+  ret = malloc(padded_sz);
+  if (! ret )
     {
-      fprintf (stderr, "[PolyBench] posix_memalign: cannot allocate memory");
+      printf (stderr, "[PolyBench] posix_memalign: cannot allocate memory");
       exit (1);
     }
   /* Safeguard: this is invoked only if polybench.c has been compiled
@@ -552,7 +554,6 @@ void* polybench_alloc_data(unsigned long long int n, int elt_size)
 #ifdef POLYBENCH_ENABLE_INTARRAY_PAD
   check_alloc_table_state ();
 #endif
-
   /// FIXME: detect overflow!
   size_t val = n;
   val *= elt_size;
