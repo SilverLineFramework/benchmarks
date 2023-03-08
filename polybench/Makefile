@@ -31,11 +31,7 @@ $(WASM): %.wasm : %.c polybench
 	$(eval TMP = $(shell mktemp))
 
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D MINI_DATASET -I./
-	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/mini/$(notdir $(basename $@)).wasm -lm
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/mini/$(notdir $(basename $@)).wasm
 	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D SMALL_DATASET -I./
-	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm -lm
-	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D MEDIUM_DATASET -I./
-	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/medium/$(notdir $(basename $@)).wasm -lm
-	$(WASMCC) $(WASMCFLAGS) $< -c -o $(TMP) -D LARGE_DATASET -I./
-	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/large/$(notdir $(basename $@)).wasm -lm
+	$(LINKCOMMON) $(TMP) -o $(OUT_DIR)/small/$(notdir $(basename $@)).wasm
 	rm $(TMP)

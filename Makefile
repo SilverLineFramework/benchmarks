@@ -1,6 +1,8 @@
 # Main makefile for WASM benchmarks
 WAMR_COMPILER=wamrc
+MODE=wasm
 # ------------------------ Root / common directories ------------------------ #
+
 export ROOT_DIR= $(shell pwd)
 export ROOT_DATA_DIR=$(ROOT_DIR)/data
 
