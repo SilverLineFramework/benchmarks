@@ -128,6 +128,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# ctags
+tags
+
 # Spyder project settings
 .spyderproject
 .spyproject
