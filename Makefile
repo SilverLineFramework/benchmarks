@@ -1,9 +1,13 @@
+# --------------------------------------------------------------------------- #
+#                       Silverline WASM Benchmark Suite                       #
+# --------------------------------------------------------------------------- #
+
 # ------------------------ Root / common directories ------------------------ #
 export ROOT_DIR= $(shell pwd)
+# Out: ./data
 export ROOT_DATA_DIR=$(ROOT_DIR)/data
 
-
-# -------------------------------- WASM mode -------------------------------- #
+# ------------------------------- Native mode ------------------------------- #
 ifeq ($(MODE),native)
 
 # Compilation flags
@@ -17,9 +21,8 @@ export WASMLDFLAGS=
 # Out: ./native
 export ROOT_WASM_DIR=$(ROOT_DIR)/native
 
-
-# ------------------------------- Native mode ------------------------------- #
-else
+# -------------------------------- WASM mode -------------------------------- #
+else  # $MODE
 
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
@@ -45,12 +48,12 @@ export WASMCLFLAGS+= -Wl,--allow-undefined
 # Out: ./wasm
 export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
 
-endif
+endif  # $MODE
 
+# -------------------------------- Benchmarks ------------------------------- #
 
-# WASM: goes in ./wasm folder
 .PHONY: wasm
-wasm: polybench mibench cortex vision sod
+wasm: polybench mibench cortex vision
 
 .PHONY: polybench mibench cortex vision
 polybench:
@@ -61,11 +64,9 @@ cortex:
 	make -C cortex
 vision:
 	make -C vision
-# TODO: refactor
-sod:
+sod:  # TODO: refactor
 	make -C sod
 
-# Clean
 .PHONY: clean
 clean:
 	rm -rf $(ROOT_WASM_DIR)
