@@ -1,8 +1,9 @@
 # Project-specific files
 run.sh
 /wasm/
-/aot/
 /data/
+/native/
+/aot/
 mqtt_pwd.txt
 data.json
 *.aot

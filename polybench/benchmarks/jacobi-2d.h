@@ -11,7 +11,7 @@
 # define _JACOBI_2D_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -23,17 +23,13 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-// #   define TSTEPS 40
-// #   define N 90
-#define TSTEPS 80
-#define N 180
+#   define TSTEPS 40
+#   define N 90
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define TSTEPS 100
-// #   define N 250
-#define TSTEPS 200
-#define N 400
+#   define TSTEPS 100
+#   define N 250
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -44,11 +40,6 @@
 #  ifdef EXTRALARGE_DATASET
 #   define TSTEPS 1000
 #   define N 2800
-#  endif
-
-#  ifdef TUNED_DATASET
-#   define TSTEPS 300
-#   define N 700
 #  endif
 
 

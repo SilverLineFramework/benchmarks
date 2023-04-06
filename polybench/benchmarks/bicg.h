@@ -11,7 +11,7 @@
 # define _BICG_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -23,17 +23,13 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-// #   define M 116
-// #   define N 124
-#define M 390
-#define N 410
+#   define M 116
+#   define N 124
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define M 390
-// #   define N 410
-#define M 1900
-#define N 2100
+#   define M 390
+#   define N 410
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -46,10 +42,6 @@
 #   define N 2200
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define M 1000
-#   define N 2000
-#  endif
 
 #endif /* !(M N) */
 

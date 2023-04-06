@@ -12,7 +12,7 @@ int *atlas;
 int *xloopin, *yloopin;
 int *xloopout, *yloopout;
 
-int  benchmark_main(int argc, char **argv)
+int  main(int argc, char **argv)
 {
     params* data;
     I2D *im;

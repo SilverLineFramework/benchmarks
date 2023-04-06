@@ -51,14 +51,14 @@ void printIntSubMatrix(I2D *m, int size)
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     #if SIZE == 0
-        char *inputPath = "data/cortex/svd3/small.txt";
+        char *inputPath = "data/cortex/svd3_small.txt";
     #elif SIZE == 1
-        char *inputPath = "data/cortex/svd3/med.txt";
+        char *inputPath = "data/cortex/svd3_medium.txt";
     #else /* SIZE == 2 */
-        char *inputPath = "data/cortex/svd3/large.txt";
+        char *inputPath = "data/cortex/svd3_large.txt";
     #endif
 
 	// Initialize u,s,v

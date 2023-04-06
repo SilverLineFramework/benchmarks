@@ -11,7 +11,7 @@
 # define _NUSSINOV_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -22,13 +22,11 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-// #   define N 180
-#define N 300
+#   define N 180
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define N 500
-#define N 600
+#   define N 500
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -39,9 +37,6 @@
 #   define N 5500
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define N 1200
-#  endif
 
 #endif /* !(N) */
 

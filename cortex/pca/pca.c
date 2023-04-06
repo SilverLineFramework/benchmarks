@@ -27,7 +27,7 @@
 
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )
 
-int benchmark_main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 FILE *stream;
 int  i, j, k, k2;
 float **data, **matrix(), **symmat, **symmat2, *vector(), *evals, *interm;
@@ -41,15 +41,15 @@ char option;
 unsigned int *start, *stop, *elapsed;
 
     #if SIZE == 0
-        char file[1000] = "data/cortex/pca/small.data";
+        char file[1000] = "data/cortex/pca_small.data";
         // int n = 1593, m = 256;
         int n = 1593, m = 32;
     #elif SIZE == 1
-        char file[1000] = "data/cortex/pca/medium.data";
+        char file[1000] = "data/cortex/pca_medium.data";
         // int n = 722, m = 800;
         int n = 722, m = 64;
     #else /* SIZE == 2 */
-        char file[1000] = "data/cortex/pca/large.data";
+        char file[1000] = "data/cortex/pca_large.data";
         // int n = 5000, m = 1059;
         int n = 1000, m = 96;
     #endif

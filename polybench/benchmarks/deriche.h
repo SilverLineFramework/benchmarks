@@ -11,7 +11,7 @@
 # define _DERICHE_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -23,17 +23,13 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-// #   define W 192
-// #   define H 128
-#   define W 720
-#   define H 480
+#   define W 192
+#   define H 128
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define W 720
-// #   define H 480
-#define W 1920
-#define H 1080
+#   define W 720
+#   define H 480
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -46,10 +42,6 @@
 #   define H 4320
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define W 5000
-#   define H 3000
-#  endif
 
 #endif /* !(W H) */
 

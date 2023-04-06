@@ -4,7 +4,7 @@ Author: Sravanthi Kota Venkata
 
 #include "tracking.h"
 
-int benchmark_main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int i, j, k, N_FEA, WINSZ, LK_ITER, rows, cols;
     int endR, endC;

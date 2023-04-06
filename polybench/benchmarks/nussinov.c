@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "nussinov.h"
 
 /* RNA bases represented as chars, range is [0,3] */
@@ -111,7 +109,7 @@ void kernel_nussinov(int n, base POLYBENCH_1D(seq,N,n),
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int n = N;
@@ -143,4 +141,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

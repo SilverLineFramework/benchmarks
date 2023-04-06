@@ -11,7 +11,7 @@
 # define _2MM_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -25,25 +25,17 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-// #   define NI 40
-// #   define NJ 50
-// #   define NK 70
-// #   define NL 80
-#   define NI 80
-#   define NJ 100
-#   define NK 140
-#   define NL 160
+#   define NI 40
+#   define NJ 50
+#   define NK 70
+#   define NL 80
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define NI 180
-// #   define NJ 190
-// #   define NK 210
-// #   define NL 220
-#   define NI 280
-#   define NJ 290
-#   define NK 310
-#   define NL 320
+#   define NI 180
+#   define NJ 190
+#   define NK 210
+#   define NL 220
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -60,12 +52,6 @@
 #   define NL 2400
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define NI 400
-#   define NJ 500
-#   define NK 600
-#   define NL 700
-#  endif
 
 #endif /* !(NI NJ NK NL) */
 

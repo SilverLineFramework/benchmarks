@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "covariance.h"
 
 
@@ -98,7 +96,7 @@ void kernel_covariance(int m, int n,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int n = N;
@@ -138,4 +136,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

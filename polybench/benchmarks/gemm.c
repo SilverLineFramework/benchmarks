@@ -14,12 +14,10 @@
 #include <string.h>
 #include <math.h>
 
-
 /* Include polybench common header. */
-#include "../polybench.h"
+#include <polybench.h>
 
 /* Include benchmark-specific header. */
-
 #include "gemm.h"
 
 
@@ -101,7 +99,7 @@ void kernel_gemm(int ni, int nj, int nk,
 }
 
 
-int benchmark_main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   /* Retrieve problem size. */
   int ni = NI;
@@ -146,4 +144,3 @@ int benchmark_main(int argc, char **argv)
 
   return 0;
 }
-

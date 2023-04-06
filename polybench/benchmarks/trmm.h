@@ -11,7 +11,7 @@
 # define _TRMM_H
 
 /* Default to LARGE_DATASET. */
-# if !defined(TUNED_DATASET) && !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
+# if !defined(MINI_DATASET) && !defined(SMALL_DATASET) && !defined(MEDIUM_DATASET) && !defined(LARGE_DATASET) && !defined(EXTRALARGE_DATASET)
 #  define LARGE_DATASET
 # endif
 
@@ -23,17 +23,13 @@
 #  endif
 
 #  ifdef SMALL_DATASET
-//#   define M 60
-//#    define N 80
-#   define M 200
-#   define N 240
+#   define M 60
+#   define N 80
 #  endif
 
 #  ifdef MEDIUM_DATASET
-// #   define M 200
-//#   define N 240
-#define M 400
-#define N 480
+#   define M 200
+#   define N 240
 #  endif
 
 #  ifdef LARGE_DATASET
@@ -46,10 +42,6 @@
 #   define N 2600
 #  endif
 
-#  ifdef TUNED_DATASET
-#   define M 800
-#   define N 900
-#  endif
 
 #endif /* !(M N) */
 
