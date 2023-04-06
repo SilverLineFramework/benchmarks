@@ -64,6 +64,8 @@ cortex:
 	make -C cortex
 vision:
 	make -C vision
+
+.PHONY: sod
 sod:  # TODO: refactor
 	make -C sod
 
