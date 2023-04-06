@@ -52,9 +52,7 @@ endif
 .PHONY: wasm
 wasm: polybench mibench cortex vision sod
 
-.PHONY: tests polybench mibench cortex vision
-tests:
-	make -C tests
+.PHONY: polybench mibench cortex vision
 polybench:
 	make -C polybench
 mibench:
@@ -63,7 +61,7 @@ cortex:
 	make -C cortex
 vision:
 	make -C vision
-
+# TODO: refactor
 sod:
 	make -C sod
 
