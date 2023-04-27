@@ -92,6 +92,12 @@ docs/_build/
 # PyBuilder
 target/
 
+# Rust things
+.DS_Store
+rust/*/Cargo.lock
+rust/*/Cargo.toml
+
+
 # Jupyter Notebook
 .ipynb_checkpoints
 

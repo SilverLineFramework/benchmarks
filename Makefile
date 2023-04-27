@@ -1,6 +1,8 @@
 # Main makefile for WASM benchmarks
 WAMR_COMPILER=wamrc
 MODE=wasm
+CPU=thumbv7
+#CPU=armv7
 # ------------------------ Root / common directories ------------------------ #
 
 export ROOT_DIR= $(shell pwd)
@@ -11,7 +13,7 @@ export ROOT_DATA_DIR=$(ROOT_DIR)/data
 ifeq ($(MODE),native)
 
 # Compilation flags
-export WASMCC=gcc
+export WASMCC=arm-none-eabi-gcc
 export WASMCFLAGS=-O1
 
 # Linking flags
@@ -74,9 +76,9 @@ endif
 
 # WASM: goes in ./wasm folder
 .PHONY: wasm
-wasm: polybench mibench cortex vision sod
+wasm: min-rust polybench
 
-.PHONY: tests polybench mibench cortex vision
+.PHONY: tests polybench mibench cortex vision min-rust
 tests:
 	make -C tests
 polybench:
@@ -87,6 +89,8 @@ cortex:
 	make -C cortex
 vision:
 	make -C vision
+min-rust:
+	make -C rust/minimal
 
 sod:
 	make -C sod
@@ -95,6 +99,7 @@ sod:
 .PHONY: clean
 clean:
 	rm -rf $(ROOT_WASM_DIR)
+	rm -rf $(ROOT_AOT_DIR)
 	rm -rf $(ROOT_DATA_DIR)
 
 # AOT: goes in ./aot folder.
@@ -106,5 +111,5 @@ dir.aot:
 
 $(AOT_OUT): %.aot: wasm/%.wasm
 	mkdir -p $(dir aot/$@)
-	$(WAMR_COMPILER) --target=thumbv7 --target-abi=eabi --cpu=cortex-m7 \
+	$(WAMR_COMPILER) --target=$(CPU) --target-abi=eabi --cpu=cortex-m7 \
   --format=aot -o aot/$@ $^
