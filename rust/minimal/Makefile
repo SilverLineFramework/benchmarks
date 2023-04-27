@@ -12,7 +12,7 @@ all: dir.wasm
 	export RUSTFLAGS=$(RUSTFLAGS)
 	export RUSTC=$(RUSTC)
 	#export RUSTFLAGS="-C link-args=-Wl,-zstack-size=8192"
-	RUSTFLAGS="-C linker=ld64.lld" cargo build --target $(TRIPLE) --release --verbose
+	RUSTFLAGS="-C linker=ld64.lld -C link-arg=-zstack-size=8192" cargo build --target $(TRIPLE) --release --verbose
 	cp target/$(TRIPLE)/release/$(TARGET).wasm $(RUST_WASM_DIR)
 
 dir.wasm:

@@ -13,7 +13,7 @@ export ROOT_DATA_DIR=$(ROOT_DIR)/data
 ifeq ($(MODE),native)
 
 # Compilation flags
-export WASMCC=arm-none-eabi-gcc
+export WASMCC=gcc
 export WASMCFLAGS=-O1
 
 # Linking flags
