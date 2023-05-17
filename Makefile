@@ -42,7 +42,7 @@ export WASMLDFLAGS+= -lc \
 	/opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
 
 # For compilation+linking
-export WASMCLFLAGS= -O1 -DSILVERLINE
+export WASMCLFLAGS= -O1 -DSILVERLINE -DWASM
 export WASMCLFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
 export WASMCLFLAGS+= -Wl,--export=main
 export WASMCLFLAGS+= -Wl,--export=_start
