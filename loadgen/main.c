@@ -28,7 +28,8 @@ int main(int argc, char **argv) {
     matrix_t *A = mat_create(n, n);
     srand(42);
     mat_rand(A);
-
+// Full RTT benchmark
+#ifdef ACTIVE
 #ifdef SILVERLINE
     char topic_in[256];
     char rt_uuid[64];
@@ -49,9 +50,31 @@ int main(int argc, char **argv) {
         if (isnan(A->data[0])) { return 0; }
         matrix_t *res = eig(A, k);
         ch_write_msg(ch_out, (char *) A->data, s * sizeof(float));
+        mat_destroy(res);
     }
+#endif
+// Compute-only benchmark (spin until any message is received)
+#elif defined PASSIVE
+#ifdef SILVERLINE
+    char topic_in[256];
+    runtime_get_uuid(rt_uuid);
+    snprintf(topic_in, 256, "realm/proc/benchmarking/in/%s", rt_uuid);
+    int ch_in = ch_open(topic_in, CH_RDONLY, 0);
+    char buf[1];
+
+    period_set_flags(1);
+    while(ch_read_msg(ch_in, buf, 1) == 0) {
+        period_start();
+        matrix_t *res = eig(A, k);
+        printf("v[0]: %f\n", res->data[0]);
+        mat_destroy(res);
+        period_end();
+    }
+#endif
+// One-shot benchmark
 #else
     matrix_t *res = eig(A, k);
+    printf("v[0]: %f\n", res->data[1]);
     mat_destroy(res);
     return 0;
 #endif
