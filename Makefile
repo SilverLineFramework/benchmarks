@@ -2,6 +2,10 @@
 #                       Silverline WASM Benchmark Suite                       #
 # --------------------------------------------------------------------------- #
 
+ifndef MODE
+export MODE=silverline
+endif
+
 # ------------------------ Root / common directories ------------------------ #
 export ROOT_DIR= $(shell pwd)
 # Out: ./data
@@ -29,7 +33,7 @@ else  # $MODE
 
 # Compilation flags
 export WASMCC=/opt/wasi-sdk/bin/clang
-export WASMCFLAGS= -O1 -DSILVERLINE -DWASM
+export WASMCFLAGS= -O1 -DWASM
 
 # Linking flags
 export WASMLD=/opt/wasi-sdk/bin/wasm-ld
@@ -42,7 +46,7 @@ export WASMLDFLAGS+= -lc \
 	/opt/wasi-sdk/lib/clang/10.0.0/lib/wasi/libclang_rt.builtins-wasm32.a
 
 # For compilation+linking
-export WASMCLFLAGS= -O1 -DSILVERLINE -DWASM
+export WASMCLFLAGS= -O1 -DWASM
 export WASMCLFLAGS+= -Wl,--no-threads,--strip-all,--no-entry
 export WASMCLFLAGS+= -Wl,--export=main
 export WASMCLFLAGS+= -Wl,--export=_start
@@ -51,26 +55,26 @@ export WASMCLFLAGS+= -Wl,--allow-undefined
 # Out: ./wasm
 export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
 
+# Silverline mode
+ifeq ($(MODE),silverline)
+export WASMCFLAGS+= -DSILVERLINE
+export WASMCLFLAGS+= -DSILVERLINE
+endif
+
+
 endif  # $MODE
 
 # -------------------------------- Benchmarks ------------------------------- #
 
-.PHONY: wasm
-wasm: polybench mibench cortex vision sod loadgen
+BENCHMARKS=polybench mibench cortex vision sod loadgen
 
-.PHONY: polybench mibench cortex vision sod loadgen
-polybench:
-	make -C polybench
-mibench:
-	make -C mibench
-cortex:
-	make -C cortex
-vision:
-	make -C vision
-sod:
-	make -C sod
-loadgen:
-	make -C loadgen
+.PHONY: wasm
+wasm: $(BENCHMARKS)
+
+.PHONY: $(BENCHMARKS)
+$(BENCHMARKS):
+	@echo "Building $@ in $(MODE) mode."
+	make -C $@
 
 .PHONY: clean
 clean:

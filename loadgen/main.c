@@ -28,19 +28,21 @@ int main(int argc, char **argv) {
     matrix_t *A = mat_create(n, n);
     srand(42);
     mat_rand(A);
+
+#ifdef SILVERLINE
+    char rt_uuid[64];
+    runtime_get_uuid(rt_uuid);
+#endif
+
 // Full RTT benchmark
 #ifdef ACTIVE
 #ifdef SILVERLINE
     char topic_in[256];
-    char rt_uuid[64];
-    runtime_get_uuid(rt_uuid);
-    snprintf(topic_in, 256, "realm/proc/benchmarking/in/%s", rt_uuid);
+    snprintf(topic_in, 256, "realm/benchmarking/in/%s", rt_uuid);
     int ch_in = ch_open(topic_in, CH_RDONLY, 0);
 
     char topic_out[256];
-    char mod_uuid[64];
-    module_get_uuid(mod_uuid);
-    snprintf(topic_out, 256, "realm/proc/benchmarking/out/%s", mod_uuid);
+    snprintf(topic_out, 256, "realm/benchmarking/out/%s", rt_uuid);
     int ch_out = ch_open(topic_out, CH_WRONLY, 0);
 
     int chs[1] = {ch_in};
@@ -57,8 +59,7 @@ int main(int argc, char **argv) {
 #elif defined PASSIVE
 #ifdef SILVERLINE
     char topic_in[256];
-    runtime_get_uuid(rt_uuid);
-    snprintf(topic_in, 256, "realm/proc/benchmarking/in/%s", rt_uuid);
+    snprintf(topic_in, 256, "realm/benchmarking/in/%s", rt_uuid);
     int ch_in = ch_open(topic_in, CH_RDONLY, 0);
     char buf[1];
 
