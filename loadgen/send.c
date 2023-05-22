@@ -4,6 +4,7 @@
 #include <time.h>
 #include "api.h"
 
+#include <stdio.h>
 
 uint64_t tv2us() {
     struct timespec ts;
@@ -49,14 +50,18 @@ int main(int argc, char **argv) {
     int j = 0;
     int chs[1] = {ch_out};
     char null[1];
-    for(int i = 0; i < n; i++) {
+    for(int round = 0; round < n; round++) {
         ch_write_msg(ch_in, (char *) input, s * sizeof(float));
         uint64_t start = tv2us();
-        for(int i = 0; i < k; i++) {
+        for(int actor = 0; actor < k; actor++) {
             ch_poll(chs, 1, 0);
             results[j++] = tv2us() - start;
             ch_read_msg(ch_out, null, 1);
         }
     }
     ch_write_msg(ch_bench, (char *) results, sizeof(uint32_t) * n * k);
+
+    float nan[1];
+    nan[0] = NAN;
+    ch_write_msg(ch_in, (char *) nan, sizeof(float));
 }
