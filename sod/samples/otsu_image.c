@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	 */
 	sod_img binImg = sod_otsu_binarize_image(imgIn);
 	/* Save the binary image to the specified path */
-	sod_img_save_as_png(binImg, zOut);
+	// sod_img_save_as_png(binImg, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(binImg);

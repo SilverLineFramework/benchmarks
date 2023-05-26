@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	 */
 	sod_img gray = sod_grayscale_image(imgIn);
 	/* Save the grayscale image to the specified path */
-	sod_img_save_as_png(gray, zOut);
+	// sod_img_save_as_png(gray, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(gray);

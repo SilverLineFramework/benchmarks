@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	/* Perform canny edge detection. */
 	sod_img imgOut = sod_canny_edge_image(imgIn, 0 /*  Set this to 1 if you want to reduce noise */);
 	/* Finally save our processed image to the specified path */
-	sod_img_save_as_png(imgOut, zOut);
+	// sod_img_save_as_png(imgOut, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(imgOut);

@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	/* Finally, dilate the binary image, say  12 times */
 	sod_img dilImg = sod_dilate_image(binImg, 12);
 	/* Save the dilated image to the specified path */
-	sod_img_save_as_png(dilImg, zOut);
+	// sod_img_save_as_png(dilImg, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(binImg);

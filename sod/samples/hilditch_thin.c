@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	/* Perform Hilditch thinning on this binary image. */
 	sod_img imgOut = sod_hilditch_thin_image(binImg);
 	/* Finally save our processed image to the specified path */
-	sod_img_save_as_png(imgOut, zOut);
+	// sod_img_save_as_png(imgOut, zOut);
 	/* Cleanup */
 	sod_free_image(imgIn);
 	sod_free_image(binImg);
