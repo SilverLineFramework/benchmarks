@@ -4,7 +4,7 @@ import os
 from PIL import Image
 import numpy as np
 from argparse import ArgumentParser
-from tqdm import tqdm
+from tqdm.contrib.concurrent import thread_map
 
 
 _desc = "Randomly resize images for benchmark input data."
@@ -15,6 +15,9 @@ def _parse(p):
     p.add_argument(
         "-d", "--dst", default="data/images", help="Destination folder.")
     p.add_argument("-k", "--key", default=42, help="Random seed.", type=int)
+    p.add_argument(
+        "-t", "--threads", default=32, type=int,
+        help="Maximum number of threads.")
     return p
 
 
@@ -23,10 +26,15 @@ def _main(args):
     os.makedirs(args.dst, exist_ok=True)
     scale_factor = np.exp(
         np.random.default_rng(args.key).uniform(-2, 2, size=len(files)))
-    for f, s in zip(tqdm(files), scale_factor):
-        img = Image.open(os.path.join("inputs", f))
+
+    def _scale(a):
+        f, s = a
+        img = Image.open(os.path.join(args.src, f))
         img.resize((round(img.size[0] * s), round(img.size[1] * s)))
         img.save(os.path.join(args.dst, f))
+
+    thread_map(
+        _scale, list(zip(files, scale_factor)), max_workers=args.threads)
 
 
 if __name__ == '__main__':
