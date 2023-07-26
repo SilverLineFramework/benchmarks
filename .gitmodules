@@ -1,0 +1,3 @@
+[submodule "webassembly-benchmarks"]
+	path = libsodium/webassembly-benchmarks
+	url = git@github.com:jedisct1/webassembly-benchmarks.git

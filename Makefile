@@ -66,7 +66,7 @@ endif  # $MODE
 
 # -------------------------------- Benchmarks ------------------------------- #
 
-BENCHMARKS=polybench mibench cortex vision sod loadgen
+BENCHMARKS=polybench mibench cortex vision sod loadgen libsodium
 
 .PHONY: wasm
 wasm: $(BENCHMARKS)
