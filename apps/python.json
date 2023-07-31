@@ -1,0 +1,14 @@
+[
+    ["data/apps/python/empty.py"],
+    ["data/apps/python/binary_trees.py", "11"],
+    ["data/apps/python/chaos.py"],
+    ["data/apps/python/fannkuch.py", "7"],
+    ["data/apps/python/float.py"],
+    ["data/apps/python/go.py"],
+    ["data/apps/python/mandelbrot.py"],
+    ["data/apps/python/nbody.py", "100000"],
+    ["data/apps/python/primes.py", "5000"],
+    ["data/apps/python/set_partition.py", "12"],
+    ["data/apps/python/spectral_norm.py"],
+    ["data/apps/python/sum.py"]
+]

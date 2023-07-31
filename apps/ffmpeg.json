@@ -1,0 +1,13 @@
+[
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot.mp4", "-f", "null", "-"],
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot.mp4", "-map", "0:v:0",
+     "-c:v", "mpeg4", "-f", "null", "-"],
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot.mp4", "-map", "0:v:0",
+     "-c:v", "libx264", "-f", "null", "-"],
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot2.mp4", "-f", "null", "-"],
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot2.mp4", "-map", "0:v:0",
+     "-c:v", "mpeg4", "-f", "null", "-"],
+    ["--", "-i", "data/apps/ffmpeg/mandelbrot2.mp4", "-map", "0:v:0",
+     "-c:v", "libx264", "-f", "null", "-"]
+ 
+]
