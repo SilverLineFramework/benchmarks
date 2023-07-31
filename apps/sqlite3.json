@@ -1,0 +1,12 @@
+[
+    ["data/apps/sqlite3/chinook.db",
+     "\"SELECT * FROM tracks ORDER BY Title;\""],
+    ["data/apps/sqlite3/chinook.db",
+     "\"SELECT * FROM tracks ORDER BY AlbumId;\""],
+    ["data/apps/sqlite3/chinook.db",
+     "\"SELECT FirstName LastName FROM customers ORDER BY Email LIMIT 10;\""],
+    ["data/apps/sqlite3/chinook.db",
+     "\"SELECT * FROM invoice_items INNER JOIN invoices ON invoice_items.InvoiceId=invoices.InvoiceId;\""],
+    ["data/apps/sqlite3/chinook.db",
+     "\"SELECT * FROM tracks WHERE Name LIKE '%i%';\""]
+]

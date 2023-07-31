@@ -1,5 +1,6 @@
 [
-    ["wasm/apps/wasm3-wasi.wasm", "--", "data/apps/wasm3/helloworld.wasm"],
+    ["wasm/apps/wasm3-wasi.wasm", "--", "data/apps/wasm3/small-2mm.wasm"],
+    ["wasm/apps/wasm3-wasi.wasm", "--", "data/apps/wasm3/medium-2mm.wasm"],
     ["wasm/apps/wasm3-wasi.wasm", "--", "wasm/apps/wasm3-wasi.wasm", "--",
-     "data/apps/wasm3/helloworld.wasm"],
+     "data/apps/wasm3/small-2mm.wasm"]
 ]
