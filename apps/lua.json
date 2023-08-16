@@ -3,5 +3,5 @@
     ["data/apps/lua/binarytrees.lua", "10"],
     ["data/apps/lua/merkletrees.lua", "8"],
     ["data/apps/lua/nbody.lua", "2500"],
-    ["data/apps/lua/spectral-norm", "50"]
+    ["data/apps/lua/spectral-norm.lua", "50"]
 ]
