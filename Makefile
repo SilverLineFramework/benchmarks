@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------------- #
 
 ifndef MODE
-export MODE=silverline
+export MODE=wasm
 endif
 
 # ------------------------ Root / common directories ------------------------ #
@@ -61,12 +61,12 @@ export WASMCFLAGS+= -DSILVERLINE
 export WASMCLFLAGS+= -DSILVERLINE
 endif
 
-
 endif  # $MODE
 
 # -------------------------------- Benchmarks ------------------------------- #
 
 BENCHMARKS=polybench mibench cortex vision sod loadgen libsodium apps
+BENCHMARKS+= python kissat
 
 .PHONY: wasm
 wasm: $(BENCHMARKS)

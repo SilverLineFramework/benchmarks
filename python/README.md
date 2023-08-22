@@ -1,18 +1,26 @@
 Python based benchmarks.
 
-
+- read
 - hashlib
-- hmac
 - secrets
-- base64
+- re
+- random
+- itertools
+- hmac
 - gzip
+- collections
+
+- base64
 - bz2
 - lzma
 - zipfile
 - tarfile
 - zlib
 - pickle
-- random
 - statistics
-- re
 - difflib
+- array
+- math
+- struct
+- datetime
+- zlib

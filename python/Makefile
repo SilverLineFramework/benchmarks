@@ -6,6 +6,7 @@ DATA_DIR=$(ROOT_DATA_DIR)/python
 all:
 	mkdir -p $(DATA_DIR)
 	cp -r python-tests $(DATA_DIR)/tests
+	cp -r parametric $(DATA_DIR)/parametric
 
 clean:
 	rm -r $(WASM_DIR)
