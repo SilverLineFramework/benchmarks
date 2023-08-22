@@ -1,5 +1,5 @@
 WASM_DIR=$(ROOT_WASM_DIR)/kissat.wasm
-DATA_DIR=$(ROOT_DATA_DIR)/python
+DATA_DIR=$(ROOT_DATA_DIR)/kissat
 KISSAT_WASM=https://github.com/thetianshuhuang/kissat-wasm/releases/download/v3.1.0/kissat.wasm
 
 .PHONY: all clean

@@ -5,7 +5,9 @@ DATA_DIR=$(ROOT_DATA_DIR)/python
 .PHONY: all clean
 all:
 	mkdir -p $(DATA_DIR)
+	rm -rf $(DATA_DIR)/tests
 	cp -r python-tests $(DATA_DIR)/tests
+	rm -rf $(DATA_DIR)/parametric
 	cp -r parametric $(DATA_DIR)/parametric
 
 clean:

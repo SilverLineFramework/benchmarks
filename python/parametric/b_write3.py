@@ -34,5 +34,5 @@ if __name__ == '__main__':
         seed = int(sys.argv[1])
         random.seed(seed)
         num_files = random.randint(10, 100)
-        file_size = random.randint(100, 1000)
+        file_size = random.randint(500, 1000)
         benchmark(num_files, file_size)

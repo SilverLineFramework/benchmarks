@@ -9,17 +9,17 @@ Python based benchmarks.
 - hmac
 - gzip
 - collections
-
+- array
 - base64
-- bz2
+- pickle
 - lzma
+
+- bz2
 - zipfile
 - tarfile
 - zlib
-- pickle
 - statistics
 - difflib
-- array
 - math
 - struct
 - datetime

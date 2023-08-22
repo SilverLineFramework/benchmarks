@@ -36,6 +36,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        num_lists = random.randint(50, 200)
+        num_lists = random.randint(50, 250)
         list_length = random.randint(100, 500)
         benchmark(num_lists, list_length)

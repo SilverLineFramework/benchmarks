@@ -29,6 +29,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        data_size = random.randint(200000, 1000000)
+        data_size = random.randint(250000, 2500000)
         compression_level = random.randint(0, 9)
         benchmark(data_size, compression_level)

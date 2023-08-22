@@ -40,6 +40,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        num_strings = random.randint(10, 100)
-        string_length = random.randint(100, 1000)
+        num_strings = random.randint(50, 100)
+        string_length = random.randint(250, 1000)
         benchmark(seed, num_strings, string_length)

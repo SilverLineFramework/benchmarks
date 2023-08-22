@@ -15,6 +15,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        numbers = random.randint(15, 20)
+        numbers = random.randint(40, 50)
         r = random.randint(3, 5)
         benchmark(numbers, r)

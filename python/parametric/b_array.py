@@ -22,6 +22,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        size = random.randint(100, 2000)
-        iters = random.randint(100, 2000)
+        size = random.randint(200, 2500)
+        iters = random.randint(200, 2500)
         benchmark(size, iters)

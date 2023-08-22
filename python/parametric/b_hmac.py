@@ -23,6 +23,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        length = random.randint(1000, 10000)
+        length = random.randint(2000, 20000)
         iters = random.randint(500, 1000)
         benchmark(length, length, iters)

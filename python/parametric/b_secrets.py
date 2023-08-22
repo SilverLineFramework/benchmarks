@@ -12,6 +12,6 @@ if __name__ == "__main__":
     else:
         seed = int(sys.argv[1])
         random.seed(seed)
-        num_iterations = random.randint(1000, 10000)
-        data_size = random.randint(1000, 10000)
+        num_iterations = random.randint(1000, 5000)
+        data_size = random.randint(5000, 10000)
         benchmark(num_iterations, data_size)
