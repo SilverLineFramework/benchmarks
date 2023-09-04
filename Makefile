@@ -55,7 +55,7 @@ export WASMCLFLAGS+= -Wl,--allow-undefined
 # Out: ./wasm
 export ROOT_WASM_DIR=$(ROOT_DIR)/wasm
 
-# Silverline mode
+# Silverline mode. Enable with MODE=silverline.
 ifeq ($(MODE),silverline)
 export WASMCFLAGS+= -DSILVERLINE
 export WASMCLFLAGS+= -DSILVERLINE

@@ -1,4 +1,4 @@
-"""Generate test database for `SELECT..LIKE` benchmark."""
+"""Generate test database for small database iteration benchmark."""
 
 import sqlite3
 from tqdm import tqdm
@@ -19,7 +19,7 @@ def _generate(out, size):
     con.commit()
 
     for _ in tqdm(range(100), desc=str(size)):
-        rows = [(_str(),) for _ in range(size * 10)]
+        rows = [(_str(),) for _ in range(size)]
         cur = con.cursor()
         cur.executemany("INSERT INTO test{} VALUES(?)".format(size), rows)
         con.commit()
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     out = sys.argv[1]
     np.random.seed(42)
     for i in range(10):
-        _generate(out, 50 * (i + 1))
+        _generate(out, 5 * (i + 1))
