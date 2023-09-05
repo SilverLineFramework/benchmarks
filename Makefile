@@ -66,7 +66,6 @@ endif  # $MODE
 # -------------------------------- Benchmarks ------------------------------- #
 
 BENCHMARKS=polybench mibench cortex vision sod loadgen libsodium apps
-BENCHMARKS+= python kissat sqlite
 
 .PHONY: wasm
 wasm: $(BENCHMARKS)

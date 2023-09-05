@@ -12,10 +12,6 @@ The following benchmark suites are included, some of which required modification
     - `lua`: [Lua](https://www.lua.org/) interpreter, running 5 different scripts; requires [WALI](https://github.com/arjunr2/WALI) instead of only WASI to run.
     - `sqlite3`: [SQLite](https://www.sqlite.org/index.html) running 5 different queries; requires [WALI](https://github.com/arjunr2/WALI).
 
-We also include a number of "data-dependent" benchmarks. These benchmarks include a variety of input data, and have behavior that can vary greatly depending on the inputs given.
-- `python`: [CPython](https://github.com/python/cpython) interpreter [compiled to WASM](https://github.com/singlestore-labs/python-wasi) running 20 different python scripts; each script takes a random seed, and generates random data depending on randomly sampled parameters. We also include scripts from the python test suite as a small representative sample.
-- `kissat`: [Kissat](https://github.com/arminbiere/kissat) SAT solver, [compiled to WASM](https://github.com/thetianshuhuang/kissat-wasm) with a minor modification (changing the allocation size of a buffer on the stack). Benchmarks taken from [SATLib](https://www.cs.ubc.ca/~hoos/SATLIB/benchm.html) are used as inputs.
-- `sqlite`: [SQLite](https://www.sqlite.org/index.html) database [compiled to WASM](https://wasmer.io/sqlite/sqlite) running randomly generated queries on randomly generated databases; we include example queries for the [northwind](https://musiliadebayo.medium.com/50-sql-practice-queries-and-answers-3fc896650b2e) and [chinook](https://github.com/LucasMcL/15-sql_queries_02-chinook/blob/master/chinook-queries.sql) standard test databases as a small representative sample.
 
 ## Setup
 

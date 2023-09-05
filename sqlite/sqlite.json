@@ -1,7 +1,0 @@
-[
-    ["data/sqlite/join.db", "data/sqlite/join.query.py"],
-    ["data/sqlite/like.db", "data/sqlite/like.query.py"],
-    ["data/sqlite/small.db", "data/sqlite/small.query.py"],
-    ["data/sqlite/sort.db", "data/sqlite/sort.query.py"],
-    [":memory:", "data/sqlite/update.query.py"]
-]
