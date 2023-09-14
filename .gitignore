@@ -1,6 +1,7 @@
 # Project-specific files
 run.sh
 /wasm/
+/wasm-wali/
 /data/
 /native/
 /aot/
@@ -146,3 +147,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Configs
+config.mak
