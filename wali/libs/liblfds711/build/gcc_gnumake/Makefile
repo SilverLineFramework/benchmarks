@@ -119,11 +119,7 @@ endif
 vpath %.c $(patsubst %,$(SRCDIR)/%:,$(SRCDIRS))
 
 ##### implicit rules #####
-dir:
-	mkdir -p $(BINDIR)
-	mkdir -p $(OBJDIR)
-
-$(OBJDIR)/%.o : dir %.c
+$(OBJDIR)/%.o : %.c | dir
 	$(DG) $(DGFLAGS_OPTIONAL) $(DGFLAGS) $(DGFLAGS_MANDATORY) $< >$(OBJDIR)/$*.d
 	$(CC) $(CFLAGS_OPTIONAL) $(CFLAGS) $(CFLAGS_MANDATORY) -o $@ $<
 
@@ -135,6 +131,10 @@ $(SOPATHNAME) : $(OBJECTS)
 	$(LD) $(LDFLAGS_OPTIONAL) $(LDFLAGS) $(LDFLAGS_MANDATORY) $(OBJECTS) -lgcov -lgcc -o $(SOPATHNAME)
 	@ln -fs $(SOFILENAME) $(BINDIR)/$(SONAME)
 	@ln -fs $(SOFILENAME) $(BINDIR)/$(SOBASENAME)
+
+dir:
+	mkdir -p $(BINDIR)
+	mkdir -p $(OBJDIR)
 
 ##### phony #####
 .PHONY : clean dir ar_cov ar_dbg ar_prof ar_rel ar_tsan ar_vanilla ar_install ar_uninstall so_dbg so_prof so_rel so_tsan so_vanilla so_install so_uninstall
