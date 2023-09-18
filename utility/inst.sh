@@ -13,8 +13,7 @@ for instlevel in $(seq 0 5 100); do
   for srcfile in $wasmfiles; do
     instfile=${srcfile//$dn/"$on/$instlevel"}
     mkdir -p $(dirname -- $instfile)
-    echo $instfile $srcfile
-    $script_dir/../../instrument  --multithread -s memaccess-stochastic --args="30 500" -o $instfile $srcfile
+    $script_dir/../../instrument  --multithread -s memaccess-stochastic --args="$instlevel 500" -o $instfile $srcfile
   done
 done
 
