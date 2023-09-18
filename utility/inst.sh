@@ -9,7 +9,7 @@ dst_dir=$script_dir/../$on
 
 wasmfiles=$(find $src_dir -type f -name "*.wasm")
 
-for instlevel in $(seq 0 5 10); do
+for instlevel in $(seq 0 5 100); do
   for srcfile in $wasmfiles; do
     instfile=${srcfile//$dn/"$on/$instlevel"}
     mkdir -p $(dirname -- $instfile)
