@@ -1,7 +1,7 @@
 
 #include "thread_common.h"
 
-#define LOOP_CT 5000000
+#define LOOP_CT 500000
 
 int y = 3;
 int z = 4;
